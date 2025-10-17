@@ -22,7 +22,7 @@ public class LoginPage extends JFrame {
     public DevCafeGUI newHome;
 
     public LoginPage() {
-        ImageIcon icon = new ImageIcon("dev_cafe/asset/icon.png"); // For vscode
+        ImageIcon icon = new ImageIcon("asset/icon.png"); // For vscode
         // ImageIcon icon = new ImageIcon("asset/icon.png"); // for eclipse, Intelj
         setTitle("Login");
         setSize(new Dimension(750, 500));
