@@ -7,5 +7,16 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="flatlaf-3.4" level="project" />
+    <orderEntry type="library" name="ikonli-core-12.4.0" level="project" />
+    <orderEntry type="library" name="ikonli-feather-pack-12.4.0" level="project" />
+    <orderEntry type="library" name="ikonli-fontawesome5-pack-12.4.0" level="project" />
+    <orderEntry type="library" name="ikonli-fontawesome6-pack-12.4.0" level="project" />
+    <orderEntry type="library" name="ikonli-materialdesign2-pack-12.4.0" level="project" />
+    <orderEntry type="library" name="ikonli-swing-12.4.0" level="project" />
+    <orderEntry type="library" name="jcalendar-1.4" level="project" />
+    <orderEntry type="library" name="jfreechart-1.5.3" level="project" />
+    <orderEntry type="library" name="miglayout-3.7.4" level="project" />
+    <orderEntry type="library" name="timingframework-1.0" level="project" />
   </component>
 </module>
