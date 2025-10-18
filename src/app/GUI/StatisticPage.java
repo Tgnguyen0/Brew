@@ -3,14 +3,9 @@ package app.GUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -106,22 +101,4 @@ public class StatisticPage extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
         add(chartPanel, gbc);
     }
-
-    // @Override
-    // protected void paintComponent(Graphics g) {
-    // String imagePath = "dev_cafe/asset/background.png"; // Path to your image
-    // file
-    // File imageFile = new File(imagePath);
-
-    // try {
-    // Image image = ImageIO.read(imageFile);
-    // int newWidth = getWidth();
-    // int newHeight = getHeight();
-    // Image scaledImage = image.getScaledInstance(newWidth, newHeight,
-    // Image.SCALE_SMOOTH);
-    // g.drawImage(scaledImage, 0, 0, null);
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // }
 }
