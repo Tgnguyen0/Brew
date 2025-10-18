@@ -2,11 +2,9 @@ package app.GUI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -31,7 +28,6 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -43,7 +39,6 @@ import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
 import app.InitFont.CustomFont;
 import app.Object.*;
-//import app.SaveToFile.ReadSaveFromFile;
 
 public class EmployeePage extends JPanel {
     private DefaultTableModel tableModel;
@@ -74,28 +69,6 @@ public class EmployeePage extends JPanel {
         createEmpTextBox();
         createEmpTablePanel();
     }
-
-    // @Override
-    // protected void paintComponent(Graphics g) {
-    // String imagePath = "dev_cafe/asset/background.png"; // Path to your GIF image
-    // file
-    // File imageFile = new File(imagePath);
-
-    // // Chèn ảnh vào Option menu
-    // try {
-    // // Đọc ảnh từ file
-    // Image image = ImageIO.read(imageFile);
-
-    // // Tạo icon cho ảnh
-    // int newWidth = getWidth(); // Get the width of the panel
-    // int newHeight = getHeight(); // Get the height of the panel
-    // Image scaledImage = image.getScaledInstance(newWidth, newHeight,
-    // Image.SCALE_SMOOTH);
-    // g.drawImage(scaledImage, 0, 0, null);
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // }
 
     private void createEmpTextBox() {
         JPanel panel = new JPanel();
@@ -364,34 +337,6 @@ public class EmployeePage extends JPanel {
         tableModel.addColumn("Phone Number");
         tableModel.addColumn("Reposibility");
 
-//        ReadSaveFromFile s = new ReadSaveFromFile();
-//
-//        try {
-//            Object o = s.ReadFile("dev_cafe/data/employees_data.txt");
-//
-//            if (o instanceof ArrayList<?>) {
-//                @SuppressWarnings("unchecked")
-//                ArrayList<Employee> listOfEmp = (ArrayList<Employee>) o;
-//                employeeList.addAllEmployee(listOfEmp);
-//
-//                for (Employee emp : employeeList.getEmployeeList()) {
-//                    Vector<String> rowData = new Vector<>();
-//                    rowData.add(emp.getId());
-//                    rowData.add(emp.getName());
-//                    rowData.add(emp.getDob().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-//                    rowData.add(emp.getPhone());
-//                    rowData.add(emp.getResponsibility());
-//                    tableModel.addRow(rowData);
-//                }
-//            } else {
-//                System.out.println("Import failed!");
-//            }
-//
-//            System.out.println("Import successfully!");
-//        } catch (Exception ee) {
-//            ee.printStackTrace();
-//        }
-
         JTable table = new JTable(tableModel);
         table.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         table.setForeground(Color.black);
@@ -459,20 +404,6 @@ public class EmployeePage extends JPanel {
                 }
             }
         });
-
-//        saveButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                ReadSaveFromFile s = new ReadSaveFromFile();
-//
-//                try {
-//                    s.SaveFile(employeeList.getEmployeeList(), "data/employees_data.txt");
-//                    System.out.println("Save successfully!");
-//                } catch (Exception ee) {
-//                    ee.printStackTrace();
-//                }
-//            }
-//        });
 
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override

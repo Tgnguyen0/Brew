@@ -1,44 +1,21 @@
 package app.GUI;
 
-import app.AppFunctions.Collection_MenuItem;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
 import app.Components.ImagePanelButton;
 import app.InitFont.CustomFont;
 import app.Listener.ActionListener_SellPage;
-import app.Object.BillDetail;
-import app.Object.MenuItem;
-//import app.SaveToFile.ReadSaveFromFile;
-import app.AppFunctions.Collection_BillDetails;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Vector;
-import java.awt.Component;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -50,14 +27,13 @@ import org.kordamp.ikonli.swing.FontIcon;
 
 public class SellPage extends JPanel {
     private CustomFont customFont = new CustomFont();
-    private Collection_MenuItem menu = new Collection_MenuItem();
-    private Collection_BillDetails bdl = new Collection_BillDetails();
+//    private Collection_MenuItem menu = new Collection_MenuItem();
+//    private Collection_BillDetails bdl = new Collection_BillDetails();
     private ActionListener_SellPage action;
     public JRadioButton takeAwayRadioButton;
     public JButton seatingButton;
     private DefaultTableModel productTableModel;
     private JTable productTable;
-    private boolean created = false;
 
     public SellPage() {
         setPreferredSize(new Dimension(1100, 500));
@@ -78,30 +54,7 @@ public class SellPage extends JPanel {
 
         add(createSearchPane(), BorderLayout.NORTH);
         add(createProductPanel(), BorderLayout.CENTER);
-        //add(createReceiptTable(), BorderLayout.SOUTH);
     }
-
-    // @Override
-    // protected void paintComponent(Graphics g) {
-    // String imagePath = "dev_cafe/asset/background.png"; // Path to your GIF image
-    // file
-    // File imageFile = new File(imagePath);
-
-    // // Chèn ảnh vào Option menu
-    // try {
-    // // Đọc ảnh từ file
-    // Image image = ImageIO.read(imageFile);
-
-    // // Tạo icon cho ảnh
-    // int newWidth = getWidth(); // Get the width of the panel
-    // int newHeight = getHeight(); // Get the height of the panel
-    // Image scaledImage = image.getScaledInstance(newWidth, newHeight,
-    // Image.SCALE_SMOOTH);
-    // g.drawImage(scaledImage, 0, 0, null);
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // }
 
     public JPanel createSearchPane() {
         JPanel north = new JPanel();
@@ -180,8 +133,6 @@ public class SellPage extends JPanel {
         ptPanel.setLayout(new BoxLayout(ptPanel, BoxLayout.X_AXIS));
 
         JPanel productPanel = new JPanel(new GridBagLayout());
-        // productPanel.setOpaque(false);
-        // productPanel.setPreferredSize(new Dimension(1200, 1000));
         productPanel.setBackground(Color.white);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -412,33 +363,5 @@ public class SellPage extends JPanel {
         panel.add(ptPanel);
         panel.add(Box.createVerticalStrut(30));
         return panel;
-    }
-
-    public JPanel createReceiptTable() {
-        JPanel center = new JPanel();
-        center.setLayout(new BorderLayout());
-        center.setOpaque(false);
-        center.setPreferredSize(new Dimension(600, 100));
-
-        return center;
-    }
-
-    // public void rightPanel() {
-    // JPanel right = new JPanel();
-    // right.setPreferredSize(new Dimension(480, 601)); // Thay đổi kích thước cho
-    // phù hợp
-    // right.setBackground(new Color(225, 203, 177));
-    // right.setLayout(new BorderLayout());
-    // right.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-
-    // add(right);
-    // }
-
-    public boolean isImportedSuccessfully() {
-        return created;
-    }
-
-    public interface OrderButtonListener {
-        void onOrderPlaced();
     }
 }
