@@ -2,8 +2,6 @@ package app.Components;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -55,78 +53,18 @@ public class NavbarButton extends JButton {
         setBorderPainted(false);
         setContentAreaFilled(true);
         setHorizontalAlignment(SwingConstants.LEFT);
-        // this.setVerticalAlignment(SwingConstants.CENTER);
         setIconTextGap(iconTextGap);
-        // this.setMargin(new Insets(5, 10, 5, 10));
         setBorder(BorderFactory.createLineBorder(Color.white));
         setIcon(icon);
         addMouseListener(mouseListener);
-        // this.addActionListener(this);
-    }
-
-    public NavbarButton() {
-    }
-
-    public NavbarButton(CustomFont customFont, MouseListener_NavbarButton mouseListener, String description, Ikon ikon,
-                        int iconSize, int buttonWidth, int buttonHeight, int fontStyle, int fontSize, int iconTextGap) {
-        this.customFont = customFont;
-        this.mouseListener = mouseListener;
-        this.description = description;
-        this.ikon = ikon;
-        this.iconSize = iconSize;
-        this.buttonWidth = buttonWidth;
-        this.buttonHeight = buttonHeight;
-        this.fontStyle = fontStyle;
-        this.fontSize = fontSize;
-        this.iconTextGap = iconTextGap;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Ikon getIkon() {
         return this.ikon;
     }
 
-    public int getButtonWidth() {
-        return this.buttonWidth;
-    }
-
-    public void setButtonWidth(int buttonWidth) {
-        this.buttonWidth = buttonWidth;
-    }
-
-    public int getButtonHeight() {
-        return this.buttonHeight;
-    }
-
-    public void setButtonHeight(int buttonHeight) {
-        this.buttonHeight = buttonHeight;
-    }
-
-    public int getFontStyle() {
-        return this.fontStyle;
-    }
-
-    public void setFontStyle(int fontStyle) {
-        this.fontStyle = fontStyle;
-    }
-
     public void setIconSize(int iconSize) {
         this.iconSize = iconSize;
-    }
-
-    public int getFontSize() {
-        return this.fontSize;
-    }
-
-    public void setFontSize(int fontSize) {
-        this.fontSize = fontSize;
     }
 
     public int getIconSize() {

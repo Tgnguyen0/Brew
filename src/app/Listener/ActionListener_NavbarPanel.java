@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import app.GUI.DevCafeGUI;
+import app.GUI.HomePage;
+import app.GUI.SellPage;
 
 public class ActionListener_NavbarPanel implements ActionListener {
 
@@ -15,9 +17,15 @@ public class ActionListener_NavbarPanel implements ActionListener {
 
         switch (command) {
             case "Trang Chủ":
+                // Khởi tạo trang Trang chủ
+//                if (DevCafeGUI.homePage != null) DevCafeGUI.homePage = new HomePage();
+
                 cardLayout.show(DevCafeGUI.pageContainer, "Home Page");
                 break;
             case "Bán Hàng":
+                // Khởi tạo trang Bán hàng
+//                if (DevCafeGUI.sellPage != null) DevCafeGUI.sellPage = new SellPage();
+
                 cardLayout.show(DevCafeGUI.pageContainer, "Sell Page");
                 break;
             case "Hóa Đơn":

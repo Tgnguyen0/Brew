@@ -140,7 +140,7 @@ public class SellPage extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
 
         int columns = 3;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 18; i++) {
             String text = "Cappuccino";
             ImagePanelButton productButton = new ImagePanelButton(text, "", i,
                     "asset/placeholder.png", 200,
