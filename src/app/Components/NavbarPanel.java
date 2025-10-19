@@ -48,14 +48,14 @@ public class NavbarPanel extends JPanel {
 
     public void initNavbarButton() {
         FontIcon batteryIcon = FontIcon.of(Feather.BATTERY_CHARGING, 50, Color.WHITE);
-        logoNameLabel = new JLabel("Dev Café", batteryIcon, SwingConstants.CENTER); // Tạo tên logo
+        logoNameLabel = new JLabel("Brew", batteryIcon, SwingConstants.LEFT); // Tạo tên logo
         logoNameLabel.setPreferredSize(new Dimension(200, 50));
         logoNameLabel.setIconTextGap(10);
         logoNameLabel.setForeground(Color.WHITE);
         logoNameLabel.setBackground(new Color(164, 56, 32));
         logoNameLabel.setVerticalAlignment(SwingConstants.CENTER);
         logoNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        logoNameLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 20));
+        logoNameLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 30));
         logoNameLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.white));
         this.add(logoNameLabel);
 
