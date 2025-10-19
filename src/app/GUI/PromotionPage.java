@@ -371,7 +371,7 @@ public class PromotionPage extends JPanel {
                 phoneNumber = phoneInput.getText();
                 points = 0;
 
-                Member mem = new Member();
+                Customer mem = new Customer();
                 memberList.addMember(mem);
 
                 idInput.setText("");

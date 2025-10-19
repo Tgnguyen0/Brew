@@ -220,7 +220,6 @@ public class DevCafeGUI extends JFrame implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-
         throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
     }
 
