@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
 import javax.swing.*;
 import com.formdev.flatlaf.FlatDarkLaf;
 
@@ -18,21 +19,20 @@ import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 // @important
-// setBackground(new Color(70, 33, 26));
-// setBackground(new Color(164, 56, 32));
-// setBackground(new Color(241, 211, 178));
+// old Color: 161, 103, 37
+// old OnClick Color: 196, 125, 44
 
 public class DevCafeGUI extends JFrame implements MouseListener {
     private MigLayout layout;
     private JPanel right;
     public static JPanel pageContainer;
-    private HomePage homePage;
-    private SellPage sellPage;
-    private ReceiptPage receiptPage;
-    private ProductPage productPage;
-    private PromotionPage promotionPage;
-    private StatisticPage statisticPage;
-    private EmployeePage employeePage;
+    public static HomePage homePage;
+    public static SellPage sellPage;
+    public static ReceiptPage receiptPage;
+    public static ProductPage productPage;
+    public static PromotionPage promotionPage;
+    public static StatisticPage statisticPage;
+    public static EmployeePage employeePage;
     private CustomFont customFont = new CustomFont();
     private JButton navbarButton;
     private JPanel slidePanel;
@@ -66,12 +66,14 @@ public class DevCafeGUI extends JFrame implements MouseListener {
         TimingTarget target = new TimingTargetAdapter() {
             @Override
             public void begin() {
-                if (!optionBar.isShowMenu()) {}
+                if (!optionBar.isShowMenu()) {
+                    // optionBar.homeButton.setForeground(new Color(0, 0, 0, 255));
+                }
             }
 
             @Override
             public void timingEvent(float fraction) {
-                double width;
+                double width, borderWidth;
                 System.out.println(String.valueOf(fraction));
                 if (optionBar.isShowMenu()) {
                     width = 60 + (140f * (1f - fraction)); // 30
@@ -106,7 +108,9 @@ public class DevCafeGUI extends JFrame implements MouseListener {
 
             @Override
             public void end() {
-                if (optionBar.isShowMenu()) {}
+                if (optionBar.isShowMenu()) {
+                    // optionBar.homeButton.setForeground(new Color(0, 0, 0, 255));
+                }
 
                 optionBar.setShowMenu(!optionBar.isShowMenu());
             }
@@ -121,7 +125,7 @@ public class DevCafeGUI extends JFrame implements MouseListener {
                 if (!animator.isRunning()) {
                     animator.start();
                 }
-                optionBar.setEnableMenu(false);
+
                 if (optionBar.isShowMenu()) {
                 }
             }
@@ -158,13 +162,12 @@ public class DevCafeGUI extends JFrame implements MouseListener {
         this.right.setLayout(new BorderLayout());
 
         infoBar = new JPanel();
-        infoBar.setPreferredSize(new Dimension(670, 35));
-        infoBar.setBounds(10, 10, 50, 30);
-        infoBar.setBackground(new Color(164, 56, 32));
-        infoBar.setLayout(new BorderLayout());
+        infoBar.setBounds(10, 10, 200, 30);
+        infoBar.setBackground(Color.red); //new Color(164, 56, 32)
+        infoBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         navbarButton = new JButton(">"); // ☰
-        navbarButton.setBounds(5, 3, 45, 30);
+        navbarButton.setBounds(5, 3, 200, 30);
         navbarButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         navbarButton.setForeground(Color.BLACK);
         navbarButton.setBackground(Color.WHITE);
@@ -180,33 +183,6 @@ public class DevCafeGUI extends JFrame implements MouseListener {
             }
         });
         infoBar.add(navbarButton);
-
-        JPanel userRelatedBar = new JPanel();
-        userRelatedBar.setOpaque(false);
-        userRelatedBar.setPreferredSize(new Dimension(385, 35));
-
-        JButton changePassButton = new JButton("Đổi mật khẩu");
-        changePassButton.setPreferredSize(new Dimension(110, 25));
-        changePassButton.setFont(customFont.getRobotoFonts().get(0));
-        changePassButton.setForeground(new Color(164, 56, 32));
-        changePassButton.setBackground(new Color(241, 211, 178));
-        changePassButton.addMouseListener(this);
-        userRelatedBar.add(changePassButton);
-
-        JButton signOutButton = new JButton("Đăng xuất");
-        signOutButton.setPreferredSize(new Dimension(110, 25));
-        signOutButton.setFont(customFont.getRobotoFonts().get(0));
-        signOutButton.setForeground(new Color(164, 56, 32));
-        signOutButton.setBackground(new Color(241, 211, 178));
-        signOutButton.addMouseListener(this);
-        userRelatedBar.add(signOutButton);
-
-        JLabel accountNameLabel = new JLabel("Nguyễn Nhật Tấn - Dev");
-        accountNameLabel.setPreferredSize(new Dimension(140, 25));
-        accountNameLabel.setFont(customFont.getRobotoFonts().get(0));
-        accountNameLabel.setForeground(new Color(255, 213, 146));
-        userRelatedBar.add(accountNameLabel);
-        infoBar.add(Box.createHorizontalStrut(170));
 
         // Khởi tạo trang chứa
         this.pageContainer = new JPanel();

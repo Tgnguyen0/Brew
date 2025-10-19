@@ -23,21 +23,12 @@ public class NavbarPanel extends JPanel {
     public NavbarButton statisticsButton;
     public NavbarButton employeeButton;
     // private final Animator animator;
-    private boolean enableMenu = true;
     private boolean showMenu = true;
 
     public NavbarPanel() {
         initNavbarButton();
         setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.black));
         this.setLayout(new MigLayout("wrap, fillx, insets 0", "[fill]", "[fill, 60!]0[fill, 40!]"));
-    }
-
-    public void setEnableMenu(boolean enableMenu) {
-        this.enableMenu = enableMenu;
-    }
-
-    public boolean isEnableMenu() {
-        return this.enableMenu;
     }
 
     public void setShowMenu(boolean showMenu) {
@@ -84,25 +75,6 @@ public class NavbarPanel extends JPanel {
                 24, 200, 35, Font.PLAIN, 12, 10);
         receiptButton.addActionListener(action);
         this.add(receiptButton);
-
-        /*
-         * if (this.sellPage.isImportedSuccessfully()) {
-         * receiptButton.setEnabled(true);
-         *
-         * try {
-         * Object o = s.ReadFile("dev_cafe/data/bill_details_data.txt");
-         *
-         * if (o instanceof ArrayList<?>) {
-         * receiptPage = new ReceiptPage();
-         * pageContainer.add(receiptPage, "Receipt Page");
-         * }
-         *
-         * System.out.println("Import successfully!");
-         * } catch (Exception ee) {
-         * ee.printStackTrace();
-         * }
-         * }
-         */
 
         productButton = new NavbarButton("Sản Phẩm", Feather.BOX,
                 24, 200, 35, Font.PLAIN, 12, 10);
