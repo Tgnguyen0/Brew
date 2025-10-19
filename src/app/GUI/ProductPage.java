@@ -367,7 +367,7 @@ public class ProductPage extends JPanel {
                 servedHot = servedHotRadio.isSelected();
                 price = Double.parseDouble(priceInput.getText());
 
-                MenuItem item = new MenuItem(id, name, servedHot, price);
+                MenuItem item = new MenuItem();
                 menu.addItem(item);
 
                 idInput.setText("");

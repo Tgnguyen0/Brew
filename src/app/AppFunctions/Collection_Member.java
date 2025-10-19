@@ -1,25 +1,25 @@
 package app.AppFunctions;
 
-import app.Object.Member;
+import app.Object.Customer;
 
 import java.util.ArrayList;
 
 public class Collection_Member {
-    ArrayList<Member> ml;
+    ArrayList<Customer> ml;
 
     public Collection_Member() {
-        ml = new ArrayList<Member>();
+        ml = new ArrayList<Customer>();
     }
 
-    public ArrayList<Member> getAllMember() {
+    public ArrayList<Customer> getAllMember() {
         return ml;
     }
 
-    public boolean addMember(Member newMember) {
+    public boolean addMember(Customer newMember) {
         return ml.add(newMember);
     }
 
-    public boolean addAllMember(ArrayList<Member> newList) {
+    public boolean addAllMember(ArrayList<Customer> newList) {
         return ml.addAll(newList);
     }
 
@@ -34,7 +34,7 @@ public class Collection_Member {
         return false;
     }
 
-    public Member searchMember(String phone) {
+    public Customer searchMember(String phone) {
         for (int i = 0 ; i < ml.size() ; i++) {
             if (ml.get(i).getPhone().equals(phone)) {
                 return ml.get(i);

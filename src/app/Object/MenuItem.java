@@ -3,31 +3,39 @@ package app.Object;
 import java.io.Serializable;
 
 public class MenuItem implements Serializable {
-    private String id;
+    private String itemId;
     private String name;
-    private boolean serveHot;
-    private double price;
+    private float price;
+    private String category;
+    private String description;
 
     public MenuItem() {
-        this.id = "";
+        this.itemId = "";
         this.name = "";
-        this.serveHot = true;
-        this.price = 0.0;
+        this.price = 0;
+        this.category = "";
+        this.description = "";
     }
 
-    public MenuItem(String id, String name, boolean serveHot, double price) {
-        this.id = id;
+    public MenuItem(String itemId, String name, float price, String category, String description) {
+        this.itemId = itemId;
         this.name = name;
-        this.serveHot = serveHot;
         this.price = price;
+        this.category = category;
+        this.description = description;
     }
 
-    public String getId() {
-        return this.id;
+    public MenuItem(String name, float price, String category, String description) {
+        this.itemId = "";
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.description = description;
     }
 
-    public void setId(String id) {
-        this.id = id;
+
+    public String getItemId() {
+        return this.itemId;
     }
 
     public String getName() {
@@ -38,19 +46,27 @@ public class MenuItem implements Serializable {
         this.name = name;
     }
 
-    public boolean getServeHot() {
-        return this.serveHot;
-    }
-
-    public void setServeHot(boolean serveHot) {
-        this.serveHot = serveHot;
-    }
-
-    public double getPrice() {
+    public float getPrice() {
         return this.price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
