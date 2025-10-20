@@ -25,7 +25,7 @@ public class Collection_MenuItem {
 
     public boolean deleteItem(String id) {
         for (MenuItem i: listOfItem) {
-            if (i.getId().equals(id)) {
+            if (i.getItemId().equals(id)) {
                 return listOfItem.remove(i);
             }
         }
@@ -35,7 +35,7 @@ public class Collection_MenuItem {
 
     public MenuItem findItem(String id) {
         for (int i = 0 ; i < listOfItem.size() ; i++) {
-            if (id.equals(listOfItem.get(i).getId())) {
+            if (id.equals(listOfItem.get(i).getItemId())) {
                 return listOfItem.get(i);
             }
         }

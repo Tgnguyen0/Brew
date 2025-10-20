@@ -18,5 +18,6 @@
     <orderEntry type="library" name="jfreechart-1.5.3" level="project" />
     <orderEntry type="library" name="miglayout-3.7.4" level="project" />
     <orderEntry type="library" name="timingframework-1.0" level="project" />
+    <orderEntry type="library" name="mssql-jdbc-13.2.1.jre11" level="project" />
   </component>
 </module>
