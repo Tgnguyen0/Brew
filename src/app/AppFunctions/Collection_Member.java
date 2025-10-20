@@ -36,7 +36,7 @@ public class Collection_Member {
 
     public Customer searchMember(String phone) {
         for (int i = 0 ; i < ml.size() ; i++) {
-            if (ml.get(i).getPhone().equals(phone)) {
+            if (ml.get(i).getPhoneNumber().equals(phone)) {
                 return ml.get(i);
             }
         }
