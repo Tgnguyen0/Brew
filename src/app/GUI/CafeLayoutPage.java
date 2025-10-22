@@ -53,10 +53,13 @@ public class CafeLayoutPage extends JFrame {
         JButton redButton = new JButton("");
         redButton.setBackground(Color.red);
         redButton.setPreferredSize(new Dimension(50, 50));
+        redButton.setMaximumSize(new Dimension(50, 50));
+        redButton.setMinimumSize(new Dimension(50, 50));
         redButton.setBorder(BorderFactory.createLineBorder(Color.red));
         redButton.setFocusPainted(false);
         redButton.setEnabled(false);
         notVacantPanel.add(redButton);
+        notVacantPanel.add(Box.createHorizontalStrut(10));
 
         JLabel notVaccantLabel = new JLabel("Table is not availiable");
         notVaccantLabel.setForeground(Color.black);
@@ -69,10 +72,13 @@ public class CafeLayoutPage extends JFrame {
         JButton whiteButton = new JButton("");
         whiteButton.setBackground(Color.white);
         whiteButton.setPreferredSize(new Dimension(50, 50));
+        whiteButton.setMaximumSize(new Dimension(50, 50));
+        whiteButton.setMinimumSize(new Dimension(50, 50));
         whiteButton.setBorder(BorderFactory.createLineBorder(Color.black));
         whiteButton.setFocusPainted(false);
         whiteButton.setEnabled(false);
         vacantPanel.add(whiteButton);
+        vacantPanel.add(Box.createHorizontalStrut(10));
 
         JLabel vaccantLabel = new JLabel("Table is availiable");
         vaccantLabel.setForeground(Color.black);
@@ -80,7 +86,7 @@ public class CafeLayoutPage extends JFrame {
         vacantPanel.add(vaccantLabel);
 
         inforPanel.add(notVacantPanel);
-        inforPanel.add(Box.createHorizontalStrut(20));
+        inforPanel.add(Box.createHorizontalStrut(50));
         inforPanel.add(vacantPanel);
         return inforPanel;
     }
