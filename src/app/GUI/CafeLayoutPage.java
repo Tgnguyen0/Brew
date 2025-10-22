@@ -5,8 +5,13 @@ import app.Listener.ActionListener_CafeLayoutPage;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.swing.FontIcon;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
+import java.io.File;
 
 public class CafeLayoutPage extends JFrame {
     private CustomFont customFont = new CustomFont();
@@ -19,6 +24,7 @@ public class CafeLayoutPage extends JFrame {
 
     public CafeLayoutPage() {
         //setSize(new Dimension(800, 600));
+        setTitle("Cafe layout");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBackground(Color.white);
@@ -29,85 +35,55 @@ public class CafeLayoutPage extends JFrame {
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(initFloorOption());
-        panel.add(initBuildingPanel());
+//        panel.add(initFloorOption());
+        panel.add(initStatusPanel());
+        panel.add(initGroundFloor());
+        
 
         add(panel);
     }
 
-    private JPanel initFloorOption() {
-        JPanel optionBar = new JPanel();
-        optionBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-        optionBar.setLayout(new BoxLayout(optionBar, BoxLayout.X_AXIS));
-        optionBar.setBackground(new Color(164, 56, 32));
+    private JPanel initStatusPanel() {
+        JPanel inforPanel = new JPanel();
 
-        optionBar.add(Box.createHorizontalGlue());
-        groundFloorButton = initFoorButton("Tầng trệt");
-        groundFloorButton.addActionListener(action);
-        optionBar.add(groundFloorButton);
-        optionBar.add(Box.createHorizontalStrut(10));
-
-        firstFloorButton = initFoorButton("Tầng một");
-        firstFloorButton.addActionListener(action);
-        optionBar.add(firstFloorButton);
-        optionBar.add(Box.createHorizontalStrut(10));
-
-        secondFloorButton = initFoorButton("Tầng hai");
-        secondFloorButton.addActionListener(action);
-        optionBar.add(secondFloorButton);
-        optionBar.add(Box.createHorizontalGlue());
-
-        return optionBar;
-    }
-
-    private JButton initFoorButton(String text) {
-        JButton button = new JButton(text);
-        button.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        button.setPreferredSize(new Dimension(100, 40));
-        button.setBackground(Color.white);
-        button.setForeground(Color.black);
-
-        return button;
-    }
-
-    private JPanel initBuildingPanel() {
-        buildingPanel = new JPanel();
-        buildingPanel.setBackground(Color.white);
-        buildingPanel.setLayout(new CardLayout());
-
-        buildingPanel.add(initGroundFloor(), "Ground Floor");
-        buildingPanel.add(initFirstFloor(), "First Floor");
-        buildingPanel.add(initSecondFloor(), "Second Floor");
-        return buildingPanel;
+        return inforPanel;
     }
 
     private JPanel initGroundFloor() {
         JPanel groundFloor = new JPanel();
-        groundFloor.setBackground(Color.white);
 
-        JLabel label = new JLabel("Tầng trệt");
-        groundFloor.add(label);
+        try {
+            BufferedImage icon = ImageIO.read(new File("asset/layout/ground-floor.png"));
+
+            int iconWitdh = (int) (736 * 1.35);
+            int iconHeight = (int) (528 * 1.35);
+
+            Image scaled = icon.getScaledInstance(iconWitdh, iconHeight, Image.SCALE_SMOOTH);
+
+            JLabel imageHolder = new JLabel(new ImageIcon(scaled));
+            groundFloor.add(imageHolder);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return groundFloor;
     }
 
-    private JPanel initFirstFloor() {
-        JPanel firstFloor = new JPanel();
-        firstFloor.setBackground(Color.white);
+//    private JPanel initFirstFloor() {
+//        JPanel firstFloor = new JPanel();
+//        firstFloor.setBackground(Color.white);
+//
+//        JLabel label = new JLabel("Tầng một");
+//        firstFloor.add(label);
+//
+//        return firstFloor;
+//    }
 
-        JLabel label = new JLabel("Tầng một");
-        firstFloor.add(label);
-
-        return firstFloor;
-    }
-
-    private JPanel initSecondFloor() {
-        JPanel secondFloor = new JPanel();
-        secondFloor.setBackground(Color.white);
-
-        JLabel label = new JLabel("Tầng hai");
-        secondFloor.add(label);
-
-        return secondFloor;
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            // Mongo.getConnection();
+            CafeLayoutPage layout = new CafeLayoutPage();
+            layout.setVisible(true);
+        });
     }
 }
