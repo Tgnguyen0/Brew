@@ -38,14 +38,50 @@ public class CafeLayoutPage extends JFrame {
 //        panel.add(initFloorOption());
         panel.add(initStatusPanel());
         panel.add(initGroundFloor());
-        
+        panel.add(initConfirmedPanel());
 
         add(panel);
     }
 
     private JPanel initStatusPanel() {
         JPanel inforPanel = new JPanel();
+        inforPanel.setLayout(new BoxLayout(inforPanel, BoxLayout.X_AXIS));
 
+        JPanel notVacantPanel = new JPanel();
+        notVacantPanel.setLayout(new BoxLayout(notVacantPanel, BoxLayout.X_AXIS));
+
+        JButton redButton = new JButton("");
+        redButton.setBackground(Color.red);
+        redButton.setPreferredSize(new Dimension(50, 50));
+        redButton.setBorder(BorderFactory.createLineBorder(Color.red));
+        redButton.setFocusPainted(false);
+        redButton.setEnabled(false);
+        notVacantPanel.add(redButton);
+
+        JLabel notVaccantLabel = new JLabel("Table is not availiable");
+        notVaccantLabel.setForeground(Color.black);
+        notVaccantLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        notVacantPanel.add(notVaccantLabel);
+
+        JPanel vacantPanel = new JPanel();
+        vacantPanel.setLayout(new BoxLayout(vacantPanel, BoxLayout.X_AXIS));
+
+        JButton whiteButton = new JButton("");
+        whiteButton.setBackground(Color.white);
+        whiteButton.setPreferredSize(new Dimension(50, 50));
+        whiteButton.setBorder(BorderFactory.createLineBorder(Color.black));
+        whiteButton.setFocusPainted(false);
+        whiteButton.setEnabled(false);
+        vacantPanel.add(whiteButton);
+
+        JLabel vaccantLabel = new JLabel("Table is availiable");
+        vaccantLabel.setForeground(Color.black);
+        vaccantLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        vacantPanel.add(vaccantLabel);
+
+        inforPanel.add(notVacantPanel);
+        inforPanel.add(Box.createHorizontalStrut(20));
+        inforPanel.add(vacantPanel);
         return inforPanel;
     }
 
@@ -69,15 +105,11 @@ public class CafeLayoutPage extends JFrame {
         return groundFloor;
     }
 
-//    private JPanel initFirstFloor() {
-//        JPanel firstFloor = new JPanel();
-//        firstFloor.setBackground(Color.white);
-//
-//        JLabel label = new JLabel("Tầng một");
-//        firstFloor.add(label);
-//
-//        return firstFloor;
-//    }
+    private JPanel initConfirmedPanel() {
+        JPanel confirmedPanel = new JPanel();
+
+        return confirmedPanel;
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
