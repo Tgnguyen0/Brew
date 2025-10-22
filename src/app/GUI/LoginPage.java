@@ -19,7 +19,7 @@ public class LoginPage extends JFrame {
     private CustomFont customFont = new CustomFont();
     private JTextField nameField;
     private JTextField password;
-    public DevCafeGUI newHome;
+    public BrewGUI newHome;
 
     public LoginPage() {
         ImageIcon icon = new ImageIcon("asset/icon.png"); // For vscode
@@ -96,7 +96,7 @@ public class LoginPage extends JFrame {
         SwingUtilities.invokeLater(() -> {
             LoginPage loginPage = new LoginPage();
             loginPage.setVisible(true);
-            loginPage.newHome = new DevCafeGUI();
+            loginPage.newHome = new BrewGUI();
         });
     }
 }

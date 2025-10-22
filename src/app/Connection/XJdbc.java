@@ -25,15 +25,15 @@ public class XJdbc {
         return DriverManager.getConnection(DB_URL, USER, PASSWORD);
     }
 
-    public static void main(String[] args) {
-        System.out.println("Trying to connect to Brew database...");
-        try (Connection conn = XJdbc.getConnection()) {
-            if (conn != null) {
-                System.out.println("Connected to Brew database successfully!");
-            }
-        } catch (SQLException e) {
-            System.err.println("Connection failed!");
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        System.out.println("Trying to connect to Brew database...");
+//        try (Connection conn = XJdbc.getConnection()) {
+//            if (conn != null) {
+//                System.out.println("Connected to Brew database successfully!");
+//            }
+//        } catch (SQLException e) {
+//            System.err.println("Connection failed!");
+//            e.printStackTrace();
+//        }
+//    }
 }

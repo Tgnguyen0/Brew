@@ -22,7 +22,7 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 // old Color: 161, 103, 37
 // old OnClick Color: 196, 125, 44
 
-public class DevCafeGUI extends JFrame implements MouseListener {
+public class BrewGUI extends JFrame implements MouseListener {
     private MigLayout layout;
     private JPanel right;
     public static JPanel pageContainer;
@@ -42,7 +42,7 @@ public class DevCafeGUI extends JFrame implements MouseListener {
     private Animator animator;
 
     // Function tạo GUI chính
-    public DevCafeGUI() {
+    public BrewGUI() {
         ImageIcon icon = new ImageIcon("asset/icon.png");
         setTitle("Brew");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -163,7 +163,7 @@ public class DevCafeGUI extends JFrame implements MouseListener {
 
         infoBar = new JPanel();
         infoBar.setBounds(10, 10, 200, 30);
-        infoBar.setBackground(Color.red); //new Color(164, 56, 32)
+        infoBar.setBackground(new Color(164, 56, 32));
         infoBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         navbarButton = new JButton(">"); // ☰
@@ -249,7 +249,7 @@ public class DevCafeGUI extends JFrame implements MouseListener {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // Mongo.getConnection();
-            DevCafeGUI devCafeGUI = new DevCafeGUI();
+            BrewGUI devCafeGUI = new BrewGUI();
             devCafeGUI.setVisible(true);
         });
     }
