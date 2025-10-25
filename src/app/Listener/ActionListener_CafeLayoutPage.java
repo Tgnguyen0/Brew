@@ -15,20 +15,10 @@ public class ActionListener_CafeLayoutPage implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        CardLayout cardLayout = (CardLayout) layoutPage.buildingPanel.getLayout();
-        String command = e.getActionCommand();
         Object o = e.getSource();
 
-        switch (command) {
-            case "Tầng trệt":
-                cardLayout.show(layoutPage.buildingPanel, "Ground Floor");
-                break;
-            case "Tầng một":
-                cardLayout.show(layoutPage.buildingPanel, "First Floor");
-                break;
-            case "Tầng hai":
-                cardLayout.show(layoutPage.buildingPanel, "Second Floor");
-                break;
+        if (o.equals(layoutPage.confirmedButton)) {
+            layoutPage.dispose();
         }
     }
 }
