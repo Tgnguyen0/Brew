@@ -1,4 +1,4 @@
-package app.AppFunctions;
+package app.Collections;
 
 import app.Object.Customer;
 

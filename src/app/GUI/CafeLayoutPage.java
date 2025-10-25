@@ -1,5 +1,6 @@
 package app.GUI;
 
+import app.Components.TableButton;
 import app.InitFont.CustomFont;
 import app.Listener.ActionListener_CafeLayoutPage;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -9,6 +10,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
@@ -18,10 +20,7 @@ public class CafeLayoutPage extends JFrame {
     private CustomFont customFont = new CustomFont();
     public ActionListener_CafeLayoutPage action;
     public JPanel buildingPanel;
-    public JLabel logoNameLabel;
-    public JButton groundFloorButton;
-    public JButton firstFloorButton;
-    public JButton secondFloorButton;
+    public JButton confirmedButton;
 
     public CafeLayoutPage() {
         //setSize(new Dimension(800, 600));
@@ -41,23 +40,41 @@ public class CafeLayoutPage extends JFrame {
 
         action = new ActionListener_CafeLayoutPage(this);
 
-        JPanel emptyNorth = new JPanel();
-        emptyNorth.setPreferredSize(new Dimension(100, 100));
-        emptyNorth.setOpaque(false);
-        add(emptyNorth, BorderLayout.NORTH);
+        JPanel labelPanel = new JPanel();
+        labelPanel.setPreferredSize(new Dimension(400, 50));
+        labelPanel.setBackground(Color.white);
+        add(labelPanel, BorderLayout.NORTH);
+
+        JLabel introLabel = new JLabel("Cafe Layout");
+        introLabel.setForeground(Color.black);
+        introLabel.setPreferredSize(new Dimension(1445, 40));
+        introLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 30));
+        introLabel.setVerticalAlignment(SwingConstants.CENTER);
+        introLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        introLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+        introLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        labelPanel.add(introLabel);
 
         add(initGroundFloor(), BorderLayout.WEST);
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setOpaque(false);
-//        panel.add(initFloorOption());
-        panel.add(initStatusPanel());
-        panel.add(initConfirmedPanel());
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.white);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(0, 0, 30, 110);
+
+        panel.add(initStatusPanel(), gbc);
+
+        gbc.gridy++;
+        panel.add(initConfirmedPanel(), gbc);
+
         add(panel, BorderLayout.CENTER);
 
         JPanel emptySouth = new JPanel();
-        emptySouth.setPreferredSize(new Dimension(100, 100));
-        emptySouth.setOpaque(false);
+        emptySouth.setPreferredSize(new Dimension(100, 40));
+        emptySouth.setBackground(Color.white);
         add(emptySouth, BorderLayout.SOUTH);
     }
 
@@ -65,11 +82,12 @@ public class CafeLayoutPage extends JFrame {
         JPanel inforPanel = new JPanel();
         inforPanel.setLayout(new BoxLayout(inforPanel, BoxLayout.Y_AXIS));
         inforPanel.setBackground(Color.WHITE);
-        inforPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         inforPanel.add(createStatusRow(Color.RED, "Table is not available"));
-        inforPanel.add(Box.createVerticalStrut(10));
+        inforPanel.add(Box.createVerticalStrut(20));
         inforPanel.add(createStatusRow(Color.WHITE, "Table is available"));
+        inforPanel.add(Box.createVerticalStrut(20));
+        inforPanel.add(createStatusRow(Color.ORANGE, "Your choosen table"));
 
         return inforPanel;
     }
@@ -94,14 +112,19 @@ public class CafeLayoutPage extends JFrame {
     }
 
     private JPanel initGroundFloor() {
+        JPanel holdPanel = new JPanel();
+        holdPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        holdPanel.setPreferredSize(new Dimension(1125, (int) (528 * 1.3)));
+        holdPanel.setBackground(Color.white);
+
         JPanel groundFloor = new JPanel() {
             private Image backgroundImage;
 
             {
                 try {
                     BufferedImage icon = ImageIO.read(new File("asset/layout/ground-floor.png"));
-                    int iconWitdh = (int) (736 * 1.35);
-                    int iconHeight = (int) (528 * 1.35);
+                    int iconWitdh = (int) (736 * 1.4);
+                    int iconHeight = (int) (528 * 1.4);
                     backgroundImage = icon.getScaledInstance(iconWitdh, iconHeight, Image.SCALE_SMOOTH);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -119,55 +142,81 @@ public class CafeLayoutPage extends JFrame {
             }
         };
         groundFloor.setOpaque(false);
-
-        groundFloor.setLayout(null); // Cho phép bạn đặt ghế, bàn tự do theo toạ độ
-        groundFloor.setPreferredSize(new Dimension((int) (736 * 1.25), (int) (528 * 1.25)));
+        groundFloor.setLayout(null);
+        groundFloor.setPreferredSize(new Dimension((int) (736 * 1.4), (int) (528 * 1.4)));
         groundFloor.setOpaque(false);
+        holdPanel.add(groundFloor);
 
-        JButton ban1 = new JButton("1");
-        ban1.setBounds(328, 390, 105, 105);
+        TableButton ban1 = new TableButton(
+                "1",
+                32, 396, 118, 118,
+                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
+                Color.white,
+                Color.BLACK
+        );
         groundFloor.add(ban1);
 
-        JButton ban2 = new JButton("2");
-        ban2.setBounds(1040, 318, 105, 105);
+        TableButton ban2 = new TableButton(
+                "2",
+                811, 314, 118, 118,
+                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
+                Color.white,
+                Color.BLACK
+        );
         groundFloor.add(ban2);
 
-        JButton ban3 = new JButton("3");
-        ban3.setBounds(1040, 318, 105, 105);
+        TableButton ban3 = new TableButton(
+                "3",
+                811, 588, 118, 118,
+                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
+                Color.white,
+                Color.BLACK
+        );
         groundFloor.add(ban3);
 
-        JButton ban4 = new JButton("4");
-        ban4.setBounds(1040, 318, 105, 105);
+        TableButton ban4 = new TableButton(
+                "4",
+                564, 586, 118, 118,
+                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
+                Color.white,
+                Color.BLACK
+        );
         groundFloor.add(ban4);
 
-        JButton ban5 = new JButton("5");
-        ban5.setBounds(1040, 318, 105, 105);
+        TableButton ban5 = new TableButton(
+                "5",
+                316, 586, 118, 118,
+                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
+                Color.white,
+                Color.BLACK
+        );
         groundFloor.add(ban5);
 
-        return groundFloor;
+        return holdPanel;
     }
 
     private JPanel initConfirmedPanel() {
         JPanel confirmedPanel = new JPanel();
         confirmedPanel.setOpaque(false);
 
-        JButton confirmedButton = new JButton("Confirmed Chosen Table");
+        confirmedButton = new JButton("Confirmed Chosen Table");
         confirmedButton.setBackground(Color.white);
         confirmedButton.setForeground(Color.black);
         confirmedButton.setPreferredSize(new Dimension(240, 60));
         confirmedButton.setMaximumSize(new Dimension(240, 60));
         confirmedButton.setBorder(BorderFactory.createLineBorder(Color.black));
         confirmedButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
+        confirmedButton.addActionListener(action);
         confirmedPanel.add(confirmedButton);
 
         return confirmedPanel;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // Mongo.getConnection();
-            CafeLayoutPage layout = new CafeLayoutPage();
-            layout.setVisible(true);
-        });
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> {
+//            // Mongo.getConnection();
+//            CafeLayoutPage layout = new CafeLayoutPage();
+//            layout.setVisible(true);
+//        });
+//    }
 }

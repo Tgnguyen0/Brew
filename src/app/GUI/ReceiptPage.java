@@ -1,24 +1,19 @@
 package app.GUI;
 
-import app.AppFunctions.Collection_Member;
+import app.Collections.Collection_Member;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
 import app.InitFont.CustomFont;
-import app.AppFunctions.Collection_BillDetails;
+import app.Collections.Collection_BillDetails;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;

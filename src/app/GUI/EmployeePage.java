@@ -34,7 +34,7 @@ import javax.swing.table.JTableHeader;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.swing.FontIcon;
 
-import app.AppFunctions.Collection_Employee;
+import app.Collections.Collection_Employee;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
 import app.InitFont.CustomFont;
