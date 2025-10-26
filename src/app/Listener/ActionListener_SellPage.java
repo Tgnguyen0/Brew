@@ -25,7 +25,7 @@ public class ActionListener_SellPage implements ActionListener {
         if (o == sellPage.seatingButton) {
             System.out.print("Oke");
             SwingUtilities.invokeLater(() -> {
-                CafeLayoutPage layoutPage = new CafeLayoutPage();
+                CafeLayoutPage layoutPage = new CafeLayoutPage(sellPage.choosenTableList);
                 layoutPage.setVisible(true);
             });
         }

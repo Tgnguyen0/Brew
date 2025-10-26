@@ -17,8 +17,12 @@ public class ActionListener_CafeLayoutPage implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
 
+        if (o.equals(layoutPage.table1)) {
+
+        }
+
         if (o.equals(layoutPage.confirmedButton)) {
-            layoutPage.dispose();
+            layoutPage.doDispose();
         }
     }
 }
