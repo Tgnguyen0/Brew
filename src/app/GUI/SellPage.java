@@ -14,6 +14,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -22,6 +24,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import app.Object.Table;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -34,6 +37,7 @@ public class SellPage extends JPanel {
     public JButton seatingButton;
     private DefaultTableModel productTableModel;
     private JTable productTable;
+    public List<Table> choosenTableList;
 
     public SellPage() {
         setPreferredSize(new Dimension(1100, 500));
@@ -41,6 +45,7 @@ public class SellPage extends JPanel {
         setBackground(Color.white);
 
         action = new ActionListener_SellPage(this);
+        choosenTableList = new ArrayList<Table>();
 
         JPanel emptyL = new JPanel();
         emptyL.setPreferredSize(new Dimension(16, 500));

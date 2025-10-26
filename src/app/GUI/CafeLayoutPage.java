@@ -1,8 +1,10 @@
 package app.GUI;
 
+import app.Collections.Collection_Table;
 import app.Components.TableButton;
 import app.InitFont.CustomFont;
 import app.Listener.ActionListener_CafeLayoutPage;
+import app.Object.Table;
 import com.formdev.flatlaf.FlatDarkLaf;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -15,14 +17,20 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.io.File;
+import java.util.List;
 
 public class CafeLayoutPage extends JFrame {
     private CustomFont customFont = new CustomFont();
     public ActionListener_CafeLayoutPage action;
-    public JPanel buildingPanel;
+    public Collection_Table collectionTable;
+    public TableButton table1;
+    public TableButton table2;
+    public TableButton table3;
+    public TableButton table4;
+    public TableButton table5;
     public JButton confirmedButton;
 
-    public CafeLayoutPage() {
+    public CafeLayoutPage(List<Table> choosenTableList) {
         //setSize(new Dimension(800, 600));
         setTitle("Cafe layout");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -39,6 +47,8 @@ public class CafeLayoutPage extends JFrame {
         }
 
         action = new ActionListener_CafeLayoutPage(this);
+        collectionTable = new Collection_Table();
+        collectionTable.addAll(choosenTableList);
 
         JPanel labelPanel = new JPanel();
         labelPanel.setPreferredSize(new Dimension(400, 50));
@@ -147,50 +157,50 @@ public class CafeLayoutPage extends JFrame {
         groundFloor.setOpaque(false);
         holdPanel.add(groundFloor);
 
-        TableButton ban1 = new TableButton(
+        table1 = new TableButton(
                 "1",
                 32, 396, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
-        groundFloor.add(ban1);
+        groundFloor.add(table1);
 
-        TableButton ban2 = new TableButton(
+        table2 = new TableButton(
                 "2",
                 811, 314, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
-        groundFloor.add(ban2);
+        groundFloor.add(table2);
 
-        TableButton ban3 = new TableButton(
+        table3 = new TableButton(
                 "3",
                 811, 588, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
-        groundFloor.add(ban3);
+        groundFloor.add(table3);
 
-        TableButton ban4 = new TableButton(
+        table4 = new TableButton(
                 "4",
                 564, 586, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
-        groundFloor.add(ban4);
+        groundFloor.add(table4);
 
-        TableButton ban5 = new TableButton(
+        table5 = new TableButton(
                 "5",
                 316, 586, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
-        groundFloor.add(ban5);
+        groundFloor.add(table5);
 
         return holdPanel;
     }
@@ -210,6 +220,12 @@ public class CafeLayoutPage extends JFrame {
         confirmedPanel.add(confirmedButton);
 
         return confirmedPanel;
+    }
+
+    public void doDispose() {
+        System.out.println("OK");
+
+        this.dispose();
     }
 
 //    public static void main(String[] args) {
