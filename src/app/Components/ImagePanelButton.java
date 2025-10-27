@@ -21,18 +21,18 @@ public class ImagePanelButton extends JPanel {
     private JButton addButton;
     private JLabel iconLabel;
 
-    public ImagePanelButton(String labelText, String description, double price, String imagePath, int width, int height,
+    public ImagePanelButton(String labelText, String description, double price, String imagePath, int imageWidth, int imageHeight,
                             double scale) {
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(width, height));
+        setPreferredSize(new Dimension(imageWidth, imageHeight));
         setBackground(new Color(164, 56, 32));
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Tạo icon
         try {
             BufferedImage img = ImageIO.read(new File(imagePath));
-            int scaledW = (int) (width * scale);
-            int scaledH = (int) (height * scale);
+            int scaledW = (int) (imageWidth * scale);
+            int scaledH = (int) (imageHeight * scale);
             Image scaledImage = img.getScaledInstance(scaledW, scaledH, Image.SCALE_SMOOTH);
 
             iconLabel = new JLabel(new ImageIcon(scaledImage));
