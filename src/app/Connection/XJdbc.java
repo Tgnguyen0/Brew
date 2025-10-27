@@ -14,9 +14,9 @@ public class XJdbc {
     static {
         try {
             Class.forName(DRIVER);
-            System.out.println("SQL Server JDBC Driver loaded successfully!");
+//            System.out.println("SQL Server JDBC Driver loaded successfully!");
         } catch (ClassNotFoundException e) {
-            System.err.println("Failed to load SQL Server JDBC Driver!");
+//            System.err.println("Failed to load SQL Server JDBC Driver!");
             e.printStackTrace();
         }
     }
@@ -24,16 +24,4 @@ public class XJdbc {
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASSWORD);
     }
-
-//    public static void main(String[] args) {
-//        System.out.println("Trying to connect to Brew database...");
-//        try (Connection conn = XJdbc.getConnection()) {
-//            if (conn != null) {
-//                System.out.println("Connected to Brew database successfully!");
-//            }
-//        } catch (SQLException e) {
-//            System.err.println("Connection failed!");
-//            e.printStackTrace();
-//        }
-//    }
 }
