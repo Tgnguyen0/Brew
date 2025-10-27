@@ -49,6 +49,24 @@ public class Table {
         this.capacity = capacity;
     }
 
+    private int currentOccupancy = 0;
+
+    public void addPerson() {
+        if (currentOccupancy < capacity) currentOccupancy++;
+    }
+
+    public void removePerson() {
+        if (currentOccupancy > 0) currentOccupancy--;
+    }
+
+    public boolean isFull() {
+        return currentOccupancy >= capacity;
+    }
+
+    public int getCurrentOccupancy() {
+        return currentOccupancy;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -2,6 +2,7 @@ package app.GUI;
 
 import app.Collections.Collection_Table;
 import app.Components.TableButton;
+import app.DAO.DAO_Table;
 import app.InitFont.CustomFont;
 import app.Listener.ActionListener_CafeLayoutPage;
 import app.Object.Table;
@@ -17,7 +18,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CafeLayoutPage extends JFrame {
     private CustomFont customFont = new CustomFont();
@@ -29,6 +32,7 @@ public class CafeLayoutPage extends JFrame {
     public TableButton table4;
     public TableButton table5;
     public JButton confirmedButton;
+    private Map<String, Integer> tableMap;
 
     public CafeLayoutPage(List<Table> choosenTableList) {
         //setSize(new Dimension(800, 600));
@@ -157,49 +161,56 @@ public class CafeLayoutPage extends JFrame {
         groundFloor.setOpaque(false);
         holdPanel.add(groundFloor);
 
+        List<Table> tables = DAO_Table.getAllTable();
+
         table1 = new TableButton(
-                "1",
+                tables.get(0).getTableId(),
                 32, 396, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
+        table1.addActionListener(action);
         groundFloor.add(table1);
 
         table2 = new TableButton(
-                "2",
+                tables.get(1).getTableId(),
                 811, 314, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
+        table2.addActionListener(action);
         groundFloor.add(table2);
 
         table3 = new TableButton(
-                "3",
+                tables.get(2).getTableId(),
                 811, 588, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
+        table3.addActionListener(action);
         groundFloor.add(table3);
 
         table4 = new TableButton(
-                "4",
+                tables.get(3).getTableId(),
                 564, 586, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
+        table4.addActionListener(action);
         groundFloor.add(table4);
 
         table5 = new TableButton(
-                "5",
+                tables.get(4).getTableId(),
                 316, 586, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
+        table5.addActionListener(action);
         groundFloor.add(table5);
 
         return holdPanel;
@@ -228,11 +239,11 @@ public class CafeLayoutPage extends JFrame {
         this.dispose();
     }
 
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> {
-//            // Mongo.getConnection();
-//            CafeLayoutPage layout = new CafeLayoutPage();
-//            layout.setVisible(true);
-//        });
-//    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            // Mongo.getConnection();
+            CafeLayoutPage layout = new CafeLayoutPage(new ArrayList<Table>());
+            layout.setVisible(true);
+        });
+    }
 }
