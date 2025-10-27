@@ -3,6 +3,7 @@ package app.GUI;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
 import app.Components.ImagePanelButton;
+import app.DAO.DAO_MenuItem;
 import app.InitFont.CustomFont;
 import app.Listener.ActionListener_SellPage;
 
@@ -24,6 +25,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import app.Object.MenuItem;
 import app.Object.Table;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -144,10 +146,10 @@ public class SellPage extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10); // khoảng cách giữa các nút
         gbc.anchor = GridBagConstraints.CENTER;
 
+        List<MenuItem> menu = DAO_MenuItem.getAllMenuItem();
         int columns = 3;
         for (int i = 0; i < 18; i++) {
-            String text = "Cappuccino";
-            ImagePanelButton productButton = new ImagePanelButton(text, "", i,
+            ImagePanelButton productButton = new ImagePanelButton(menu.get(i).getName(), "", menu.get(i).getPrice(),
                     "asset/placeholder.png", 200,
                     200,
                     0.8);
