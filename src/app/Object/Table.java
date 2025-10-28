@@ -6,14 +6,15 @@ public class Table {
     private String tableId;
     private String floor;
     private Status status;
+    private int currentOccupancy;
     private int capacity;
-
     public Table() {}
 
-    public Table(String tableId, String floor, Status status, int capacity) {
+    public Table(String tableId, String floor, Status status, int currentOccupancy, int capacity) {
         this.tableId = tableId;
         this.floor = floor;
         this.status = status;
+        this.currentOccupancy = currentOccupancy;
         this.capacity = capacity;
     }
 
@@ -49,7 +50,9 @@ public class Table {
         this.capacity = capacity;
     }
 
-    private int currentOccupancy = 0;
+    public void setCurrentOccupancy(int currentOccupancy) {
+        this.currentOccupancy = currentOccupancy;
+    }
 
     public void addPerson() {
         if (currentOccupancy < capacity) currentOccupancy++;
