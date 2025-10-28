@@ -2,6 +2,7 @@ package app.Listener;
 
 import app.Collections.Collection_Table;
 import app.Components.TableButton;
+import app.DAO.DAO_Table;
 import app.GUI.CafeLayoutPage;
 import app.Object.Table;
 import app.Object.Status;
@@ -34,7 +35,7 @@ public class ActionListener_CafeLayoutPage implements ActionListener {
 
     private void handleTableClick(TableButton tb) {
         String tableId = tb.getText();
-        Table table = layoutPage.collectionTable.getTableById(tableId);
+        Table table = DAO_Table.findTable(tableId);
 
         if (table == null) return;
 

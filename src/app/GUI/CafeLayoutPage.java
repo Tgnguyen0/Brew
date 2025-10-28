@@ -32,6 +32,7 @@ public class CafeLayoutPage extends JFrame {
     public TableButton table4;
     public TableButton table5;
     public JButton confirmedButton;
+    public String labelTableId = "";
     private Map<String, Integer> tableMap;
 
     public CafeLayoutPage(List<Table> choosenTableList) {
@@ -96,6 +97,42 @@ public class CafeLayoutPage extends JFrame {
         JPanel inforPanel = new JPanel();
         inforPanel.setLayout(new BoxLayout(inforPanel, BoxLayout.Y_AXIS));
         inforPanel.setBackground(Color.WHITE);
+
+        JPanel editTablePanel = new JPanel();
+        editTablePanel.setLayout(new BoxLayout(editTablePanel, BoxLayout.X_AXIS));
+        editTablePanel.setBackground(Color.WHITE);
+
+        JLabel tableLabel = new JLabel("Table " + labelTableId + " : ");
+        tableLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
+        tableLabel.setForeground(Color.BLACK);
+        editTablePanel.add(tableLabel);
+        editTablePanel.add(Box.createHorizontalStrut(10));
+
+        JButton increaseButton = new JButton("+");
+        increaseButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
+        increaseButton.setBackground(Color.white);
+        increaseButton.setForeground(Color.black);
+        editTablePanel.add(increaseButton);
+        editTablePanel.add(Box.createHorizontalStrut(10));
+
+        JTextField sizeField = new JTextField();
+        sizeField.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
+        sizeField.setPreferredSize(new Dimension(50, 25));
+        sizeField.setMaximumSize(new Dimension(50, 25));
+        sizeField.setMinimumSize(new Dimension(50, 25));
+        sizeField.setBackground(Color.white);
+        sizeField.setForeground(Color.black);
+        editTablePanel.add(sizeField);
+        editTablePanel.add(Box.createHorizontalStrut(10));
+
+        JButton decreaseButton = new JButton("-");
+        decreaseButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
+        decreaseButton.setBackground(Color.white);
+        decreaseButton.setForeground(Color.black);
+        editTablePanel.add(decreaseButton);
+
+        inforPanel.add(editTablePanel);
+        inforPanel.add(Box.createVerticalStrut(20));
 
         inforPanel.add(createStatusRow(Color.RED, "Table is not available"));
         inforPanel.add(Box.createVerticalStrut(20));

@@ -10,10 +10,6 @@ public class Collection_Table {
 
     public Collection_Table() {
         tableList = new ArrayList<>();
-        // Khởi tạo 5 bàn (bạn có thể thay đổi số lượng)
-        for (int i = 1; i <= 5; i++) {
-            tableList.add(new Table("B" + i, "Tầng trệt", Status.AVAILABLE, 3));
-        }
     }
 
     public boolean addAll(List<Table> tables) {
