@@ -32,7 +32,11 @@ public class CafeLayoutPage extends JFrame {
     public TableButton table4;
     public TableButton table5;
     public JButton confirmedButton;
-    public String labelTableId = "";
+    public JTextField sizeField;
+    public String choosenTableId;
+    public JLabel tableLabel;
+    public JButton increaseButton;
+    public JButton decreaseButton;
     private Map<String, Integer> tableMap;
 
     public CafeLayoutPage(List<Table> choosenTableList) {
@@ -102,33 +106,36 @@ public class CafeLayoutPage extends JFrame {
         editTablePanel.setLayout(new BoxLayout(editTablePanel, BoxLayout.X_AXIS));
         editTablePanel.setBackground(Color.WHITE);
 
-        JLabel tableLabel = new JLabel("Table " + labelTableId + " : ");
+        tableLabel = new JLabel("Table: ");
         tableLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
         tableLabel.setForeground(Color.BLACK);
         editTablePanel.add(tableLabel);
         editTablePanel.add(Box.createHorizontalStrut(10));
 
-        JButton increaseButton = new JButton("+");
+        increaseButton = new JButton("+");
         increaseButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
         increaseButton.setBackground(Color.white);
         increaseButton.setForeground(Color.black);
+        increaseButton.addActionListener(action);
         editTablePanel.add(increaseButton);
         editTablePanel.add(Box.createHorizontalStrut(10));
 
-        JTextField sizeField = new JTextField();
+        sizeField = new JTextField("0");
         sizeField.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
         sizeField.setPreferredSize(new Dimension(50, 25));
         sizeField.setMaximumSize(new Dimension(50, 25));
         sizeField.setMinimumSize(new Dimension(50, 25));
+        sizeField.setHorizontalAlignment(JTextField.CENTER);
         sizeField.setBackground(Color.white);
         sizeField.setForeground(Color.black);
         editTablePanel.add(sizeField);
         editTablePanel.add(Box.createHorizontalStrut(10));
 
-        JButton decreaseButton = new JButton("-");
+        decreaseButton = new JButton("-");
         decreaseButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
         decreaseButton.setBackground(Color.white);
         decreaseButton.setForeground(Color.black);
+        decreaseButton.addActionListener(action);
         editTablePanel.add(decreaseButton);
 
         inforPanel.add(editTablePanel);
