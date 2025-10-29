@@ -408,16 +408,8 @@ public class SellPage extends JPanel {
         JLabel gifLabel = new JLabel(new ImageIcon("asset/loading.gif"));
         gifLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-//        JLabel textLabel = new JLabel("Loading more products...");
-//        textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        textLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14f));
-//        textLabel.setForeground(Color.DARK_GRAY);
-
-//        panel.add(Box.createVerticalStrut(10));
         panel.add(gifLabel);
         panel.add(Box.createVerticalStrut(5));
-//        panel.add(textLabel);
-//        panel.add(Box.createVerticalStrut(10));
 
         loadingDialog.getContentPane().add(panel);
         loadingDialog.pack();
@@ -425,4 +417,7 @@ public class SellPage extends JPanel {
         loadingDialog.setVisible(true);
     }
 
+    public void showLoadingSuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Load 18 products successfully!", "Loading Successfully", JOptionPane.INFORMATION_MESSAGE);
+    }
 }

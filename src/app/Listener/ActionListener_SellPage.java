@@ -58,7 +58,7 @@ public class ActionListener_SellPage implements ActionListener {
                             "asset/placeholder.png", 200, 200, 0.8
                     );
                     button.setPreferredSize(new Dimension(250, 250));
-                    publish(button); // gửi từng cái để cập nhật dần
+                    publish(button);
                     try { Thread.sleep(50); } catch (InterruptedException ignored) {}
                 }
                 return null;
@@ -80,6 +80,7 @@ public class ActionListener_SellPage implements ActionListener {
             @Override
             protected void done() {
                 sellPage.loadingDialog.dispose();
+                sellPage.showLoadingSuccessfullyOptionPane();
                 sellPage.isLoading = false;
             }
         };
