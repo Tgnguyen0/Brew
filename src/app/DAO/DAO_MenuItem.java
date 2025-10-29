@@ -36,4 +36,30 @@ public class DAO_MenuItem {
 
         return menu;
     }
+
+    public static List<MenuItem> get18MenuItems(int offset, int limit) {
+        List<MenuItem> items = new ArrayList<>();
+        String sql = "SELECT * FROM MenuItem ORDER BY itemId OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (Connection conn = XJdbc.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, offset);
+            ps.setInt(2, limit);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                MenuItem item = new MenuItem(
+                        rs.getString("itemId"),
+                        rs.getString("item_name"),
+                        rs.getFloat("price"),
+                        rs.getString("category"),
+                        rs.getString("description")
+                );
+                items.add(item);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return items;
+    }
+
 }

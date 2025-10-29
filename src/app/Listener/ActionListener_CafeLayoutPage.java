@@ -28,14 +28,33 @@ public class ActionListener_CafeLayoutPage implements ActionListener {
         if (o.equals(layoutPage.table4)) handleTableClick(layoutPage.table4);
         if (o.equals(layoutPage.table5)) handleTableClick(layoutPage.table5);
 
+        if (o.equals(layoutPage.increaseButton)) {
+            if (layoutPage.choosenTableId.isEmpty()) return;
+
+            int amount = Integer.parseInt(layoutPage.sizeField.getText());
+            Table table = DAO_Table.findTable(layoutPage.choosenTableId);
+
+            if (amount <= table.getCapacity() - 1) amount++;
+            layoutPage.sizeField.setText(String.valueOf(amount));
+        }
+
+        if (o.equals(layoutPage.decreaseButton)) {
+            if (layoutPage.choosenTableId.isEmpty()) return;
+
+            int amount = Integer.parseInt(layoutPage.sizeField.getText());
+            if (amount > 0) amount--; // tránh giá trị âm
+            layoutPage.sizeField.setText(String.valueOf(amount));
+        }
+
         if (o.equals(layoutPage.confirmedButton)) {
             layoutPage.doDispose();
         }
     }
 
     private void handleTableClick(TableButton tb) {
-        String tableId = tb.getText();
-        Table table = DAO_Table.findTable(tableId);
+        layoutPage.choosenTableId = tb.getText();
+        layoutPage.tableLabel.setText("Table " + layoutPage.choosenTableId + ": ");
+        Table table = DAO_Table.findTable(layoutPage.choosenTableId);
 
         if (table == null) return;
 
@@ -43,18 +62,19 @@ public class ActionListener_CafeLayoutPage implements ActionListener {
             if (table.isFull()) {
                 tb.setBackground(Color.RED);
                 tb.setChoosen(false);
-                System.out.println("⚠ Bàn " + tableId + " đã đủ người!");
+                System.out.println("⚠ Bàn " + layoutPage.choosenTableId + " đã đủ người!");
             } else {
-                table.addPerson();
                 tb.setChoosen(true);
                 tb.setBackground(Color.ORANGE);
-                System.out.println("✅ Đã thêm 1 người vào bàn " + tableId + " (" + table.getCurrentOccupancy() + "/" + table.getCapacity() + ")");
+                System.out.println("✅ Đã thêm 1 người vào bàn " + layoutPage.choosenTableId + " (" + table.getCurrentOccupancy() + "/" + table.getCapacity() + ")");
             }
         } else {
-            table.removePerson();
             tb.setChoosen(false);
             tb.setBackground(table.getCurrentOccupancy() == 0 ? Color.WHITE : Color.ORANGE);
-            System.out.println("↩ Đã bỏ chọn bàn " + tableId + " (" + table.getCurrentOccupancy() + "/" + table.getCapacity() + ")");
+            layoutPage.tableLabel.setText("Table: ");
+            layoutPage.sizeField.setText("0");
+            layoutPage.choosenTableId = "";
+            System.out.println("↩ Đã bỏ chọn bàn " + layoutPage.choosenTableId + " (" + table.getCurrentOccupancy() + "/" + table.getCapacity() + ")");
         }
 
         if (table.isFull()) tb.setBackground(Color.RED);

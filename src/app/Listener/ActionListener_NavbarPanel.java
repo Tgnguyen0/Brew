@@ -14,31 +14,31 @@ public class ActionListener_NavbarPanel implements ActionListener {
         String command = e.getActionCommand();
 
         switch (command) {
-            case "Trang Chủ":
+            case "Home":
                 // Khởi tạo trang Trang chủ
 //                if (DevCafeGUI.homePage != null) DevCafeGUI.homePage = new HomePage();
 
                 cardLayout.show(BrewGUI.pageContainer, "Home Page");
                 break;
-            case "Bán Hàng":
+            case "Menu":
                 // Khởi tạo trang Bán hàng
 //                if (DevCafeGUI.sellPage != null) DevCafeGUI.sellPage = new SellPage();
 
                 cardLayout.show(BrewGUI.pageContainer, "Sell Page");
                 break;
-            case "Hóa Đơn":
+            case "Bill":
                 cardLayout.show(BrewGUI.pageContainer, "Receipt Page");
                 break;
-            case "Sản Phẩm":
+            case "Product":
                 cardLayout.show(BrewGUI.pageContainer, "Product Page");
                 break;
-            case "Khuyến Mại":
+            case "Customer":
                 cardLayout.show(BrewGUI.pageContainer, "Promotion Page");
                 break;
-            case "Thống Kê":
+            case "Statistics":
                 cardLayout.show(BrewGUI.pageContainer, "Statistic Page");
                 break;
-            case "Nhân Viên":
+            case "Employee":
                 cardLayout.show(BrewGUI.pageContainer, "Employee Page");
                 break;
         }

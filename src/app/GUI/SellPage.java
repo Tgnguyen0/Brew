@@ -7,14 +7,7 @@ import app.DAO.DAO_MenuItem;
 import app.InitFont.CustomFont;
 import app.Listener.ActionListener_SellPage;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +24,7 @@ import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.swing.FontIcon;
 
 public class SellPage extends JPanel {
-    private CustomFont customFont = new CustomFont();
+    public CustomFont customFont = new CustomFont();
 //    private Collection_MenuItem menu = new Collection_MenuItem();
 //    private Collection_BillDetails bdl = new Collection_BillDetails();
     private ActionListener_SellPage action;
@@ -40,6 +33,14 @@ public class SellPage extends JPanel {
     private DefaultTableModel productTableModel;
     private JTable productTable;
     public List<Table> choosenTableList;
+    public int currentOffset = 0;
+//    private final int PAGE_SIZE = 18;
+    public boolean isLoading = false;
+    public JButton loadProductButton;
+    public JPanel productPanel;
+    public GridBagConstraints gbc;
+    public JDialog loadingDialog;
+    public JScrollBar sb;
 
     public SellPage() {
         setPreferredSize(new Dimension(1100, 500));
@@ -118,12 +119,20 @@ public class SellPage extends JPanel {
         productCategory.setForeground(Color.BLACK);
         productCategory.setBackground(new Color(241, 211, 178));
         productCategory.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        productCategory.addItem("Tất cả");
-        productCategory.addItem("Cà phê");
+        productCategory.addItem("All");
+        productCategory.addItem("Coffee");
         productCategory.addItem("Soda");
-        productCategory.addItem("Kem");
+        productCategory.addItem("Ice Cream");
         productCategory.setPreferredSize(new Dimension(90, 25));
         northN.add(productCategory);
+
+        loadProductButton = new JButton("Load Product");
+        loadProductButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        loadProductButton.setForeground(Color.BLACK);
+        loadProductButton.setBackground(new Color(241, 211, 178));
+        loadProductButton.setPreferredSize(new Dimension(120, 25));
+        loadProductButton.addActionListener(action);
+        northN.add(loadProductButton);
 
         return north;
     }
@@ -139,14 +148,14 @@ public class SellPage extends JPanel {
         ptPanel.setPreferredSize(new Dimension(800, 400));
         ptPanel.setLayout(new BoxLayout(ptPanel, BoxLayout.X_AXIS));
 
-        JPanel productPanel = new JPanel(new GridBagLayout());
+        productPanel = new JPanel(new GridBagLayout());
         productPanel.setBackground(Color.white);
 
-        GridBagConstraints gbc = new GridBagConstraints();
+        gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10); // khoảng cách giữa các nút
         gbc.anchor = GridBagConstraints.CENTER;
 
-        List<MenuItem> menu = DAO_MenuItem.getAllMenuItem();
+        List<MenuItem> menu = DAO_MenuItem.get18MenuItems(0, 18);
         int columns = 3;
         for (int i = 0; i < 18; i++) {
             ImagePanelButton productButton = new ImagePanelButton(menu.get(i).getName(), "", menu.get(i).getPrice(),
@@ -161,14 +170,27 @@ public class SellPage extends JPanel {
             gbc.gridy = i / columns;
             productPanel.add(productButton, gbc);
         }
+        currentOffset = 18;
 
-        JScrollPane scrollPanel = new JScrollPane(productPanel);
-        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPanel.setPreferredSize(new Dimension(1000, 400));
-        scrollPanel.setOpaque(false);
-        scrollPanel.getViewport().setOpaque(false);
-        scrollPanel.setWheelScrollingEnabled(true);
+        JScrollPane scrollPane = new JScrollPane(productPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(1000, 400));
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setWheelScrollingEnabled(true);
+        sb = scrollPane.getVerticalScrollBar();
+//        scrollPane.getVerticalScrollBar().addAdjustmentListener(e -> {
+//            JScrollBar sb = (JScrollBar) e.getSource();
+//
+//            int extent = sb.getModel().getExtent();
+//            int maximum = sb.getMaximum();
+//            int value = sb.getValue();
+//
+//            if (!isLoading && value + extent >= maximum - 100) {
+//                loadMoreMenuItems(gbc);
+//            }
+//        });
 
         JPanel right = new JPanel();
         right.setPreferredSize(new Dimension(400, 400));
@@ -245,12 +267,12 @@ public class SellPage extends JPanel {
             productTable.getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
         }
 
-        JScrollPane scrollPane = new JScrollPane(productTable);
-        scrollPane.setPreferredSize(new Dimension(400, 600));
-        scrollPane.getViewport().setBackground(new Color(255, 213, 146));
-        scrollPane.setBackground(Color.white);
-        scrollPane.setForeground(Color.black);
-        right.add(scrollPane);
+        JScrollPane tableScrollPane = new JScrollPane(productTable);
+        tableScrollPane.setPreferredSize(new Dimension(400, 600));
+        tableScrollPane.getViewport().setBackground(new Color(255, 213, 146));
+        tableScrollPane.setBackground(Color.white);
+        tableScrollPane.setForeground(Color.black);
+        right.add(tableScrollPane);
         right.add(Box.createHorizontalStrut(10));
 
         JPanel editPanel = new JPanel();
@@ -364,11 +386,43 @@ public class SellPage extends JPanel {
         toInvoiceButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         funcPanel.add(toInvoiceButton);
 
-        ptPanel.add(scrollPanel);
+        ptPanel.add(scrollPane);
         ptPanel.add(Box.createHorizontalStrut(10));
         ptPanel.add(right);
         panel.add(ptPanel);
         panel.add(Box.createVerticalStrut(30));
         return panel;
     }
+
+    public void showLoadingDialog(JFrame parentFrame) {
+        loadingDialog = new JDialog(parentFrame, "Loading...", false);
+        loadingDialog.setUndecorated(true);
+        loadingDialog.setAlwaysOnTop(true);
+
+        JPanel panel = new JPanel();
+        panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        panel.setBackground(Color.WHITE);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setPreferredSize(new Dimension(200, 200));
+
+        JLabel gifLabel = new JLabel(new ImageIcon("asset/loading.gif"));
+        gifLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+//        JLabel textLabel = new JLabel("Loading more products...");
+//        textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        textLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14f));
+//        textLabel.setForeground(Color.DARK_GRAY);
+
+//        panel.add(Box.createVerticalStrut(10));
+        panel.add(gifLabel);
+        panel.add(Box.createVerticalStrut(5));
+//        panel.add(textLabel);
+//        panel.add(Box.createVerticalStrut(10));
+
+        loadingDialog.getContentPane().add(panel);
+        loadingDialog.pack();
+        loadingDialog.setLocationRelativeTo(parentFrame);
+        loadingDialog.setVisible(true);
+    }
+
 }
