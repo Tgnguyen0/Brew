@@ -19,8 +19,6 @@ import org.jfree.chart.title.TextTitle;
 import app.DAO.ThongkeDAO;
 
 public class StatisticPage extends JPanel {
-
-
     private ThongkeDAO thongkeDAO = new ThongkeDAO();
 
     private JComboBox<String> comboMonth;

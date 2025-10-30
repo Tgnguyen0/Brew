@@ -60,9 +60,9 @@ public class HomePage extends JPanel {
         JLabel introLabel = new JLabel(
                 "<html>"
                         + "<div>"
-                        + "<p style='font-size: 22px'>Dev cafe</p>"
-                        + "<p style='width:500px;'>A cozy haven where you can escape the everyday, connect with friends, "
-                        + "or simply savor a moment of peace with a delicious cup in hand.</p></div>"
+                        + "<p style='font-size: 22px'>Brew</p>"
+                        + "<p style='width:500px;'>Một nơi ấm cúng, nơi bạn có thể trốn khỏi cuộc sống thường nhật và kết nối với bạn bè, "
+                        + "hoặc đơn giản là tận hưởng một khoảnh khắc bình yên với tách đồ uống thơm ngon trên tay.</p></div>"
                         + "</html>");
         introLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 18));
         introLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -144,10 +144,10 @@ public class HomePage extends JPanel {
         JLabel introLabel1 = new JLabel(
                 "<html>"
                         + "<div>"
-                        + "<p style='font-size:22px'>Our Coffee</p>"
-                        + "<p style='width:500px;'>We're dedicated to sourcing the finest beans from around the world and "
-                        + "expertly crafting each cup to perfection. From the first pour to the last sip, we invite you to "
-                        + "experience the rich flavors and nuanced aromas that set our coffee apart.</p></div>"
+                        + "<p style='font-size:22px'>Cà phê của chúng tôi</p>"
+                        + "<p style='width:500px;'>Chúng tôi tận tâm chọn lựa những hạt cà phê hảo hạng nhất từ khắp nơi trên thế giới và "
+                        + "tỉ mỉ pha chế từng tách cà phê đến độ hoàn hảo. Từ giọt đầu tiên đến ngụm cuối cùng, chúng tôi mời bạn hãy "
+                        + "trải nghiệm hương vị đậm đà và hương thơm tinh tế — những điều tạo nên sự khác biệt cho cà phê của chúng tôi.</p></div>"
                         + "</html>");
         introLabel1.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 18));
         introLabel1.setHorizontalAlignment(SwingConstants.CENTER);

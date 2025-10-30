@@ -88,10 +88,10 @@ public class SellPage extends JPanel {
         emptyL.setOpaque(false);
         north.add(emptyL, BorderLayout.WEST);
 
-        JLabel searchLabel = new JLabel("Find Products:");
+        JLabel searchLabel = new JLabel("Tìm kiếm sản phẩm:");
         searchLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         searchLabel.setForeground(Color.BLACK);
-        searchLabel.setPreferredSize(new Dimension(105, 25)); // Thay đổi kích thước cho phù hợp
+        searchLabel.setPreferredSize(new Dimension(130, 25)); // Thay đổi kích thước cho phù hợp
         northN.add(searchLabel);
 
         JTextField searchBar = new JTextField();
@@ -102,14 +102,14 @@ public class SellPage extends JPanel {
         searchBar.setPreferredSize(new Dimension(180, 25)); // Thay đổi kích thước cho phù hợp và vị trí
         northN.add(searchBar);
 
-        JButton findProduct = new JButton("Search");
+        JButton findProduct = new JButton("Tìm Kiếm");
         findProduct.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         findProduct.setForeground(Color.BLACK);
         findProduct.setBackground(new Color(241, 211, 178));
-        findProduct.setPreferredSize(new Dimension(80, 25));
+        findProduct.setPreferredSize(new Dimension(100, 25));
         northN.add(findProduct);
 
-        JLabel chooseLabel = new JLabel("Category:");
+        JLabel chooseLabel = new JLabel("Loại:");
         chooseLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         chooseLabel.setForeground(Color.BLACK);
         chooseLabel.setPreferredSize(new Dimension(65, 25));
@@ -119,14 +119,14 @@ public class SellPage extends JPanel {
         productCategory.setForeground(Color.BLACK);
         productCategory.setBackground(new Color(241, 211, 178));
         productCategory.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        productCategory.addItem("All");
-        productCategory.addItem("Coffee");
+        productCategory.addItem("Tất cả");
+        productCategory.addItem("Cà Phê");
         productCategory.addItem("Soda");
-        productCategory.addItem("Ice Cream");
+        productCategory.addItem("Kem");
         productCategory.setPreferredSize(new Dimension(90, 25));
         northN.add(productCategory);
 
-        loadProductButton = new JButton("Load Product");
+        loadProductButton = new JButton("Tải thêm");
         loadProductButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         loadProductButton.setForeground(Color.BLACK);
         loadProductButton.setBackground(new Color(241, 211, 178));
@@ -206,7 +206,7 @@ public class SellPage extends JPanel {
 
         FontIcon cartIcon = FontIcon.of(Feather.SHOPPING_CART, 24, Color.BLACK);
         JLabel chosenItemLabel = new JLabel(
-                "<html><div style='text-align: left; font-size: 15px;'><b>Your Item:</b></div></html>",
+                "<html><div style='text-align: left; font-size: 15px;'><b>Đơn của bạn:</b></div></html>",
                 (Icon) cartIcon,
                 JLabel.LEFT);
         chosenItemLabel.setIconTextGap(8);
@@ -221,10 +221,9 @@ public class SellPage extends JPanel {
                 return column != 0 && column != 1 && column != 3;
             }
         };
-        productTableModel.addColumn("Name");
-        productTableModel.addColumn("Serve Type");
-        productTableModel.addColumn("Amount");
-        productTableModel.addColumn("Price");
+        productTableModel.addColumn("Tên");
+        productTableModel.addColumn("Số lượng");
+        productTableModel.addColumn("Giá");
 
         Object[] row = { "Cappuccino", "Hot", 1, 4.50 };
         productTableModel.addRow(row);
@@ -239,22 +238,8 @@ public class SellPage extends JPanel {
 
         TableColumnModel modelTable = productTable.getColumnModel();
         modelTable.getColumn(0).setPreferredWidth(80);
-        modelTable.getColumn(1).setPreferredWidth(40);
-        modelTable.getColumn(2).setPreferredWidth(20);
-        modelTable.getColumn(3).setPreferredWidth(80);
-
-        JComboBox<String> servedComboBox = new JComboBox<>();
-        servedComboBox.setForeground(Color.black);
-        servedComboBox.setBackground(Color.white);
-        servedComboBox.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        servedComboBox.addItem("Hot");
-        servedComboBox.addItem("Cold");
-
-        TableCellEditor comboBoxEditor = new DefaultCellEditor(servedComboBox);
-
-        // Set the cell editor for the "Served" column (index 2)
-        TableColumn servedColumn = productTable.getColumnModel().getColumn(1);
-        servedColumn.setCellEditor(comboBoxEditor);
+        modelTable.getColumn(1).setPreferredWidth(20);
+        modelTable.getColumn(2).setPreferredWidth(80);
 
         JTableHeader tableHeader = productTable.getTableHeader();
         tableHeader.setForeground(Color.black);
@@ -293,7 +278,7 @@ public class SellPage extends JPanel {
 
         FontIcon percentIcon = FontIcon.of(Feather.PERCENT, 24, Color.BLACK);
         JLabel promotionLabel = new JLabel(
-                "<html><div style='text-align: left; font-size: 13px;'><b>Promotion Code:</b></div></html>",
+                "<html><div style='text-align: left; font-size: 13px;'><b>Mã giảm giá:</b></div></html>",
                 (Icon) percentIcon,
                 JLabel.LEFT);
         promotionLabel.setIconTextGap(8);
@@ -310,7 +295,7 @@ public class SellPage extends JPanel {
         promoPanel.add(promoBar);
         promoPanel.add(Box.createHorizontalStrut(10));
 
-        JButton applyPromoButton = new JButton("Apply");
+        JButton applyPromoButton = new JButton("Áp dụng");
         applyPromoButton.setBackground(Color.white);
         applyPromoButton.setForeground(Color.black);
         applyPromoButton.setPreferredSize(new Dimension(90, 25));
@@ -327,7 +312,7 @@ public class SellPage extends JPanel {
 
         FontIcon takeAwayIcon = FontIcon.of(Feather.SHOPPING_BAG, 24, Color.BLACK);
         JLabel takeAwayLabel = new JLabel(
-                "<html><div style='text-align: left; font-size: 13px;'><b>Take Away:</b></div></html>",
+                "<html><div style='text-align: left; font-size: 13px;'><b>Mang đi:</b></div></html>",
                 (Icon) takeAwayIcon,
                 JLabel.LEFT
         );
@@ -337,7 +322,7 @@ public class SellPage extends JPanel {
         takeAwayLabel.setPreferredSize(new Dimension(160, 25));
         takeAwayPanel.add(takeAwayLabel);
 
-        takeAwayRadioButton = new JRadioButton("Yes");
+        takeAwayRadioButton = new JRadioButton("Có");
         takeAwayRadioButton.setPreferredSize(new Dimension(100, 25));
         takeAwayRadioButton.setForeground(Color.BLACK);
         takeAwayRadioButton.setBackground(Color.white);
@@ -346,7 +331,7 @@ public class SellPage extends JPanel {
         takeAwayPanel.add(takeAwayRadioButton);
         takeAwayPanel.add(Box.createHorizontalStrut(10));
 
-        seatingButton = new JButton("Seating");
+        seatingButton = new JButton("Sơ đồ");
         seatingButton.setBackground(Color.white);
         seatingButton.setForeground(Color.black);
         seatingButton.setPreferredSize(new Dimension(90, 25));
@@ -364,7 +349,7 @@ public class SellPage extends JPanel {
         editPanel.add(Box.createVerticalStrut(10));
 
         FontIcon editIcon = FontIcon.of(Feather.EDIT, 24, Color.BLACK);
-        JButton updateButton = new JButton("Update", editIcon);
+        JButton updateButton = new JButton("Cập nhật", editIcon);
         updateButton.setBackground(Color.white);
         updateButton.setForeground(Color.black);
         updateButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
@@ -372,7 +357,7 @@ public class SellPage extends JPanel {
         funcPanel.add(Box.createHorizontalStrut(10));
 
         FontIcon trashIcon = FontIcon.of(Feather.TRASH, 24, Color.BLACK);
-        JButton deleteButton = new JButton("Delete", trashIcon);
+        JButton deleteButton = new JButton("Xóa", trashIcon);
         deleteButton.setBackground(Color.white);
         deleteButton.setForeground(Color.black);
         deleteButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
@@ -380,7 +365,7 @@ public class SellPage extends JPanel {
         funcPanel.add(Box.createHorizontalStrut(10));
 
         FontIcon invoiceIcon = FontIcon.of(Feather.FILE_TEXT, 24, Color.BLACK);
-        JButton toInvoiceButton = new JButton("Invoice", invoiceIcon);
+        JButton toInvoiceButton = new JButton("Hóa đơn", invoiceIcon);
         toInvoiceButton.setBackground(Color.white);
         toInvoiceButton.setForeground(Color.black);
         toInvoiceButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
@@ -395,7 +380,7 @@ public class SellPage extends JPanel {
     }
 
     public void showLoadingDialog(JFrame parentFrame) {
-        loadingDialog = new JDialog(parentFrame, "Loading...", false);
+        loadingDialog = new JDialog(parentFrame, "Đang tải...", false);
         loadingDialog.setUndecorated(true);
         loadingDialog.setAlwaysOnTop(true);
 
@@ -418,6 +403,6 @@ public class SellPage extends JPanel {
     }
 
     public void showLoadingSuccessfullyOptionPane() {
-        JOptionPane.showMessageDialog(this, "Load 18 products successfully!", "Loading Successfully", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Tải thêm 18 sản phẩm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
     }
 }

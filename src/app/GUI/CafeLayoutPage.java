@@ -41,7 +41,7 @@ public class CafeLayoutPage extends JFrame {
 
     public CafeLayoutPage(List<Table> choosenTableList) {
         //setSize(new Dimension(800, 600));
-        setTitle("Cafe layout");
+        setTitle("Sơ đồ chỗ ngồi");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBackground(Color.white);
@@ -64,7 +64,7 @@ public class CafeLayoutPage extends JFrame {
         labelPanel.setBackground(Color.white);
         add(labelPanel, BorderLayout.NORTH);
 
-        JLabel introLabel = new JLabel("Cafe Layout");
+        JLabel introLabel = new JLabel("Sơ đồ chỗ ngồi của Brew");
         introLabel.setForeground(Color.black);
         introLabel.setPreferredSize(new Dimension(1445, 40));
         introLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 30));
@@ -141,11 +141,11 @@ public class CafeLayoutPage extends JFrame {
         inforPanel.add(editTablePanel);
         inforPanel.add(Box.createVerticalStrut(20));
 
-        inforPanel.add(createStatusRow(Color.RED, "Table is not available"));
+        inforPanel.add(createStatusRow(Color.RED, "Bàn đã đặt"));
         inforPanel.add(Box.createVerticalStrut(20));
-        inforPanel.add(createStatusRow(Color.WHITE, "Table is available"));
+        inforPanel.add(createStatusRow(Color.WHITE, "Bàn đang trống"));
         inforPanel.add(Box.createVerticalStrut(20));
-        inforPanel.add(createStatusRow(Color.ORANGE, "Your choosen table"));
+        inforPanel.add(createStatusRow(Color.ORANGE, "Bàn bạn đã chọn"));
 
         return inforPanel;
     }
@@ -264,7 +264,7 @@ public class CafeLayoutPage extends JFrame {
         JPanel confirmedPanel = new JPanel();
         confirmedPanel.setOpaque(false);
 
-        confirmedButton = new JButton("Confirmed Chosen Table");
+        confirmedButton = new JButton("Xác nhận bàn đặt");
         confirmedButton.setBackground(Color.white);
         confirmedButton.setForeground(Color.black);
         confirmedButton.setPreferredSize(new Dimension(240, 60));
@@ -278,8 +278,6 @@ public class CafeLayoutPage extends JFrame {
     }
 
     public void doDispose() {
-        System.out.println("OK");
-
         this.dispose();
     }
 
