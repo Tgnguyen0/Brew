@@ -60,38 +60,38 @@ public class NavbarPanel extends JPanel {
         this.add(logoNameLabel);
 
         // Tạo Nút dẫn đến trang chủ
-        homeButton = new NavbarButton("Home", Feather.HOME,
+        homeButton = new NavbarButton("Trang chủ", Feather.HOME,
                 24, 200, 40, Font.PLAIN, 12, 10);
         homeButton.addActionListener(action);
         this.add(homeButton);
 
         // Tạo Nút dẫn đến trang bán hàng
-        sellButton = new NavbarButton("Menu", Feather.SHOPPING_CART,
+        sellButton = new NavbarButton("Đồ uống", Feather.SHOPPING_CART,
                 24, 200, 35, Font.PLAIN, 12, 10);
         sellButton.addActionListener(action);
         this.add(sellButton);
 
-        receiptButton = new NavbarButton("Bill", Feather.CREDIT_CARD,
+        receiptButton = new NavbarButton("Hóa đơn", Feather.CREDIT_CARD,
                 24, 200, 35, Font.PLAIN, 12, 10);
         receiptButton.addActionListener(action);
         this.add(receiptButton);
 
-        productButton = new NavbarButton("Product", Feather.BOX,
+        productButton = new NavbarButton("Sản phẩm", Feather.BOX,
                 24, 200, 35, Font.PLAIN, 12, 10);
         productButton.addActionListener(action);
         this.add(productButton);
 
-        promotionRateButton = new NavbarButton("Customer", Feather.DISC,
+        promotionRateButton = new NavbarButton("Khách hàng", Feather.DISC,
                 24, 200, 35, Font.PLAIN, 12, 10);
         promotionRateButton.addActionListener(action);
         this.add(promotionRateButton);
 
-        statisticsButton = new NavbarButton("Statistics", Feather.BAR_CHART,
+        statisticsButton = new NavbarButton("Thống kê", Feather.BAR_CHART,
                 24, 200, 35, Font.PLAIN, 12, 10);
         statisticsButton.addActionListener(action);
         this.add(statisticsButton);
 
-        employeeButton = new NavbarButton("Employee", Feather.USER,
+        employeeButton = new NavbarButton("Nhân viên", Feather.USER,
                 24, 200, 35, Font.PLAIN, 12, 10);
         employeeButton.addActionListener(action);
         this.add(employeeButton);

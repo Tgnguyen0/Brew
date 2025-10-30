@@ -65,13 +65,6 @@ public class BrewGUI extends JFrame implements MouseListener {
 
         TimingTarget target = new TimingTargetAdapter() {
             @Override
-            public void begin() {
-                if (!optionBar.isShowMenu()) {
-                    // optionBar.homeButton.setForeground(new Color(0, 0, 0, 255));
-                }
-            }
-
-            @Override
             public void timingEvent(float fraction) {
                 double width, borderWidth;
                 System.out.println(String.valueOf(fraction));
@@ -108,10 +101,6 @@ public class BrewGUI extends JFrame implements MouseListener {
 
             @Override
             public void end() {
-                if (optionBar.isShowMenu()) {
-                    // optionBar.homeButton.setForeground(new Color(0, 0, 0, 255));
-                }
-
                 optionBar.setShowMenu(!optionBar.isShowMenu());
             }
         };
@@ -122,12 +111,7 @@ public class BrewGUI extends JFrame implements MouseListener {
         navbarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!animator.isRunning()) {
-                    animator.start();
-                }
-
-                if (optionBar.isShowMenu()) {
-                }
+                if (!animator.isRunning()) { animator.start(); }
             }
         });
 
