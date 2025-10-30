@@ -1,102 +1,203 @@
 package app.GUI;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import app.DAO.LoginDAO;
+import com.formdev.flatlaf.FlatLightLaf;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
-import app.InitFont.CustomFont;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class LoginPage extends JFrame {
-    private CustomFont customFont = new CustomFont();
+    private final Font titleFont;
+    private final Font labelFont;
+    private final Font fieldFont;
     private JTextField nameField;
-    private JTextField password;
-    public BrewGUI newHome;
+    private JPasswordField passwordField;
 
     public LoginPage() {
-        ImageIcon icon = new ImageIcon("asset/icon.png"); // For vscode
-        // ImageIcon icon = new ImageIcon("asset/icon.png"); // for eclipse, Intelj
-        setTitle("Login");
-        setSize(new Dimension(750, 500));
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        setIconImage(icon.getImage());
+        setTitle("☕ Đăng Nhập - Dev Coffee");
+        setSize(950, 550);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        setBackground(new Color(96, 69, 113));
         setResizable(false);
-        getContentPane().setBackground(new Color(51, 62, 116));
-        setLayout(new BorderLayout());
 
-        JPanel emptyE = new JPanel();
-        emptyE.setOpaque(false);
-        emptyE.setPreferredSize(new Dimension(100, 500));
-        add(emptyE, BorderLayout.EAST);
+        titleFont = new Font("Times New Roman", Font.BOLD, 30);
+        labelFont = new Font("Segoe UI", Font.BOLD, 16);
+        fieldFont = new Font("Segoe UI", Font.PLAIN, 15);
 
-        JPanel emptyW = new JPanel();
-        emptyW.setOpaque(false);
-        emptyW.setPreferredSize(new Dimension(100, 500));
-        add(emptyW, BorderLayout.WEST);
+        // ==== Màu nền ====
+        Color bgColor = new Color(242, 238, 230);
+        Color panelColor = new Color(255, 255, 255, 230);
+        Color buttonColor = new Color(160, 110, 80);
+        Color buttonHover = new Color(180, 130, 90);
+        Color textColor = new Color(60, 40, 30);
 
-        createLoginPanel();
-    }
+        JPanel mainPanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setPaint(new GradientPaint(0, 0,
+                        new Color(250, 245, 230),
+                        0, getHeight(),
+                        new Color(240, 230, 200)));
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
-    public void createLoginPanel() {
-        JPanel center = new JPanel();
-        center.setBackground(new Color(51, 62, 116));
-        center.setPreferredSize(new Dimension(550, 500));
-        center.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JLabel lblTitle = new JLabel("WELCOME TO DEV COFFEE", SwingConstants.CENTER);
+        lblTitle.setFont(titleFont);
+        lblTitle.setForeground(textColor);
+        mainPanel.add(lblTitle, BorderLayout.NORTH);
 
-        JLabel programLabel = new JLabel("Dev Cafe", SwingConstants.CENTER);
-        programLabel.setFont(customFont.getFernandoFont(30));
-        programLabel.setForeground(new Color(255, 213, 146));
-        programLabel.setPreferredSize(new Dimension(550, 100));
-        center.add(programLabel);
+        // ==== Bên trái: hình ảnh ====
+        JPanel leftPanel = new JPanel(new GridBagLayout());
+        leftPanel.setBackground(new Color(0, 0, 0, 0));
+        leftPanel.setPreferredSize(new Dimension(450, 450));
 
-        JLabel nameLabel = new JLabel("Name: ");
-        nameLabel.setFont(customFont.getFernandoFont(15));
-        nameLabel.setForeground(new Color(255, 213, 146));
-        nameLabel.setPreferredSize(new Dimension(150, 60));
-        center.add(nameLabel);
+        ImageIcon coffeeIcon;
+        try {
+            coffeeIcon = new ImageIcon(new ImageIcon("asset/BannerLogin.jpg")
+                    .getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH));
+        } catch (Exception e) {
+            coffeeIcon = new ImageIcon(new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB));
+        }
 
+        JLabel lblImage = new JLabel(coffeeIcon);
+        leftPanel.add(lblImage);
+        mainPanel.add(leftPanel, BorderLayout.WEST);
+
+        // ==== Bên phải: form ====
+        JPanel rightContainer = new JPanel(new GridBagLayout());
+        rightContainer.setOpaque(false);
+
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.setBackground(panelColor);
+        rightPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(220, 220, 220), 1, true),
+                BorderFactory.createEmptyBorder(40, 50, 40, 50)
+        ));
+
+        JLabel lblFormTitle = new JLabel("Đăng nhập hệ thống", SwingConstants.CENTER);
+        lblFormTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblFormTitle.setForeground(textColor);
+        lblFormTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(panelColor);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 0, 15, 0);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Tên tài khoản
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        JLabel lblUser = new JLabel("Tên tài khoản:");
+        lblUser.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lblUser.setForeground(textColor);
+        formPanel.add(lblUser, gbc);
+
+        gbc.gridy++;
         nameField = new JTextField();
-        nameField.setForeground(new Color(79, 92, 133));
-        nameField.setBackground(new Color(255, 213, 146));
-        nameField.setBorder(null);
-        nameField.setFont(customFont.getFernandoFont(15));
-        nameField.setPreferredSize(new Dimension(250, 50));
-        center.add(nameField);
+        nameField.setFont(fieldFont);
+        nameField.setPreferredSize(new Dimension(0, 45));
+        nameField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200), 1, true),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+        formPanel.add(nameField, gbc);
 
-        JLabel passLabel = new JLabel("Password: ");
-        passLabel.setFont(customFont.getFernandoFont(15));
-        passLabel.setForeground(new Color(255, 213, 146));
-        passLabel.setPreferredSize(new Dimension(150, 60));
-        center.add(passLabel);
+        // Mật khẩu
+        gbc.gridy++;
+        JLabel lblPass = new JLabel("Mật khẩu:");
+        lblPass.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lblPass.setForeground(textColor);
+        formPanel.add(lblPass, gbc);
 
-        password = new JTextField();
-        password.setForeground(new Color(79, 92, 133));
-        password.setBackground(new Color(255, 213, 146));
-        password.setBorder(null);
-        password.setFont(customFont.getFernandoFont(15));
-        password.setPreferredSize(new Dimension(250, 50));
-        center.add(password);
+        gbc.gridy++;
+        passwordField = new JPasswordField();
+        passwordField.setFont(fieldFont);
+        passwordField.setPreferredSize(new Dimension(0, 45));
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200), 1, true),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+        formPanel.add(passwordField, gbc);
 
-        add(center, BorderLayout.CENTER);
+        // Nút đăng nhập
+        gbc.gridy++;
+        JButton btnLogin = new JButton("Đăng nhập");
+        btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnLogin.setBackground(buttonColor);
+        btnLogin.setForeground(Color.WHITE);
+        btnLogin.setFocusPainted(false);
+        btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnLogin.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+
+        btnLogin.addActionListener(e -> {
+            String username = nameField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
+
+            if (username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String role = LoginDAO.login(username, password);
+
+            if (role != null) {
+                JOptionPane.showMessageDialog(this, "Đăng nhập thành công với vai trò: " + role, "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
+
+                if (role.equalsIgnoreCase("ADMIN")) {
+                    new BrewGUI().setVisible(true);
+                } else {
+//                    new EmployeeDashboard().setVisible(true);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Sai tên đăng nhập hoặc mật khẩu!", "Đăng nhập thất bại", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        formPanel.add(btnLogin, gbc);
+
+        // Quên mật khẩu / Tạo tài khoản
+        gbc.gridy++;
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        bottomPanel.setBackground(panelColor);
+        JLabel lblForgot = new JLabel("Quên mật khẩu?");
+        lblForgot.setForeground(new Color(0, 102, 204));
+        lblForgot.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JLabel lblCreate = new JLabel("Tạo tài khoản mới");
+        lblCreate.setForeground(new Color(0, 102, 204));
+        lblCreate.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        bottomPanel.add(lblForgot);
+        bottomPanel.add(lblCreate);
+        formPanel.add(bottomPanel, gbc);
+
+        rightPanel.add(lblFormTitle);
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        rightPanel.add(formPanel);
+
+        GridBagConstraints rGbc = new GridBagConstraints();
+        rGbc.gridx = 0;
+        rGbc.gridy = 0;
+        rightContainer.add(rightPanel, rGbc);
+
+        mainPanel.add(rightContainer, BorderLayout.CENTER);
+        add(mainPanel);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            LoginPage loginPage = new LoginPage();
-            loginPage.setVisible(true);
-            loginPage.newHome = new BrewGUI();
-        });
+        SwingUtilities.invokeLater(() -> new LoginPage().setVisible(true));
     }
 }
