@@ -14,8 +14,6 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import app.Object.MenuItem;
@@ -34,12 +32,18 @@ public class SellPage extends JPanel {
     private JTable productTable;
     public List<Table> choosenTableList;
     public int currentOffset = 0;
+    public int previousOffset = 0;
+    public List<ImagePanelButton> allProductButtons = new ArrayList<>();
 //    private final int PAGE_SIZE = 18;
     public boolean isLoading = false;
     public JButton loadProductButton;
+    public JButton clearSearchButton;
+    public JComboBox<String> productCategory;
     public JPanel productPanel;
     public GridBagConstraints gbc;
     public JDialog loadingDialog;
+    public JButton findProduct;
+    public JTextField searchBar;
     public JScrollBar sb;
 
     public SellPage() {
@@ -94,7 +98,7 @@ public class SellPage extends JPanel {
         searchLabel.setPreferredSize(new Dimension(130, 25)); // Thay đổi kích thước cho phù hợp
         northN.add(searchLabel);
 
-        JTextField searchBar = new JTextField();
+        searchBar = new JTextField();
         searchBar.setForeground(Color.BLACK);
         searchBar.setBackground(new Color(241, 211, 178));
         searchBar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -102,11 +106,12 @@ public class SellPage extends JPanel {
         searchBar.setPreferredSize(new Dimension(180, 25)); // Thay đổi kích thước cho phù hợp và vị trí
         northN.add(searchBar);
 
-        JButton findProduct = new JButton("Tìm Kiếm");
+        findProduct = new JButton("Tìm Kiếm");
         findProduct.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         findProduct.setForeground(Color.BLACK);
         findProduct.setBackground(new Color(241, 211, 178));
         findProduct.setPreferredSize(new Dimension(100, 25));
+        findProduct.addActionListener(action);
         northN.add(findProduct);
 
         JLabel chooseLabel = new JLabel("Loại:");
@@ -115,7 +120,7 @@ public class SellPage extends JPanel {
         chooseLabel.setPreferredSize(new Dimension(65, 25));
         northN.add(chooseLabel);
 
-        JComboBox<String> productCategory = new JComboBox<>();
+        productCategory = new JComboBox<>();
         productCategory.setForeground(Color.BLACK);
         productCategory.setBackground(new Color(241, 211, 178));
         productCategory.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
@@ -124,6 +129,7 @@ public class SellPage extends JPanel {
         productCategory.addItem("Soda");
         productCategory.addItem("Kem");
         productCategory.setPreferredSize(new Dimension(90, 25));
+        productCategory.addActionListener(action);
         northN.add(productCategory);
 
         loadProductButton = new JButton("Tải thêm");
@@ -133,6 +139,14 @@ public class SellPage extends JPanel {
         loadProductButton.setPreferredSize(new Dimension(120, 25));
         loadProductButton.addActionListener(action);
         northN.add(loadProductButton);
+
+        clearSearchButton = new JButton("Tải lại danh sách cũ");
+        clearSearchButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        clearSearchButton.setForeground(Color.BLACK);
+        clearSearchButton.setBackground(new Color(241, 211, 178));
+        clearSearchButton.setPreferredSize(new Dimension(170, 25));
+        clearSearchButton.addActionListener(action);
+        northN.add(clearSearchButton);
 
         return north;
     }
@@ -155,22 +169,7 @@ public class SellPage extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10); // khoảng cách giữa các nút
         gbc.anchor = GridBagConstraints.CENTER;
 
-        List<MenuItem> menu = DAO_MenuItem.get18MenuItems(0, 18);
-        int columns = 3;
-        for (int i = 0; i < 18; i++) {
-            ImagePanelButton productButton = new ImagePanelButton(menu.get(i).getName(), "", menu.get(i).getPrice(),
-                    "asset/placeholder.png", 200,
-                    200,
-                    0.8);
-            productButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-            productButton.setPreferredSize(new Dimension(250, 250)); // không bị co giãn
-            productButton.setMaximumSize(new Dimension(250, 250));
-
-            gbc.gridx = i % columns;
-            gbc.gridy = i / columns;
-            productPanel.add(productButton, gbc);
-        }
-        currentOffset = 18;
+        loadFirst18MenuItem(gbc);
 
         JScrollPane scrollPane = new JScrollPane(productPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -404,5 +403,25 @@ public class SellPage extends JPanel {
 
     public void showLoadingSuccessfullyOptionPane() {
         JOptionPane.showMessageDialog(this, "Tải thêm 18 sản phẩm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void loadFirst18MenuItem(GridBagConstraints gbc) {
+        List<MenuItem> menu = DAO_MenuItem.get18MenuItems(0, 18);
+        int columns = 3;
+        for (int i = 0; i < 18; i++) {
+            ImagePanelButton productButton = new ImagePanelButton(menu.get(i).getName(), "", menu.get(i).getPrice(),
+                    "asset/placeholder.png", 200,
+                    200,
+                    0.8);
+            productButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+            productButton.setPreferredSize(new Dimension(250, 250)); // không bị co giãn
+            productButton.setMaximumSize(new Dimension(250, 250));
+
+            gbc.gridx = i % columns;
+            gbc.gridy = i / columns;
+            productPanel.add(productButton, gbc);
+            allProductButtons.add(productButton);
+        }
+        currentOffset = 18;
     }
 }

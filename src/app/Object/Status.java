@@ -1,6 +1,9 @@
 package app.Object;
 
 public enum Status {
-    AVAILABLE,
-    UNAVAILABLE
+    TRONG("SẴN SÀNG"),
+    DADAT("ĐÃ ĐẶT");
+
+    Status(String s) {
+    }
 }
