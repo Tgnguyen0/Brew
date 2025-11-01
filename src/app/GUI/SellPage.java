@@ -1,5 +1,6 @@
 package app.GUI;
 
+import app.Collections.Collection_MenuItem;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
 import app.Components.ImagePanelButton;
@@ -23,7 +24,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 
 public class SellPage extends JPanel {
     public CustomFont customFont = new CustomFont();
-//    private Collection_MenuItem menu = new Collection_MenuItem();
+    public Collection_MenuItem collectionMenuItem = new Collection_MenuItem();
 //    private Collection_BillDetails bdl = new Collection_BillDetails();
     private ActionListener_SellPage action;
     public JRadioButton takeAwayRadioButton;
@@ -44,6 +45,7 @@ public class SellPage extends JPanel {
     public JDialog loadingDialog;
     public JButton findProduct;
     public JTextField searchBar;
+    public JButton updateButton;
     public JScrollBar sb;
 
     public SellPage() {
@@ -126,8 +128,9 @@ public class SellPage extends JPanel {
         productCategory.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         productCategory.addItem("Tất cả");
         productCategory.addItem("Cà Phê");
-        productCategory.addItem("Soda");
-        productCategory.addItem("Kem");
+        productCategory.addItem("Trà");
+        productCategory.addItem("Bánh ngọt");
+        productCategory.addItem("Khác");
         productCategory.setPreferredSize(new Dimension(90, 25));
         productCategory.addActionListener(action);
         northN.add(productCategory);
@@ -348,10 +351,11 @@ public class SellPage extends JPanel {
         editPanel.add(Box.createVerticalStrut(10));
 
         FontIcon editIcon = FontIcon.of(Feather.EDIT, 24, Color.BLACK);
-        JButton updateButton = new JButton("Cập nhật", editIcon);
+        updateButton = new JButton("Cập nhật", editIcon);
         updateButton.setBackground(Color.white);
         updateButton.setForeground(Color.black);
         updateButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        updateButton.addActionListener(action);
         funcPanel.add(updateButton);
         funcPanel.add(Box.createHorizontalStrut(10));
 
@@ -409,7 +413,8 @@ public class SellPage extends JPanel {
         List<MenuItem> menu = DAO_MenuItem.get18MenuItems(0, 18);
         int columns = 3;
         for (int i = 0; i < 18; i++) {
-            ImagePanelButton productButton = new ImagePanelButton(menu.get(i).getName(), "", menu.get(i).getPrice(),
+            ImagePanelButton productButton = new ImagePanelButton(menu.get(i),
+                    collectionMenuItem,
                     "asset/placeholder.png", 200,
                     200,
                     0.8);

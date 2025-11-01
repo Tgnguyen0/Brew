@@ -4,9 +4,14 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import app.Collections.Collection_MenuItem;
 import app.InitFont.CustomFont;
+import app.Listener.ActionListener_ImagePanelButton;
+import app.Object.MenuItem;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -14,6 +19,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class ImagePanelButton extends JPanel {
+    public Collection_MenuItem collectionMenuItem;
+    public ActionListener_ImagePanelButton action;
+    public MenuItem mi;
     private CustomFont customFont = new CustomFont();
     private JLabel textLabel;
     private JLabel priceLabel;
@@ -21,8 +29,12 @@ public class ImagePanelButton extends JPanel {
     private JButton addButton;
     private JLabel iconLabel;
 
-    public ImagePanelButton(String labelText, String description, double price, String imagePath, int imageWidth, int imageHeight,
+    public ImagePanelButton(MenuItem mi, Collection_MenuItem collectionMenuItem, String imagePath, int imageWidth, int imageHeight,
                             double scale) {
+        this.mi = mi;
+        this.collectionMenuItem = collectionMenuItem;
+        this.action = new ActionListener_ImagePanelButton(this);
+
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(imageWidth, imageHeight));
         setBackground(new Color(164, 56, 32));
@@ -51,10 +63,11 @@ public class ImagePanelButton extends JPanel {
         // Tạo text label
         textLabel = new JLabel("<html>" +
                 "<div style='text-align:left;'>" +
-                "<p style='font-size:13px'><b>" + labelText + "</b></p>" +
-                "<p style='font-size:10px'><b>" + description + "</b></p>" +
+                "<p style='font-size:13px'><b>" + mi.getName() + "</b></p>" +
+                "<p style='font-size:10px'><b>" + mi.getDescription() + "</b></p>" +
                 "</div></html>");
-        textLabel.setPreferredSize(new Dimension(250, 25));
+        textLabel.setPreferredSize(new Dimension(250, 50));
+        textLabel.setVerticalAlignment(SwingConstants.NORTH);
         textLabel.setHorizontalAlignment(SwingConstants.LEFT);
         textLabel.setFont(getFont().deriveFont(Font.PLAIN, 15));
         textLabel.setOpaque(false);
@@ -66,7 +79,7 @@ public class ImagePanelButton extends JPanel {
         priceAndAddPanel.setOpaque(false);
         priceAndAddPanel.setLayout(new BorderLayout());
 
-        priceLabel = new JLabel("<html><div style='text-align:left;'>$ " + String.valueOf(price) + "</div></html>");
+        priceLabel = new JLabel("<html><div style='text-align:left;'>" + String.valueOf(mi.getPrice()) + " VND</div></html>");
         priceLabel.setHorizontalAlignment(SwingConstants.LEFT);
         priceLabel.setFont(getFont().deriveFont(Font.PLAIN, 15));
         priceLabel.setOpaque(false);
@@ -74,35 +87,11 @@ public class ImagePanelButton extends JPanel {
         priceLabel.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
         priceAndAddPanel.add(priceLabel, BorderLayout.WEST);
 
-        // serveTypeComboBox = new JComboBox<>();
-        // serveTypeComboBox.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN,
-        // 12));
-        // serveTypeComboBox.setPreferredSize(new Dimension(100, 20));
-        // serveTypeComboBox.addItem("Hot");
-        // serveTypeComboBox.addItem("Cold");
-        // serveTypeComboBox.addComponentListener(null);
-        // serveTypeComboBox.setForeground(Color.WHITE); // chữ trắng để dễ nhìn trên
-        // nền
-        // serveTypeComboBox.setBackground(Color.RED); // mặc định Hot là đỏ
-
-        // // Lắng nghe thay đổi lựa chọn
-        // serveTypeComboBox.addActionListener(e -> {
-        // String selected = (String) serveTypeComboBox.getSelectedItem();
-        // if ("Hot".equals(selected)) {
-        // serveTypeComboBox.setBackground(Color.RED);
-        // serveTypeComboBox.setForeground(Color.WHITE);
-        // } else if ("Cold".equals(selected)) {
-        // serveTypeComboBox.setBackground(new Color(0, 120, 215)); // xanh nước biển
-        // đẹp
-        // serveTypeComboBox.setForeground(Color.WHITE);
-        // }
-        // });
-        // priceAndAddPanel.add(serveTypeComboBox, BorderLayout.CENTER);
-
         addButton = new JButton("+");
         addButton.setBackground(new Color(70, 33, 26));
         addButton.setForeground(Color.WHITE);
         addButton.setMargin(new Insets(0, 10, 0, 10));
+        addButton.addActionListener(action);
         addButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {

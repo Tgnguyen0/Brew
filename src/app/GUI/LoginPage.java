@@ -1,6 +1,7 @@
 package app.GUI;
 
 import app.DAO.LoginDAO;
+import app.InitFont.CustomFont;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
@@ -8,6 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class LoginPage extends JFrame {
+    private CustomFont cf = new CustomFont();
     private final Font titleFont;
     private final Font labelFont;
     private final Font fieldFont;
@@ -21,20 +23,20 @@ public class LoginPage extends JFrame {
             e.printStackTrace();
         }
 
-        setTitle("☕ Đăng Nhập - Dev Coffee");
+        setTitle("☕ Đăng Nhập - Brew");
         setSize(950, 550);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
 
-        titleFont = new Font("Times New Roman", Font.BOLD, 30);
-        labelFont = new Font("Segoe UI", Font.BOLD, 16);
-        fieldFont = new Font("Segoe UI", Font.PLAIN, 15);
+        titleFont = cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 30);
+        labelFont = cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 16);
+        fieldFont = cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 15);
 
         // ==== Màu nền ====
         Color bgColor = new Color(242, 238, 230);
         Color panelColor = new Color(255, 255, 255, 230);
-        Color buttonColor = new Color(160, 110, 80);
+        Color buttonColor = new Color(164, 56, 32);
         Color buttonHover = new Color(180, 130, 90);
         Color textColor = new Color(60, 40, 30);
 
@@ -52,7 +54,7 @@ public class LoginPage extends JFrame {
         };
         mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
-        JLabel lblTitle = new JLabel("WELCOME TO DEV COFFEE", SwingConstants.CENTER);
+        JLabel lblTitle = new JLabel("WELCOME TO BREW", SwingConstants.CENTER);
         lblTitle.setFont(titleFont);
         lblTitle.setForeground(textColor);
         mainPanel.add(lblTitle, BorderLayout.NORTH);
@@ -87,7 +89,7 @@ public class LoginPage extends JFrame {
         ));
 
         JLabel lblFormTitle = new JLabel("Đăng nhập hệ thống", SwingConstants.CENTER);
-        lblFormTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblFormTitle.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 22));
         lblFormTitle.setForeground(textColor);
         lblFormTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -102,7 +104,7 @@ public class LoginPage extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         JLabel lblUser = new JLabel("Tên tài khoản:");
-        lblUser.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lblUser.setFont(fieldFont);
         lblUser.setForeground(textColor);
         formPanel.add(lblUser, gbc);
 
@@ -119,7 +121,7 @@ public class LoginPage extends JFrame {
         // Mật khẩu
         gbc.gridy++;
         JLabel lblPass = new JLabel("Mật khẩu:");
-        lblPass.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        lblPass.setFont(fieldFont);
         lblPass.setForeground(textColor);
         formPanel.add(lblPass, gbc);
 
@@ -136,7 +138,7 @@ public class LoginPage extends JFrame {
         // Nút đăng nhập
         gbc.gridy++;
         JButton btnLogin = new JButton("Đăng nhập");
-        btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnLogin.setFont(labelFont);
         btnLogin.setBackground(buttonColor);
         btnLogin.setForeground(Color.WHITE);
         btnLogin.setFocusPainted(false);
@@ -176,10 +178,13 @@ public class LoginPage extends JFrame {
         bottomPanel.setBackground(panelColor);
         JLabel lblForgot = new JLabel("Quên mật khẩu?");
         lblForgot.setForeground(new Color(0, 102, 204));
+        lblForgot.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 12));
         lblForgot.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         JLabel lblCreate = new JLabel("Tạo tài khoản mới");
         lblCreate.setForeground(new Color(0, 102, 204));
         lblCreate.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        lblCreate.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 12));
         bottomPanel.add(lblForgot);
         bottomPanel.add(lblCreate);
         formPanel.add(bottomPanel, gbc);

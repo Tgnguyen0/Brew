@@ -214,20 +214,20 @@ public class BrewGUI extends JFrame implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        JButton enteredButton = (JButton) e.getComponent();
-        enteredButton.setForeground(Color.white);// Thay đổi màu khi hover
-        enteredButton.setBackground(new Color(70, 33, 26));
-        enteredButton.setFocusPainted(false);
-        enteredButton.setBorder(BorderFactory.createLineBorder(new Color(70, 33, 26)));
+//        JButton enteredButton = (JButton) e.getComponent();
+//        enteredButton.setForeground(Color.white);// Thay đổi màu khi hover
+//        enteredButton.setBackground(new Color(70, 33, 26));
+//        enteredButton.setFocusPainted(false);
+//        enteredButton.setBorder(BorderFactory.createLineBorder(new Color(70, 33, 26)));
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        JButton exitedButton = (JButton) e.getComponent();
-        exitedButton.setForeground(Color.black);// Thay đổi màu khi hover
-        exitedButton.setBackground(Color.white);
-        exitedButton.setFocusPainted(false);
-        exitedButton.setBorder(BorderFactory.createLineBorder(Color.white));
+//        JButton exitedButton = (JButton) e.getComponent();
+//        exitedButton.setForeground(Color.black);// Thay đổi màu khi hover
+//        exitedButton.setBackground(Color.white);
+//        exitedButton.setFocusPainted(false);
+//        exitedButton.setBorder(BorderFactory.createLineBorder(Color.white));
     }
 
     public static void main(String[] args) {
