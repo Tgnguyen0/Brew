@@ -57,6 +57,10 @@ public class ActionListener_SellPage implements ActionListener {
                 loadBaseOnCategory(sellPage.gbc, (String) sellPage.productCategory.getSelectedItem());
             }
         }
+
+        if (o == sellPage.updateButton) {
+            System.out.println(sellPage.collectionMenuItem.getListOfItem());
+        }
     }
 
     public void reloadAllProducts() {
@@ -90,8 +94,7 @@ public class ActionListener_SellPage implements ActionListener {
                     int columns = 3;
                     for (MenuItem item : menuBatch) {
                         ImagePanelButton button = new ImagePanelButton(
-                                item.getName(), "", item.getPrice(),
-                                "asset/placeholder.png", 200, 200, 0.8
+                                item, sellPage.collectionMenuItem, "asset/placeholder.png", 200, 200, 0.8
                         );
                         button.setPreferredSize(new Dimension(250, 250));
                         int index = sellPage.productPanel.getComponentCount();
@@ -126,8 +129,7 @@ public class ActionListener_SellPage implements ActionListener {
                     int index = 0;
                     for (MenuItem item : menuBatch) {
                         ImagePanelButton button = new ImagePanelButton(
-                                item.getName(), "", item.getPrice(),
-                                "asset/placeholder.png", 200, 200, 0.8
+                                item, sellPage.collectionMenuItem, "asset/placeholder.png", 200, 200, 0.8
                         );
                         button.setPreferredSize(new Dimension(250, 250));
 
@@ -160,8 +162,7 @@ public class ActionListener_SellPage implements ActionListener {
                     int index = 0;
                     for (MenuItem item : menuBatch) {
                         ImagePanelButton button = new ImagePanelButton(
-                                item.getName(), "", item.getPrice(),
-                                "asset/placeholder.png", 200, 200, 0.8
+                                item, sellPage.collectionMenuItem,"asset/placeholder.png", 200, 200, 0.8
                         );
                         button.setPreferredSize(new Dimension(250, 250));
 
