@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.*;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -148,10 +150,10 @@ public class BrewGUI extends JFrame implements MouseListener {
         infoBar = new JPanel();
         infoBar.setBounds(10, 10, 200, 30);
         infoBar.setBackground(new Color(164, 56, 32));
-        infoBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+        infoBar.setLayout(new BorderLayout());
 
-        navbarButton = new JButton(">"); // ☰
-        navbarButton.setBounds(5, 3, 200, 30);
+// --- Nút mũi tên ---
+        navbarButton = new JButton(">");
         navbarButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         navbarButton.setForeground(Color.BLACK);
         navbarButton.setBackground(Color.WHITE);
@@ -166,7 +168,94 @@ public class BrewGUI extends JFrame implements MouseListener {
                 }
             }
         });
-        infoBar.add(navbarButton);
+        infoBar.add(navbarButton, BorderLayout.WEST); // căn trái
+
+// Panel bên phải (thông tin nhân viên)
+        JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 5));
+        userPanel.setOpaque(false);
+
+        JLabel lblDateTime = new JLabel("Đang tải...");
+        lblDateTime.setForeground(Color.WHITE);
+
+        JLabel lblEmployeeName = new JLabel("Ngọc Thành");
+        lblEmployeeName.setForeground(Color.WHITE);
+        lblEmployeeName.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.BOLD, 14));
+
+        JLabel lblRole = new JLabel("Nhân viên pha chế");
+        lblRole.setForeground(Color.LIGHT_GRAY);
+        lblRole.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+
+// Avatar + chấm trạng thái trực tuyến
+        ImageIcon avatarIcon = new ImageIcon("asset/1.png");
+        Image img = avatarIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(img);
+        JLabel avatarLabel = new JLabel(scaledIcon);
+        avatarLabel.setPreferredSize(new Dimension(40, 40));
+// avatarLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        avatarLabel.setOpaque(false);
+        avatarLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        JLabel statusDot = new JLabel("\u2B24"); // chấm tròn Unicode
+        statusDot.setForeground(new Color(46, 204, 113)); // xanh lá cây sáng
+        statusDot.setFont(new Font("Dialog", Font.PLAIN, 10));
+        statusDot.setToolTipText("Đang trực tuyến");
+
+        JPanel avatarPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        avatarPanel.setOpaque(false);
+        avatarPanel.add(avatarLabel);
+        avatarPanel.add(Box.createHorizontalStrut(4));
+        avatarPanel.add(statusDot);
+
+// --- Nút Đăng xuất ---
+
+        // --- Nút Đăng xuất (gradient tùy chỉnh) ---
+        ImageIcon logoutIcon = new ImageIcon("asset/icon/logout.png");
+        Image logoutImg = logoutIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        ImageIcon scaledLogoutIcon = new ImageIcon(logoutImg);
+
+        JButton btnLogout = new JButton("Đăng xuất", scaledLogoutIcon) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                // Gradient từ vàng cam sang đỏ
+                Color color1 = new Color(255, 165, 0); // vàng cam
+                Color color2 = new Color(231, 76, 60); // đỏ
+                g2d.setPaint(new GradientPaint(0, 0, color1, 0, getHeight(), color2));
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10); // bo góc 10px
+                g2d.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btnLogout.setForeground(Color.WHITE);
+        btnLogout.setFont(new Font("Dialog", Font.BOLD, 12));
+        btnLogout.setFocusPainted(false);
+        btnLogout.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        btnLogout.setContentAreaFilled(false); // để paintComponent tự vẽ
+        btnLogout.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+// Optional: hover đổi gradient sang đỏ đậm hơn
+        btnLogout.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnLogout.setForeground(Color.WHITE); // giữ chữ trắng
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnLogout.setForeground(Color.WHITE);
+            }
+        });
+
+// Thêm nút Logout vào userPanel
+
+        userPanel.add(lblDateTime);
+        userPanel.add(lblRole);
+        userPanel.add(lblEmployeeName);
+        userPanel.add(avatarPanel);
+        userPanel.add(Box.createHorizontalStrut(10));
+        userPanel.add(btnLogout);
+
+        infoBar.setLayout(new BorderLayout());
+        infoBar.add(navbarButton, BorderLayout.WEST);
+        infoBar.add(userPanel, BorderLayout.EAST);
 
         // Khởi tạo trang chứa
         this.pageContainer = new JPanel();
@@ -195,6 +284,14 @@ public class BrewGUI extends JFrame implements MouseListener {
                 Toolkit.getDefaultToolkit().getScreenSize().height);
 
         this.add(this.right, "w 100%");
+
+        // ---- Cập nhật thời gian thực ----
+        Timer timer = new Timer(1000, e -> {
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+            lblDateTime.setText(now.format(fmt));
+        });
+        timer.start();
     }
 
     @Override

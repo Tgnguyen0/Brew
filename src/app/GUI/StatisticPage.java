@@ -3,6 +3,9 @@ package app.GUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -19,6 +22,8 @@ import org.jfree.chart.title.TextTitle;
 import app.DAO.ThongkeDAO;
 
 public class StatisticPage extends JPanel {
+
+
     private ThongkeDAO thongkeDAO = new ThongkeDAO();
 
     private JComboBox<String> comboMonth;
@@ -131,7 +136,7 @@ public class StatisticPage extends JPanel {
         chartContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         piePanel = createPieChartPanel(1, 2025);  // Mặc định Tháng 1, 2025
-        linePanel = createLineChartPanel(1, 2025);
+        linePanel = createLineChartPanel( 2025);
 
         chartContainer.add(piePanel);
         chartContainer.add(linePanel);
@@ -190,43 +195,101 @@ public class StatisticPage extends JPanel {
         });
     }
 
-    // ================= TẠO BIỂU ĐỒ =================
+    // ================= TẠO BIỂU ĐỒ TRÒN: DOANH THU THEO LOẠI MÓN =================
     private ChartPanel createPieChartPanel(int month, int year) {
         DefaultPieDataset dataset = thongkeDAO.getRevenueByCategory(month, year);
+
         JFreeChart chart = ChartFactory.createPieChart(
-                "Tỷ lệ doanh thu theo loại sản phẩm (" + month + "/" + year + ")",
-                dataset, true, true, false);
-        chart.getTitle().setFont(new Font("Segoe UI", Font.BOLD, 14));
+                "Tỷ lệ doanh thu theo loại món (" + month + "/" + year + ")",
+                dataset,
+                true, true, false
+        );
+
         chart.setBackgroundPaint(Color.white);
+        chart.getTitle().setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+        PiePlot plot = (PiePlot) chart.getPlot();
+        plot.setBackgroundPaint(Color.white);
+        plot.setLabelFont(new Font("Segoe UI", Font.PLAIN, 12));
+        plot.setLabelBackgroundPaint(Color.white);
+        plot.setCircular(true);
+
+        // Tùy chỉnh màu theo category thực tế, nếu chưa có thì để mặc định
+        for (Object keyObj : dataset.getKeys()) {
+            String key = keyObj.toString(); // ép kiểu sang String
+            switch (key) {
+                case "Cà phê" -> plot.setSectionPaint(key, new Color(121, 85, 72));
+                case "Trà" -> plot.setSectionPaint(key, new Color(76, 175, 80));
+                case "Bánh ngọt" -> plot.setSectionPaint(key, new Color(255, 152, 0));
+                default -> plot.setSectionPaint(key, new Color(33, 150, 243));
+            }
+        }
 
         ChartPanel panel = new ChartPanel(chart);
         panel.setBackground(Color.white);
         return panel;
     }
 
-    private ChartPanel createLineChartPanel(int month, int year) {
-        DefaultCategoryDataset dataset = thongkeDAO.getRevenueByMonthAndYear(month, year);
+    // ================= BIỂU ĐỒ LINE: DOANH THU THEO LOẠI SẢN PHẨM TRONG NĂM =================
+    private ChartPanel createLineChartPanel(int year) {
+        DefaultCategoryDataset dataset = thongkeDAO.getRevenueByMonthAndCategory(year);
+
         JFreeChart chart = ChartFactory.createLineChart(
-                "Doanh thu theo thời gian (" + month + "/" + year + ")",
-                "Ngày", "VNĐ", dataset,
+                "Doanh thu theo loại sản phẩm trong năm " + year,
+                "Tháng", "Doanh thu (VNĐ)", dataset,
                 PlotOrientation.VERTICAL, true, true, false);
 
         chart.setBackgroundPaint(Color.white);
-        chart.setTitle(new TextTitle(chart.getTitle().getText(), new Font("Segoe UI", Font.BOLD, 14)));
+        chart.setTitle(new TextTitle(chart.getTitle().getText(), new Font("Segoe UI", Font.BOLD, 16)));
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.setBackgroundPaint(Color.white);
-        plot.setRangeGridlinePaint(Color.gray);
+        plot.setRangeGridlinePaint(Color.lightGray);
 
-        // 👇 Thêm đoạn này để xoay nhãn trục X chống tràn
-        CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(
-                CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 10)
-        );
-        domainAxis.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 8));
+        // Renderer chung (shapes + tooltip)
+        LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
+        renderer.setDefaultToolTipGenerator((dataset1, row, column) -> {
+            Number value = dataset1.getValue(row, column);
+            String series = dataset1.getRowKey(row).toString();
+            String month = dataset1.getColumnKey(column).toString();
+            return series + " - " + month + ": " + String.format("%,.0f VNĐ", value.doubleValue());
+        });
 
-        LineAndShapeRenderer renderer = new LineAndShapeRenderer();
+        // Gán màu theo tên series (an toàn khi thứ tự row thay đổi)
+        // Định nghĩa map tên series -> màu
+        Map<String, Paint> colorMap = new HashMap<>();
+        colorMap.put("Bánh ngọt", new Color(255, 99, 132));
+        colorMap.put("Cà phê", new Color(54, 162, 235));
+        colorMap.put("Trà", new Color(75, 192, 192));
+        colorMap.put("Khác", new Color(255, 206, 86));
+        colorMap.put("Tổng doanh thu", new Color(33, 33, 33)); // tổng = màu tối (đen xám)
+
+        // Áp color cho mỗi row hiện có trong dataset
+        for (int r = 0; r < dataset.getRowCount(); r++) {
+            String rowName = dataset.getRowKey(r).toString();
+            Paint p = colorMap.getOrDefault(rowName, null);
+            if (p != null) {
+                renderer.setSeriesPaint(r, p);
+            } else {
+                // Nếu không có map, để JFreeChart tự pick màu (hoặc có thể đặt màu mặc định)
+            }
+            renderer.setSeriesStroke(r, new BasicStroke(2.0f));
+        }
+
+        renderer.setDefaultShapesVisible(true);
+        renderer.setDefaultShapesFilled(true);
         plot.setRenderer(renderer);
+
+        // Trục X giữ thứ tự tháng - vì dataset đã có cột Tháng 1..12 đúng thứ tự nên domain sẽ đúng
+        CategoryAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+        domainAxis.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 11));
+        domainAxis.setCategoryMargin(0.05);
+
+        // Trục Y
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setNumberFormatOverride(NumberFormat.getInstance());
+        rangeAxis.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 11));
 
         ChartPanel panel = new ChartPanel(chart);
         panel.setBackground(Color.white);
@@ -236,32 +299,49 @@ public class StatisticPage extends JPanel {
     // ================= CẬP NHẬT BIỂU ĐỒ =================
     private void updateCharts(int month, int year) {
         DefaultPieDataset pieData = thongkeDAO.getRevenueByCategory(month, year);
-        DefaultCategoryDataset lineData = thongkeDAO.getRevenueByMonth(month, year);
+        DefaultCategoryDataset lineData = thongkeDAO.getRevenueByMonthAndCategory(year);
 
         if (pieData.getItemCount() == 0 && lineData.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this,
                     "Không có dữ liệu cho " + month + "/" + year,
                     "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
 
-        piePanel.setChart(ChartFactory.createPieChart(
-                "Tỷ lệ doanh thu theo loại sản phẩm (" + month + "/" + year + ")",
-                pieData, true, true, false));
+        // Pie
+        piePanel.getChart().getTitle().setText("Tỷ lệ doanh thu theo loại món (" + month + "/" + year + ")");
+        PiePlot piePlot = (PiePlot) piePanel.getChart().getPlot();
+        piePlot.setDataset(pieData);
+        for (Object keyObj : pieData.getKeys()) {
+            String key = keyObj.toString();
+            switch (key) {
+                case "Cà phê" -> piePlot.setSectionPaint(key, new Color(121, 85, 72));
+                case "Trà" -> piePlot.setSectionPaint(key, new Color(76, 175, 80));
+                case "Bánh ngọt" -> piePlot.setSectionPaint(key, new Color(255, 152, 0));
+                default -> piePlot.setSectionPaint(key, new Color(33, 150, 243));
+            }
+        }
 
-        JFreeChart lineChart = ChartFactory.createLineChart(
-                "Doanh thu theo thời gian (" + year + ")",
-                "Tháng", "VNĐ", lineData,
-                PlotOrientation.VERTICAL, true, true, false);
+        // Line: set dataset mới
+        linePanel.getChart().getTitle().setText("Doanh thu theo tháng trong năm " + year);
+        CategoryPlot linePlot = linePanel.getChart().getCategoryPlot();
+        LineAndShapeRenderer renderer = (LineAndShapeRenderer) linePlot.getRenderer();
 
-        // 👇 Thêm đoạn này để xoay nhãn trục X chống tràn
-        CategoryPlot plot = lineChart.getCategoryPlot();
-        CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(
-                CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 4)
-        );
-        domainAxis.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 11));
+        linePlot.setDataset(lineData);
 
-        linePanel.setChart(lineChart);
+        // Re-apply colors theo tên series (dataset mới có thể khác)
+        Map<String, Paint> colorMap = new HashMap<>();
+        colorMap.put("Bánh ngọt", new Color(255, 99, 132));
+        colorMap.put("Cà phê", new Color(54, 162, 235));
+        colorMap.put("Trà", new Color(75, 192, 192));
+        colorMap.put("Khác", new Color(255, 206, 86));
+        colorMap.put("Tổng doanh thu", new Color(33, 33, 33));
+
+        for (int r = 0; r < lineData.getRowCount(); r++) {
+            String rowName = lineData.getRowKey(r).toString();
+            Paint p = colorMap.getOrDefault(rowName, null);
+            if (p != null) renderer.setSeriesPaint(r, p);
+            renderer.setSeriesStroke(r, new BasicStroke(2.0f));
+        }
     }
-
 }

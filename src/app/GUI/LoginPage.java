@@ -52,7 +52,7 @@ public class LoginPage extends JFrame {
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 50, 30)); // thêm khoảng cách dưới
 
         JLabel lblTitle = new JLabel("WELCOME TO BREW", SwingConstants.CENTER);
         lblTitle.setFont(titleFont);
@@ -66,7 +66,7 @@ public class LoginPage extends JFrame {
 
         ImageIcon coffeeIcon;
         try {
-            coffeeIcon = new ImageIcon(new ImageIcon("asset/BannerLogin.jpg")
+            coffeeIcon = new ImageIcon(new ImageIcon("asset/layout/BackGround_DangNhap.jpg")
                     .getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH));
         } catch (Exception e) {
             coffeeIcon = new ImageIcon(new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB));
@@ -87,6 +87,7 @@ public class LoginPage extends JFrame {
                 BorderFactory.createLineBorder(new Color(220, 220, 220), 1, true),
                 BorderFactory.createEmptyBorder(40, 50, 40, 50)
         ));
+
 
         JLabel lblFormTitle = new JLabel("Đăng nhập hệ thống", SwingConstants.CENTER);
         lblFormTitle.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 22));
@@ -176,6 +177,7 @@ public class LoginPage extends JFrame {
         gbc.gridy++;
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottomPanel.setBackground(panelColor);
+
         JLabel lblForgot = new JLabel("Quên mật khẩu?");
         lblForgot.setForeground(new Color(0, 102, 204));
         lblForgot.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 12));
@@ -185,8 +187,11 @@ public class LoginPage extends JFrame {
         lblCreate.setForeground(new Color(0, 102, 204));
         lblCreate.setCursor(new Cursor(Cursor.HAND_CURSOR));
         lblCreate.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 12));
+
         bottomPanel.add(lblForgot);
         bottomPanel.add(lblCreate);
+        gbc.weighty = 1.0; // đẩy phần này xuống cuối form
+        gbc.anchor = GridBagConstraints.SOUTH;
         formPanel.add(bottomPanel, gbc);
 
         rightPanel.add(lblFormTitle);
