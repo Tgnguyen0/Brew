@@ -1,9 +1,11 @@
 package app.Listener;
 
 import app.Components.ImagePanelButton;
+import app.DAO.DAO_Bill;
 import app.DAO.DAO_MenuItem;
 import app.GUI.CafeLayoutPage;
 import app.GUI.SellPage;
+import app.Object.Bill;
 import app.Object.MenuItem;
 import app.SwingWorker.MODE;
 import app.SwingWorker.MenuItemLoaderWorker;
@@ -12,6 +14,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ActionListener_SellPage implements ActionListener {
@@ -59,7 +64,12 @@ public class ActionListener_SellPage implements ActionListener {
         }
 
         if (o == sellPage.updateButton) {
-            System.out.println(sellPage.collectionMenuItem.getListOfItem());
+            // System.out.println(sellPage.collectionMenuItem.getListOfItem());
+        }
+
+        if (o == sellPage.toInvoiceButton) {
+//            DAO_Bill.createBill();
+//            Bill bill = DAO_Bill.getLatestBill();
         }
     }
 
@@ -94,7 +104,7 @@ public class ActionListener_SellPage implements ActionListener {
                     int columns = 3;
                     for (MenuItem item : menuBatch) {
                         ImagePanelButton button = new ImagePanelButton(
-                                item, sellPage.collectionMenuItem, "asset/placeholder.png", 200, 200, 0.8
+                                item, sellPage.collectionBillDetails, "asset/placeholder.png", 200, 200, 0.8
                         );
                         button.setPreferredSize(new Dimension(250, 250));
                         int index = sellPage.productPanel.getComponentCount();
@@ -129,7 +139,7 @@ public class ActionListener_SellPage implements ActionListener {
                     int index = 0;
                     for (MenuItem item : menuBatch) {
                         ImagePanelButton button = new ImagePanelButton(
-                                item, sellPage.collectionMenuItem, "asset/placeholder.png", 200, 200, 0.8
+                                item, sellPage.collectionBillDetails, "asset/placeholder.png", 200, 200, 0.8
                         );
                         button.setPreferredSize(new Dimension(250, 250));
 
@@ -162,7 +172,7 @@ public class ActionListener_SellPage implements ActionListener {
                     int index = 0;
                     for (MenuItem item : menuBatch) {
                         ImagePanelButton button = new ImagePanelButton(
-                                item, sellPage.collectionMenuItem,"asset/placeholder.png", 200, 200, 0.8
+                                item, sellPage.collectionBillDetails,"asset/placeholder.png", 200, 200, 0.8
                         );
                         button.setPreferredSize(new Dimension(250, 250));
 

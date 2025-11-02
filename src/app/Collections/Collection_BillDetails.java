@@ -15,22 +15,29 @@ public class Collection_BillDetails {
         return bds;
     }
 
-    // public Boolean addBillDetail(BillDetail newBillDetail) {
-    //     for (int i = 0 ; i < bds.size(); i++) {
-    //         if (newBillDetail.getItem().getId().equals(bds.get(i).getItem().getId())
-    //             && newBillDetail.getItem().getServeHot() == bds.get(i).getItem().getServeHot()) {
-    //             int old_quantity = bds.get(i).getQuantity();
-    //             double price = bds.get(i).getItem().getPrice();
-    //             old_quantity++;
+    public Boolean addBillDetail(BillDetail newBillDetail) {
+        if (!bds.contains(newBillDetail)) {
+            bds.add(newBillDetail);
+            System.out.println(bds);
+            return true;
+        }
 
-    //             bds.get(i).setQuantity(old_quantity);
-    //             bds.get(i).setTotal_price(old_quantity, price);
-    //             return false;
-    //         }
-    //     }
+        return false;
+    }
 
-    //     return bds.add(newBillDetail);
-    // }
+    public Boolean updateBillDetail(BillDetail billDetail) {
+        for (BillDetail bd : bds) {
+            if (bd.getItemId().equals(billDetail.getItemId())) {
+                bd.setQuantity(billDetail.getQuantity());
+                bd.setTotal_price(bd.getQuantity(), bd.getTotal_price());
+                System.out.println(bds);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public Boolean addListBillDetail(ArrayList<BillDetail> bdl) {
         return bds.addAll(bdl);
@@ -45,9 +52,5 @@ public class Collection_BillDetails {
         }
 
         return false;
-    }
-
-    public Integer getSize() {
-        return bds.size();
     }
 }

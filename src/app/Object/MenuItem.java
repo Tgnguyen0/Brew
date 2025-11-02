@@ -1,6 +1,7 @@
 package app.Object;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class MenuItem implements Serializable {
     private String itemId;
@@ -68,5 +69,18 @@ public class MenuItem implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuItem menuItem = (MenuItem) o;
+        return Objects.equals(itemId, menuItem.itemId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(itemId);
     }
 }

@@ -19,6 +19,8 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
+import org.kordamp.ikonli.feather.Feather;
+import org.kordamp.ikonli.swing.FontIcon;
 
 // @important
 // old Color: 161, 103, 37
@@ -152,7 +154,7 @@ public class BrewGUI extends JFrame implements MouseListener {
         infoBar.setBackground(new Color(164, 56, 32));
         infoBar.setLayout(new BorderLayout());
 
-// --- Nút mũi tên ---
+        // --- Nút mũi tên ---
         navbarButton = new JButton(">");
         navbarButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         navbarButton.setForeground(Color.BLACK);
@@ -170,7 +172,7 @@ public class BrewGUI extends JFrame implements MouseListener {
         });
         infoBar.add(navbarButton, BorderLayout.WEST); // căn trái
 
-// Panel bên phải (thông tin nhân viên)
+        // Panel bên phải (thông tin nhân viên)
         JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 5));
         userPanel.setOpaque(false);
 
@@ -185,13 +187,13 @@ public class BrewGUI extends JFrame implements MouseListener {
         lblRole.setForeground(Color.LIGHT_GRAY);
         lblRole.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
 
-// Avatar + chấm trạng thái trực tuyến
+        // Avatar + chấm trạng thái trực tuyến
         ImageIcon avatarIcon = new ImageIcon("asset/1.png");
         Image img = avatarIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(img);
         JLabel avatarLabel = new JLabel(scaledIcon);
         avatarLabel.setPreferredSize(new Dimension(40, 40));
-// avatarLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        // avatarLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
         avatarLabel.setOpaque(false);
         avatarLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -206,14 +208,9 @@ public class BrewGUI extends JFrame implements MouseListener {
         avatarPanel.add(Box.createHorizontalStrut(4));
         avatarPanel.add(statusDot);
 
-// --- Nút Đăng xuất ---
-
         // --- Nút Đăng xuất (gradient tùy chỉnh) ---
-        ImageIcon logoutIcon = new ImageIcon("asset/icon/logout.png");
-        Image logoutImg = logoutIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-        ImageIcon scaledLogoutIcon = new ImageIcon(logoutImg);
-
-        JButton btnLogout = new JButton("Đăng xuất", scaledLogoutIcon) {
+        // Sử dụng thư viện Ikonli để dùng icon với Feather.LOG_OUT, độ lớn 15, màu đen
+        JButton btnLogout = new JButton("Đăng xuất", FontIcon.of(Feather.LOG_OUT, 15, Color.BLACK)) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g.create();
@@ -230,11 +227,12 @@ public class BrewGUI extends JFrame implements MouseListener {
         btnLogout.setForeground(Color.WHITE);
         btnLogout.setFont(new Font("Dialog", Font.BOLD, 12));
         btnLogout.setFocusPainted(false);
+        btnLogout.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         btnLogout.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         btnLogout.setContentAreaFilled(false); // để paintComponent tự vẽ
         btnLogout.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-// Optional: hover đổi gradient sang đỏ đậm hơn
+        // Optional: hover đổi gradient sang đỏ đậm hơn
         btnLogout.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnLogout.setForeground(Color.WHITE); // giữ chữ trắng
@@ -244,8 +242,7 @@ public class BrewGUI extends JFrame implements MouseListener {
             }
         });
 
-// Thêm nút Logout vào userPanel
-
+        // Thêm nút Logout vào userPanel
         userPanel.add(lblDateTime);
         userPanel.add(lblRole);
         userPanel.add(lblEmployeeName);
