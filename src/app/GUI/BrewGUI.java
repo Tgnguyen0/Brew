@@ -30,7 +30,7 @@ public class BrewGUI extends JFrame implements MouseListener {
     public static SellPage sellPage;
     public static ReceiptPage receiptPage;
     public static ProductPage productPage;
-    public static PromotionPage promotionPage;
+    public static CustomerPage customerPage;
     public static StatisticPage statisticPage;
     public static EmployeePage employeePage;
     private CustomFont customFont = new CustomFont();
@@ -85,7 +85,7 @@ public class BrewGUI extends JFrame implements MouseListener {
                     optionBar.timingEventCloseButton(optionBar.sellButton, 30f, 22f, 13f, fraction);
                     optionBar.timingEventCloseButton(optionBar.receiptButton, 30f, 22f, 13f, fraction);
                     optionBar.timingEventCloseButton(optionBar.productButton, 30f, 22f, 13f, fraction);
-                    optionBar.timingEventCloseButton(optionBar.promotionRateButton, 30f, 22f, 13f, fraction);
+                    optionBar.timingEventCloseButton(optionBar.customerButton, 30f, 22f, 13f, fraction);
                     optionBar.timingEventCloseButton(optionBar.statisticsButton, 30f, 22f, 13f, fraction);
                     optionBar.timingEventCloseButton(optionBar.employeeButton, 30f, 22f, 13f, fraction);
                 } else {
@@ -98,7 +98,7 @@ public class BrewGUI extends JFrame implements MouseListener {
                     optionBar.timingEventShowButton(optionBar.sellButton, 24f, 10f, 10f, fraction);
                     optionBar.timingEventShowButton(optionBar.receiptButton, 24f, 10f, 10f, fraction);
                     optionBar.timingEventShowButton(optionBar.productButton, 24f, 10f, 10f, fraction);
-                    optionBar.timingEventShowButton(optionBar.promotionRateButton, 24f, 10f, 10f, fraction);
+                    optionBar.timingEventShowButton(optionBar.customerButton, 24f, 10f, 10f, fraction);
                     optionBar.timingEventShowButton(optionBar.statisticsButton, 24f, 10f, 10f, fraction);
                     optionBar.timingEventShowButton(optionBar.employeeButton, 24f, 10f, 10f, fraction);
                 }
@@ -193,7 +193,7 @@ public class BrewGUI extends JFrame implements MouseListener {
         this.sellPage = new SellPage(); // Khởi tạo trang Bán hàng
         this.receiptPage = new ReceiptPage(); // Khởi tạo trang Hóa đơn
         this.productPage = new ProductPage(); // Khởi tạo trang Sản phẩm
-        this.promotionPage = new PromotionPage(); // Khởi tạo trang Giảm giá
+        this.customerPage = new CustomerPage(); // Khởi tạo trang Giảm giá
         this.statisticPage = new StatisticPage(); // Khởi tạo trang Thống kê
         this.employeePage = new EmployeePage(); // Khởi tạo trang Nhân viên
 
@@ -201,7 +201,7 @@ public class BrewGUI extends JFrame implements MouseListener {
         pageContainer.add(sellPage, "Sell Page");
         pageContainer.add(receiptPage, "Receipt Page");
         pageContainer.add(productPage, "Product Page");
-        pageContainer.add(promotionPage, "Promotion Page");
+        pageContainer.add(customerPage, "Customer Page");
         pageContainer.add(statisticPage, "Statistic Page");
         pageContainer.add(employeePage, "Employee Page");
 

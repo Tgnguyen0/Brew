@@ -19,7 +19,10 @@ public class NavbarPanel extends JPanel {
     public NavbarButton sellButton;
     public NavbarButton receiptButton;
     public NavbarButton productButton;
-    public NavbarButton promotionRateButton;
+    
+    // ĐÃ ĐỔI TÊN: promotionRateButton -> customerButton
+    public NavbarButton customerButton; 
+    
     public NavbarButton statisticsButton;
     public NavbarButton employeeButton;
     // private final Animator animator;
@@ -37,7 +40,10 @@ public class NavbarPanel extends JPanel {
         this.sellButton.setShowMenu(showMenu);
         this.receiptButton.setShowMenu(showMenu);
         this.productButton.setShowMenu(showMenu);
-        this.promotionRateButton.setShowMenu(showMenu);
+        
+        // ĐÃ CẬP NHẬT: promotionRateButton -> customerButton
+        this.customerButton.setShowMenu(showMenu); 
+        
         this.statisticsButton.setShowMenu(showMenu);
         this.employeeButton.setShowMenu(showMenu);
     }
@@ -81,10 +87,11 @@ public class NavbarPanel extends JPanel {
         productButton.addActionListener(action);
         this.add(productButton);
 
-        promotionRateButton = new NavbarButton("Khuyến Mại", Feather.DISC,
+        // ĐÃ ĐỔI: "Khuyến Mại" -> "Khách Hàng", Feather.DISC -> Feather.USERS, promotionRateButton -> customerButton
+        customerButton = new NavbarButton("Khách Hàng", Feather.USERS, 
                 24, 200, 35, Font.PLAIN, 12, 10);
-        promotionRateButton.addActionListener(action);
-        this.add(promotionRateButton);
+        customerButton.addActionListener(action);
+        this.add(customerButton);
 
         statisticsButton = new NavbarButton("Thống Kê", Feather.BAR_CHART,
                 24, 200, 35, Font.PLAIN, 12, 10);
@@ -98,7 +105,7 @@ public class NavbarPanel extends JPanel {
     }
 
     public void timingEventCloseButton(NavbarButton button, double iconWidth, double iconTextGap,
-                                       double borderRightWidth, double fraction) {
+                                     double borderRightWidth, double fraction) {
         FontIcon icon = FontIcon.of(button.getIkon(), (int) (iconWidth * (fraction)),
                 Color.WHITE);
         button.setIcon(icon);

@@ -39,7 +39,7 @@ import app.Components.CustomTableHeaderRenderer;
 import app.InitFont.CustomFont;
 import app.Object.*;
 
-public class PromotionPage extends JPanel {
+public class CustomerPage extends JPanel {
     private DefaultTableModel tableModel;
     private JTextField nameInput;
     private JTextField idInput;
@@ -55,7 +55,7 @@ public class PromotionPage extends JPanel {
     Collection_Member memberList = new Collection_Member();
     CustomFont customFont = new CustomFont();
 
-    public PromotionPage() {
+    public CustomerPage() {
         setPreferredSize(new Dimension(1100, 500));
         setLayout(new BorderLayout());
         setBackground(Color.white);
@@ -112,7 +112,8 @@ public class PromotionPage extends JPanel {
         left.setOpaque(false);
         left.setPreferredSize(new Dimension(330, 300));
 
-        JLabel idLabel = new JLabel("Id: ");
+        // Đã đổi "Id: " -> "Mã: "
+        JLabel idLabel = new JLabel("Mã: "); 
         idLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         idLabel.setForeground(Color.black);
         idLabel.setPreferredSize(new Dimension(120, 25));
@@ -126,7 +127,8 @@ public class PromotionPage extends JPanel {
         idInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
         left.add(idInput);
 
-        JLabel nameLabel = new JLabel("Name: ");
+        // Đã đổi "Name: " -> "Tên: "
+        JLabel nameLabel = new JLabel("Tên: ");
         nameLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         nameLabel.setForeground(Color.black);
         nameLabel.setPreferredSize(new Dimension(120, 25));
@@ -140,7 +142,8 @@ public class PromotionPage extends JPanel {
         nameInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         left.add(nameInput);
 
-        JLabel dbLabel = new JLabel("Birth Day: ");
+        // Đã đổi "Birth Day: " -> "Ngày Sinh: "
+        JLabel dbLabel = new JLabel("Ngày Sinh: ");
         dbLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         dbLabel.setForeground(Color.black);
         dbLabel.setPreferredSize(new Dimension(120, 25));
@@ -161,7 +164,8 @@ public class PromotionPage extends JPanel {
         right.setOpaque(false);
         right.setPreferredSize(new Dimension(330, 300));
 
-        JLabel phoneLabel = new JLabel("Phone: ");
+        // Đã đổi "Phone: " -> "Điện thoại: "
+        JLabel phoneLabel = new JLabel("Điện thoại: ");
         phoneLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         phoneLabel.setForeground(Color.black);
         phoneLabel.setPreferredSize(new Dimension(120, 25));
@@ -175,17 +179,22 @@ public class PromotionPage extends JPanel {
         phoneInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         right.add(phoneInput);
 
-        JLabel pointLabel = new JLabel("Points: ");
+        // Đã đổi "Points: " -> "Điểm: "
+        JLabel pointLabel = new JLabel("Điểm: ");
         pointLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         pointLabel.setForeground(Color.black);
         pointLabel.setPreferredSize(new Dimension(120, 25));
         right.add(pointLabel);
 
-        pointGained = new JLabel("0 pts");
+        // Đã đổi "0 pts" -> "0 điểm"
+        pointGained = new JLabel("0 điểm");
         pointGained.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         pointGained.setForeground(Color.black);
         pointGained.setPreferredSize(new Dimension(140, 25));
         right.add(pointGained);
+        
+        // Bạn có biến discount nhưng không có JLabel hiển thị trên giao diện, 
+        // tôi giữ nguyên như code gốc để không làm thay đổi layout.
 
         tbPanel.add(right);
 
@@ -262,10 +271,10 @@ public class PromotionPage extends JPanel {
         left.setBorder(lineBorder);
         left.setOpaque(false);
 
-        JLabel searchLabel = new JLabel("Search Customers:");
+        // Đã đổi "Search Customers:" -> "Tìm Kiếm Khách Hàng:"
+        JLabel searchLabel = new JLabel("Tìm Kiếm Khách Hàng:");
         searchLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         searchLabel.setForeground(Color.black);
-        searchLabel.setPreferredSize(new Dimension(130, 25)); // Thay đổi kích thước cho phù hợp
         left.add(searchLabel);
 
         JTextField searchBar = new JTextField();
@@ -292,28 +301,32 @@ public class PromotionPage extends JPanel {
         right.setPreferredSize(new Dimension(490, 35));
         right.setOpaque(false);
 
-        JButton addButton = new JButton("Add");
+        // Đã đổi "Add" -> "Thêm"
+        JButton addButton = new JButton("Thêm");
         addButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         addButton.setPreferredSize(new Dimension(100, 25));
         addButton.setForeground(Color.black);
         addButton.setBackground(new Color(241, 211, 178));
         right.add(addButton);
 
-        JButton deleteButton = new JButton("Delete");
+        // Đã đổi "Delete" -> "Xóa"
+        JButton deleteButton = new JButton("Xóa");
         deleteButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         deleteButton.setPreferredSize(new Dimension(100, 25));
         deleteButton.setForeground(Color.black);
         deleteButton.setBackground(new Color(241, 211, 178));
         right.add(deleteButton);
 
-        JButton cancelChangeButton = new JButton("Cancel changes");
+        // ĐÃ ĐỔI "Cancel changes" -> "Làm mới" (Refresh)
+        JButton cancelChangeButton = new JButton("Làm mới");
         cancelChangeButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         cancelChangeButton.setPreferredSize(new Dimension(140, 25));
         cancelChangeButton.setForeground(Color.black);
         cancelChangeButton.setBackground(new Color(241, 211, 178));
         right.add(cancelChangeButton);
 
-        JButton saveButton = new JButton("Save");
+        // Đã đổi "Save" -> "Lưu"
+        JButton saveButton = new JButton("Lưu");
         saveButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         saveButton.setPreferredSize(new Dimension(100, 25));
         saveButton.setForeground(Color.black);
@@ -328,16 +341,17 @@ public class PromotionPage extends JPanel {
         this.tableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Make "Points" column (index 4) uneditable
+                // Cột "Points" (index 4) không cho phép chỉnh sửa
                 return column != 4;
             }
         };
 
-        tableModel.addColumn("N0");
-        tableModel.addColumn("Name");
-        tableModel.addColumn("Day Of Birth");
-        tableModel.addColumn("Phone Number");
-        tableModel.addColumn("Points");
+        // Đã đổi header bảng
+        tableModel.addColumn("STT"); // Thay cho "N0"
+        tableModel.addColumn("Tên"); // Thay cho "Name"
+        tableModel.addColumn("Ngày Sinh"); // Thay cho "Day Of Birth"
+        tableModel.addColumn("Điện thoại"); // Thay cho "Phone Number"
+        tableModel.addColumn("Điểm"); // Thay cho "Points"
 
         JTable table = new JTable(tableModel);
         table.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
@@ -367,7 +381,13 @@ public class PromotionPage extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 id = idInput.getText();
                 name = nameInput.getText();
-                dob = LocalDate.parse(dbInput.getText(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                // CHÚ Ý: Đã thêm kiểm tra ngoại lệ để tránh lỗi định dạng ngày
+                try {
+                    dob = LocalDate.parse(dbInput.getText(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Ngày sinh không hợp lệ. Vui lòng nhập định dạng dd/MM/yyyy", "Lỗi Nhập Liệu", JOptionPane.ERROR_MESSAGE);
+                    return; 
+                }
                 phoneNumber = phoneInput.getText();
                 points = 0;
 
@@ -399,7 +419,8 @@ public class PromotionPage extends JPanel {
                     nameInput.setText((String) tableModel.getValueAt(selectedRow, 1));
                     dbInput.setText((String) tableModel.getValueAt(selectedRow, 2));
                     phoneInput.setText((String) tableModel.getValueAt(selectedRow, 3));
-                    pointGained.setText((String) tableModel.getValueAt(selectedRow, 4) + " pts");
+                    // Đã đổi " pts" -> " điểm"
+                    pointGained.setText((String) tableModel.getValueAt(selectedRow, 4) + " điểm");
 
                     // Delete employee
                     memberList.deleteMember((String) tableModel.getValueAt(selectedRow, 0));
@@ -407,7 +428,8 @@ public class PromotionPage extends JPanel {
                     // Delete the selected row
                     tableModel.removeRow(selectedRow);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Please select a row to delete", "Delete Error",
+                    // Đã dịch thông báo lỗi
+                    JOptionPane.showMessageDialog(null, "Vui lòng chọn một hàng để xóa", "Lỗi Xóa",
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -423,8 +445,9 @@ public class PromotionPage extends JPanel {
                         nameInput.setText((String) tableModel.getValueAt(selectedRow, 1));
                         dbInput.setText((String) tableModel.getValueAt(selectedRow, 2));
                         phoneInput.setText((String) tableModel.getValueAt(selectedRow, 3));
-                        pointGained.setText((String) tableModel.getValueAt(selectedRow, 4) + " pts");
-                        discount.setText((String) tableModel.getValueAt(selectedRow, 5) + "%");
+                        // Đã đổi " pts" -> " điểm"
+                        pointGained.setText((String) tableModel.getValueAt(selectedRow, 4) + " điểm");
+
                     }
                 }
             }

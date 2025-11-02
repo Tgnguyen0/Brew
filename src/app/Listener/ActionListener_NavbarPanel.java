@@ -32,8 +32,8 @@ public class ActionListener_NavbarPanel implements ActionListener {
             case "Sản Phẩm":
                 cardLayout.show(BrewGUI.pageContainer, "Product Page");
                 break;
-            case "Khuyến Mại":
-                cardLayout.show(BrewGUI.pageContainer, "Promotion Page");
+            case "Khách Hàng":
+                cardLayout.show(BrewGUI.pageContainer, "Customer Page");
                 break;
             case "Thống Kê":
                 cardLayout.show(BrewGUI.pageContainer, "Statistic Page");
