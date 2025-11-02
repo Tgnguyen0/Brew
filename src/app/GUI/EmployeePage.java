@@ -75,7 +75,6 @@ public class EmployeePage extends JPanel {
         panel.setLayout(new BorderLayout());
         panel.setPreferredSize(new Dimension(1100, 200));
         panel.setOpaque(false);
-        // panel.setBackground(new Color(225, 203, 177));
 
         JPanel emptyW = new JPanel();
         emptyW.setPreferredSize(new Dimension(15, 300));
@@ -112,7 +111,7 @@ public class EmployeePage extends JPanel {
         left.setOpaque(false);
         left.setPreferredSize(new Dimension(330, 300));
 
-        JLabel idLabel = new JLabel("Id: ");
+        JLabel idLabel = new JLabel("Mã nhân viên:");
         idLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         idLabel.setForeground(Color.black);
         idLabel.setPreferredSize(new Dimension(120, 25));
@@ -126,7 +125,7 @@ public class EmployeePage extends JPanel {
         idInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         left.add(idInput);
 
-        JLabel nameLabel = new JLabel("Name: ");
+        JLabel nameLabel = new JLabel("Họ và tên:");
         nameLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         nameLabel.setForeground(Color.black);
         nameLabel.setPreferredSize(new Dimension(120, 25));
@@ -140,7 +139,7 @@ public class EmployeePage extends JPanel {
         nameInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         left.add(nameInput);
 
-        JLabel dbLabel = new JLabel("Birth Day: ");
+        JLabel dbLabel = new JLabel("Ngày sinh :");
         dbLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         dbLabel.setForeground(Color.black);
         dbLabel.setPreferredSize(new Dimension(120, 25));
@@ -161,7 +160,7 @@ public class EmployeePage extends JPanel {
         right.setOpaque(false);
         right.setPreferredSize(new Dimension(330, 300));
 
-        JLabel phoneLabel = new JLabel("Phone: ");
+        JLabel phoneLabel = new JLabel("Số điện thoại:");
         phoneLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         phoneLabel.setForeground(Color.black);
         phoneLabel.setPreferredSize(new Dimension(120, 25));
@@ -175,7 +174,7 @@ public class EmployeePage extends JPanel {
         phoneInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         right.add(phoneInput);
 
-        JLabel responsibilityLabel = new JLabel("Responsibility: ");
+        JLabel responsibilityLabel = new JLabel("Chức vụ:");
         responsibilityLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         responsibilityLabel.setForeground(Color.black);
         responsibilityLabel.setPreferredSize(new Dimension(120, 25));
@@ -186,10 +185,10 @@ public class EmployeePage extends JPanel {
         responsibilityCategory.setForeground(Color.black);
         responsibilityCategory.setBackground(new Color(241, 211, 178));
         responsibilityCategory.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        responsibilityCategory.addItem("Admin");
-        responsibilityCategory.addItem("Cashier");
-        responsibilityCategory.addItem("Barista");
-        responsibilityCategory.addItem("Waiter");
+        responsibilityCategory.addItem("Quản trị");
+        responsibilityCategory.addItem("Thu ngân");
+        responsibilityCategory.addItem("Pha chế");
+        responsibilityCategory.addItem("Phục vụ");
         right.add(responsibilityCategory);
 
         tbPanel.add(right);
@@ -199,40 +198,27 @@ public class EmployeePage extends JPanel {
         JPanel imgPanel = new JPanel();
         imgPanel.setLayout(new BorderLayout());
         imgPanel.setPreferredSize(new Dimension(250, 300));
-        // Border lineBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, new
-        // Color(255, 213, 146));
-        // imgPanel.setBorder(lineBorder);
         imgPanel.setOpaque(false);
 
         String imagePath = "asset/user.png";
         Image scaledImage;
 
         try {
-            // Read the image from the file
             Image image = ImageIO.read(new File(imagePath));
-
-            // Scale the image
-            int newWidth = (int) (200 * 0.8); // Desired width
-            int newHeight = (int) (200 * 0.8); // Desired height
+            int newWidth = (int) (200 * 0.8);
+            int newHeight = (int) (200 * 0.8);
             scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-
-            // Create an ImageIcon from the scaled image
             ImageIcon imageIcon = new ImageIcon(scaledImage);
-
-            // Create a JLabel and set the icon
             JLabel imgLabel = new JLabel(FontIcon.of(Feather.USER, (int) (200 * 0.8), Color.black));
             imgLabel.setPreferredSize(new Dimension(250, 300));
             imgLabel.setHorizontalAlignment(JLabel.CENTER);
             imgLabel.setVerticalAlignment(JLabel.NORTH);
-            imgLabel.setBackground(Color.CYAN);
             imgPanel.add(imgLabel, BorderLayout.CENTER);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         tbPanel.add(imgPanel);
-
-        // tbiPanel.add(imgPanel, BorderLayout.SOUTH);
         panel.add(tbiPanel, BorderLayout.CENTER);
 
         add(panel, BorderLayout.NORTH);
@@ -267,10 +253,10 @@ public class EmployeePage extends JPanel {
         left.setBorder(lineBorder);
         left.setOpaque(false);
 
-        JLabel searchLabel = new JLabel("Search Employees:");
+        JLabel searchLabel = new JLabel("Tìm nhân viên:");
         searchLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         searchLabel.setForeground(Color.black);
-        searchLabel.setPreferredSize(new Dimension(130, 25)); // Thay đổi kích thước cho phù hợp
+        searchLabel.setPreferredSize(new Dimension(130, 25));
         left.add(searchLabel);
 
         JTextField searchBar = new JTextField();
@@ -278,11 +264,10 @@ public class EmployeePage extends JPanel {
         searchBar.setBackground(new Color(241, 211, 178));
         searchBar.setBorder(null);
         searchBar.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        searchBar.setPreferredSize(new Dimension(170, 25)); // Thay đổi kích thước cho phù hợp và vị trí
+        searchBar.setPreferredSize(new Dimension(170, 25));
         left.add(searchBar);
 
-        FontIcon lookingGlassIcon = FontIcon.of(Feather.SEARCH, 24, Color.BLACK);
-        JButton findProduct = new JButton(lookingGlassIcon);
+        JButton findProduct = new JButton(FontIcon.of(Feather.SEARCH, 24, Color.BLACK));
         findProduct.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         findProduct.setForeground(Color.black);
         findProduct.setBackground(new Color(241, 211, 178));
@@ -297,28 +282,28 @@ public class EmployeePage extends JPanel {
         right.setPreferredSize(new Dimension(490, 35));
         right.setOpaque(false);
 
-        JButton addButton = new JButton("Add");
+        JButton addButton = new JButton("Thêm");
         addButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         addButton.setPreferredSize(new Dimension(100, 25));
         addButton.setForeground(Color.black);
         addButton.setBackground(new Color(241, 211, 178));
         right.add(addButton);
 
-        JButton deleteButton = new JButton("Delete");
+        JButton deleteButton = new JButton("Xóa");
         deleteButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         deleteButton.setPreferredSize(new Dimension(100, 25));
         deleteButton.setForeground(Color.black);
         deleteButton.setBackground(new Color(241, 211, 178));
         right.add(deleteButton);
 
-        JButton cancelChangeButton = new JButton("Cancel changes");
+        JButton cancelChangeButton = new JButton("Hủy thay đổi");
         cancelChangeButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         cancelChangeButton.setPreferredSize(new Dimension(140, 25));
         cancelChangeButton.setForeground(Color.black);
         cancelChangeButton.setBackground(new Color(241, 211, 178));
         right.add(cancelChangeButton);
 
-        JButton saveButton = new JButton("Save");
+        JButton saveButton = new JButton("Lưu");
         saveButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         saveButton.setPreferredSize(new Dimension(100, 25));
         saveButton.setForeground(Color.black);
@@ -328,14 +313,13 @@ public class EmployeePage extends JPanel {
         panel.add(right);
         tablePanel.add(panel, BorderLayout.NORTH);
 
-        // panel.setBackground(new Color(225, 203, 177));
-
+        // ===== Bảng dữ liệu =====
         this.tableModel = new DefaultTableModel();
-        tableModel.addColumn("N0");
-        tableModel.addColumn("Name");
-        tableModel.addColumn("Day of Birth");
-        tableModel.addColumn("Phone Number");
-        tableModel.addColumn("Reposibility");
+        tableModel.addColumn("Mã");
+        tableModel.addColumn("Họ và tên");
+        tableModel.addColumn("Ngày sinh");
+        tableModel.addColumn("Số điện thoại");
+        tableModel.addColumn("Chức vụ");
 
         JTable table = new JTable(tableModel);
         table.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
@@ -348,7 +332,6 @@ public class EmployeePage extends JPanel {
         tableHeader.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         tableHeader.setDefaultRenderer(new CustomTableHeaderRenderer());
 
-        // Apply the custom renderer to each column
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
         }
@@ -376,7 +359,7 @@ public class EmployeePage extends JPanel {
                 nameInput.setText("");
                 dbInput.setText("");
                 phoneInput.setText("");
-                responsibilityCategory.setSelectedItem("Admin");
+                responsibilityCategory.setSelectedItem("Quản trị");
 
                 Vector<String> rowData = new Vector<>();
                 rowData.add(id);
@@ -393,14 +376,15 @@ public class EmployeePage extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
-                    // Delete employee
                     employeeList.deleteEmployee((String) tableModel.getValueAt(selectedRow, 0));
-
-                    // Delete the selected row
                     tableModel.removeRow(selectedRow);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Please select a row to delete", "Delete Error",
-                            JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "Vui lòng chọn một dòng để xóa",
+                        "Lỗi xóa",
+                        JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         });

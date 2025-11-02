@@ -96,7 +96,7 @@ public class ProductPage extends JPanel {
         left.setOpaque(false);
         left.setPreferredSize(new Dimension(330, 300));
 
-        JLabel idLabel = new JLabel("Id: ");
+        JLabel idLabel = new JLabel("Mã: ");
         idLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         idLabel.setForeground(Color.black);
         idLabel.setPreferredSize(new Dimension(120, 25));
@@ -110,7 +110,7 @@ public class ProductPage extends JPanel {
         idInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
         left.add(idInput);
 
-        JLabel nameLabel = new JLabel("Name: ");
+        JLabel nameLabel = new JLabel("Tên: ");
         nameLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         nameLabel.setForeground(Color.black);
         nameLabel.setPreferredSize(new Dimension(120, 25));
@@ -124,7 +124,7 @@ public class ProductPage extends JPanel {
         nameInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
         left.add(nameInput);
 
-        JLabel sizeLabel = new JLabel("Size: ");
+        JLabel sizeLabel = new JLabel("Kích cỡ: ");
         sizeLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         sizeLabel.setForeground(Color.black);
         sizeLabel.setPreferredSize(new Dimension(120, 25));
@@ -145,7 +145,7 @@ public class ProductPage extends JPanel {
         right.setOpaque(false);
         right.setPreferredSize(new Dimension(330, 300));
 
-        JLabel priceLabel = new JLabel("Price: ");
+        JLabel priceLabel = new JLabel("Giá: ");
         priceLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         priceLabel.setForeground(Color.black);
         priceLabel.setPreferredSize(new Dimension(120, 25));
@@ -159,7 +159,7 @@ public class ProductPage extends JPanel {
         priceInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
         right.add(priceInput);
 
-        JLabel categoryLabel = new JLabel("Category: ");
+        JLabel categoryLabel = new JLabel("Loại: ");
         categoryLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         categoryLabel.setForeground(Color.black);
         categoryLabel.setPreferredSize(new Dimension(120, 25));
@@ -171,19 +171,19 @@ public class ProductPage extends JPanel {
         categoryComboBox.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         categoryComboBox.setForeground(Color.black);
         categoryComboBox.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        categoryComboBox.addItem("Coffee");
-        categoryComboBox.addItem("Juice");
-        categoryComboBox.addItem("Cocoa");
-        categoryComboBox.addItem("Tea");
+        categoryComboBox.addItem("Cà phê");
+        categoryComboBox.addItem("Nước ép");
+        categoryComboBox.addItem("Ca Cao");
+        categoryComboBox.addItem("Trà");
         right.add(categoryComboBox);
 
-        JLabel statusLabel = new JLabel("Status: ");
+        JLabel statusLabel = new JLabel("Trạng thái: ");
         statusLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         statusLabel.setForeground(Color.black);
         statusLabel.setPreferredSize(new Dimension(120, 25));
         right.add(statusLabel);
 
-        statusRadioButton = new JRadioButton("In stock");
+        statusRadioButton = new JRadioButton("Còn phục vụ");
         statusRadioButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         statusRadioButton.setForeground(Color.black);
         right.add(statusRadioButton);
@@ -264,7 +264,7 @@ public class ProductPage extends JPanel {
         left.setBorder(lineBorder);
         left.setOpaque(false);
 
-        JLabel searchLabel = new JLabel("Search Products:");
+        JLabel searchLabel = new JLabel("Tìm sản phẩm:");
         searchLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         searchLabel.setForeground(Color.black);
         searchLabel.setPreferredSize(new Dimension(120, 25)); // Thay đổi kích thước cho phù hợp
@@ -294,28 +294,28 @@ public class ProductPage extends JPanel {
         right.setPreferredSize(new Dimension(490, 35));
         right.setOpaque(false);
 
-        JButton addButton = new JButton("Add");
+        JButton addButton = new JButton("Thêm");
         addButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         addButton.setPreferredSize(new Dimension(100, 25));
         addButton.setForeground(Color.black);
         addButton.setBackground(new Color(241, 211, 178));
         right.add(addButton);
 
-        JButton deleteButton = new JButton("Delete");
+        JButton deleteButton = new JButton("Xóa");
         deleteButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         deleteButton.setPreferredSize(new Dimension(100, 25));
         deleteButton.setForeground(Color.black);
         deleteButton.setBackground(new Color(241, 211, 178));
         right.add(deleteButton);
 
-        JButton cancelChangeButton = new JButton("Cancel Change");
+        JButton cancelChangeButton = new JButton("Hủy thay đổi");
         cancelChangeButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         cancelChangeButton.setPreferredSize(new Dimension(140, 25));
         cancelChangeButton.setForeground(Color.black);
         cancelChangeButton.setBackground(new Color(241, 211, 178));
         right.add(cancelChangeButton);
 
-        JButton saveButton = new JButton("Save");
+        JButton saveButton = new JButton("Lưu");
         saveButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         saveButton.setPreferredSize(new Dimension(100, 25));
         saveButton.setForeground(Color.black);
@@ -330,11 +330,11 @@ public class ProductPage extends JPanel {
 
         this.tableModel = new DefaultTableModel();
         tableModel.addColumn("N0");
-        tableModel.addColumn("Name");
-        tableModel.addColumn("Size");
-        tableModel.addColumn("Price");
-        tableModel.addColumn("Category");
-        tableModel.addColumn("Status");
+        tableModel.addColumn("Tên");
+        tableModel.addColumn("Kích cỡ");
+        tableModel.addColumn("Giá");
+        tableModel.addColumn("Loại");
+        tableModel.addColumn("Trạng thái");
 
         JTable table = new JTable(tableModel);
         table.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
