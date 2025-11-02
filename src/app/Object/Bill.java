@@ -1,5 +1,6 @@
 package app.Object;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 public class Bill {
@@ -7,6 +8,7 @@ public class Bill {
     String empId;
     double price;
     LocalDate date;
+    Timestamp now;
 
     public Bill() {
     }
@@ -16,6 +18,12 @@ public class Bill {
         this.empId = empId;
         this.price = price;
         this.date = date;
+    }
+
+    public Bill(String billId, LocalDate date, Timestamp now) {
+        this.billId = billId;
+        this.date = date;
+        this.now = now;
     }
 
     public String getBillId() {

@@ -1,6 +1,7 @@
 package app.Object;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class BillDetail implements Serializable {
     String billId;
@@ -11,6 +12,11 @@ public class BillDetail implements Serializable {
 
     public BillDetail(String billId, String itemId, int quantity) {
         this.billId = billId;
+        this.itemId = itemId;
+        this.quantity = quantity;
+    }
+
+    public BillDetail(String itemId, int quantity) {
         this.itemId = itemId;
         this.quantity = quantity;
     }
@@ -53,5 +59,29 @@ public class BillDetail implements Serializable {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BillDetail that = (BillDetail) o;
+        return Objects.equals(itemId, that.itemId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(itemId);
+    }
+
+    @Override
+    public String toString() {
+        return "BillDetail{" +
+                "billId='" + billId + '\'' +
+                ", itemId='" + itemId + '\'' +
+                ", quantity=" + quantity +
+                ", total_price=" + total_price +
+                ", INC=" + INC +
+                '}';
     }
 }

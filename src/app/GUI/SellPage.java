@@ -1,5 +1,6 @@
 package app.GUI;
 
+import app.Collections.Collection_BillDetails;
 import app.Collections.Collection_MenuItem;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
@@ -24,28 +25,29 @@ import org.kordamp.ikonli.swing.FontIcon;
 
 public class SellPage extends JPanel {
     public CustomFont customFont = new CustomFont();
-    public Collection_MenuItem collectionMenuItem = new Collection_MenuItem();
+    public Collection_BillDetails collectionBillDetails = new Collection_BillDetails();
 //    private Collection_BillDetails bdl = new Collection_BillDetails();
     private ActionListener_SellPage action;
-    public JRadioButton takeAwayRadioButton;
-    public JButton seatingButton;
-    private DefaultTableModel productTableModel;
-    private JTable productTable;
-    public List<Table> choosenTableList;
-    public int currentOffset = 0;
-    public int previousOffset = 0;
-    public List<ImagePanelButton> allProductButtons = new ArrayList<>();
-//    private final int PAGE_SIZE = 18;
-    public boolean isLoading = false;
+    public JTextField searchBar;
+    public JButton updateButton;
     public JButton loadProductButton;
     public JButton clearSearchButton;
     public JComboBox<String> productCategory;
-    public JPanel productPanel;
+    public int currentOffset = 0;
+    public int previousOffset = 0;
+    public List<ImagePanelButton> allProductButtons = new ArrayList<>();
+    public boolean isLoading = false;
     public GridBagConstraints gbc;
+    public JPanel productPanel;
+    public static DefaultTableModel productTableModel;
+    private JTable productTable;
+    public JRadioButton takeAwayRadioButton;
+    public JButton seatingButton;
+    public List<Table> choosenTableList;
+//    private final int PAGE_SIZE = 18;
+    public JButton toInvoiceButton;
     public JDialog loadingDialog;
     public JButton findProduct;
-    public JTextField searchBar;
-    public JButton updateButton;
     public JScrollBar sb;
 
     public SellPage() {
@@ -227,12 +229,6 @@ public class SellPage extends JPanel {
         productTableModel.addColumn("Số lượng");
         productTableModel.addColumn("Giá");
 
-        Object[] row = { "Cappuccino", "Hot", 1, 4.50 };
-        productTableModel.addRow(row);
-
-        Object[] row1 = { "Americano", "Hot", 1, 4.50 };
-        productTableModel.addRow(row1);
-
         productTable = new JTable(productTableModel);
         productTable.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         productTable.setForeground(Color.BLACK);
@@ -368,10 +364,11 @@ public class SellPage extends JPanel {
         funcPanel.add(Box.createHorizontalStrut(10));
 
         FontIcon invoiceIcon = FontIcon.of(Feather.FILE_TEXT, 24, Color.BLACK);
-        JButton toInvoiceButton = new JButton("Hóa đơn", invoiceIcon);
+        toInvoiceButton = new JButton("Hóa đơn", invoiceIcon);
         toInvoiceButton.setBackground(Color.white);
         toInvoiceButton.setForeground(Color.black);
         toInvoiceButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        toInvoiceButton.addActionListener(action);
         funcPanel.add(toInvoiceButton);
 
         ptPanel.add(scrollPane);
@@ -414,7 +411,7 @@ public class SellPage extends JPanel {
         int columns = 3;
         for (int i = 0; i < 18; i++) {
             ImagePanelButton productButton = new ImagePanelButton(menu.get(i),
-                    collectionMenuItem,
+                    collectionBillDetails,
                     "asset/placeholder.png", 200,
                     200,
                     0.8);

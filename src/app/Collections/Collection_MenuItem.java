@@ -16,7 +16,10 @@ public class Collection_MenuItem {
     }
 
     public boolean addItem(MenuItem newItem) {
-        return listOfItem.add(newItem);
+        if (!listOfItem.contains(newItem)) {
+            return listOfItem.add(newItem);
+        }
+        return false;
     }
 
     public boolean addAllItem(ArrayList<MenuItem> newList) {
