@@ -64,7 +64,41 @@ public class ActionListener_SellPage implements ActionListener {
         }
 
         if (o == sellPage.updateButton) {
-            // System.out.println(sellPage.collectionMenuItem.getListOfItem());
+            if (SellPage.productTable.isEditing()) {
+                SellPage.productTable.getCellEditor().stopCellEditing();
+            }
+
+            for (int row = 0; row < SellPage.productTable.getRowCount(); row++) {
+                Object quantityObj = SellPage.productTable.getValueAt(row, 1);
+                Object priceObj = SellPage.productTable.getValueAt(row, 2);
+
+                int amount;
+                float price;
+
+                // Ép kiểu an toàn
+                if (quantityObj instanceof String)
+                    amount = Integer.parseInt((String) quantityObj);
+                else if (quantityObj instanceof Number)
+                    amount = ((Number) quantityObj).intValue();
+                else
+                    amount = 0;
+
+                if (priceObj instanceof String)
+                    price = Float.parseFloat((String) priceObj);
+                else if (priceObj instanceof Number)
+                    price = ((Number) priceObj).floatValue();
+                else
+                    price = 0f;
+
+                sellPage.collectionBillDetails.updateBDOnOrder(row, amount, price);
+            }
+        }
+
+        if (o == sellPage.deleteButton) {
+            for (int i = SellPage.productTableModel.getRowCount() - 1; i >= 0; i--) {
+                SellPage.productTableModel.removeRow(i);
+            }
+            sellPage.collectionBillDetails.removeAll();
         }
 
         if (o == sellPage.toInvoiceButton) {
