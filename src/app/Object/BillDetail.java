@@ -49,8 +49,8 @@ public class BillDetail implements Serializable {
         return this.total_price;
     }
 
-    public void setTotal_price(int quantity, double item_price) {
-        this.total_price = quantity * (item_price + INC);
+    public void setTotal_price(int ammount, double price) {
+        this.total_price = price + INC * ammount;
     }
 
     public int getQuantity() {

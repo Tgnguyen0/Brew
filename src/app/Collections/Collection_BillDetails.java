@@ -1,5 +1,6 @@
 package app.Collections;
 
+import app.Object.Bill;
 import app.Object.BillDetail;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class Collection_BillDetails {
             if (bd.getItemId().equals(billDetail.getItemId())) {
                 bd.setQuantity(billDetail.getQuantity());
                 bd.setTotal_price(bd.getQuantity(), bd.getTotal_price());
-                System.out.println(bds);
+                System.out.println("updateBillDetail: " + bds);
 
                 return true;
             }
@@ -39,18 +40,39 @@ public class Collection_BillDetails {
         return false;
     }
 
-    public Boolean addListBillDetail(ArrayList<BillDetail> bdl) {
-        return bds.addAll(bdl);
+    public void updateBDOnOrder(int pos, int quantity, float price) {
+        for (int i = 0 ; i < bds.size(); i++) {
+            if (i == pos) {
+                bds.get(i).setQuantity(quantity);
+                bds.get(i).setTotal_price(bds.get(i).getQuantity(), price);
+            }
+        }
+
+        System.out.println("updateBDOnOrder: " + bds);
     }
 
-    public boolean deleteBillDetail(String id) {
+    public BillDetail getSelectedBillDetails(int pos) {
+        for (int i = 0 ; i < bds.size(); i++) {
+            if (i == pos) {
+                return bds.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    public boolean deleteBillDetailById(String id) {
         for (int i = 0 ; i < bds.size() ; i++) {
-            // if (bds.get(i).getItem().getId().equals(id)) {
-            //     bds.remove(i);
-            //     return true;
-            // }
+             if (bds.get(i).getItemId().equals(id)) {
+                 bds.remove(bds.get(i));
+                 return true;
+             }
         }
 
         return false;
+    }
+
+    public boolean removeAll() {
+        return bds.removeAll(bds);
     }
 }

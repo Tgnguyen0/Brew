@@ -4,6 +4,7 @@ import app.Collections.Collection_BillDetails;
 import app.Collections.Collection_MenuItem;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
+import app.Components.CustomUpdateCellEditor;
 import app.Components.ImagePanelButton;
 import app.DAO.DAO_MenuItem;
 import app.InitFont.CustomFont;
@@ -16,6 +17,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import app.Object.MenuItem;
@@ -40,11 +42,12 @@ public class SellPage extends JPanel {
     public GridBagConstraints gbc;
     public JPanel productPanel;
     public static DefaultTableModel productTableModel;
-    private JTable productTable;
+    public static JTable productTable;
     public JRadioButton takeAwayRadioButton;
     public JButton seatingButton;
     public List<Table> choosenTableList;
 //    private final int PAGE_SIZE = 18;
+    public JButton deleteButton;
     public JButton toInvoiceButton;
     public JDialog loadingDialog;
     public JButton findProduct;
@@ -221,8 +224,8 @@ public class SellPage extends JPanel {
         productTableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Make "Points" column (index 0,1,2) uneditable
-                return column != 0 && column != 1 && column != 3;
+                // Make "Points" column (index 0,2) uneditable
+                return column != 0 && column != 2;
             }
         };
         productTableModel.addColumn("Tên");
@@ -233,10 +236,11 @@ public class SellPage extends JPanel {
         productTable.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         productTable.setForeground(Color.BLACK);
         productTable.setBackground(Color.white);
+        productTable.setRowHeight(30);
 
         TableColumnModel modelTable = productTable.getColumnModel();
         modelTable.getColumn(0).setPreferredWidth(80);
-        modelTable.getColumn(1).setPreferredWidth(20);
+        modelTable.getColumn(1).setPreferredWidth(80);
         modelTable.getColumn(2).setPreferredWidth(80);
 
         JTableHeader tableHeader = productTable.getTableHeader();
@@ -248,6 +252,8 @@ public class SellPage extends JPanel {
         tableHeader.setDefaultRenderer(new CustomTableHeaderRenderer());
         for (int i = 0; i < productTable.getColumnCount(); i++) {
             productTable.getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
+            if (i == 1)
+                productTable.getColumnModel().getColumn(i).setCellEditor(new CustomUpdateCellEditor(collectionBillDetails));
         }
 
         JScrollPane tableScrollPane = new JScrollPane(productTable);
@@ -356,10 +362,11 @@ public class SellPage extends JPanel {
         funcPanel.add(Box.createHorizontalStrut(10));
 
         FontIcon trashIcon = FontIcon.of(Feather.TRASH, 24, Color.BLACK);
-        JButton deleteButton = new JButton("Xóa", trashIcon);
+        deleteButton = new JButton("Xóa", trashIcon);
         deleteButton.setBackground(Color.white);
         deleteButton.setForeground(Color.black);
         deleteButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        deleteButton.addActionListener(action);
         funcPanel.add(deleteButton);
         funcPanel.add(Box.createHorizontalStrut(10));
 
