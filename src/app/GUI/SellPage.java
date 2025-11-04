@@ -409,10 +409,6 @@ public class SellPage extends JPanel {
         loadingDialog.setVisible(true);
     }
 
-    public void showLoadingSuccessfullyOptionPane() {
-        JOptionPane.showMessageDialog(this, "Tải thêm 18 sản phẩm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
-    }
-
     public void loadFirst18MenuItem(GridBagConstraints gbc) {
         List<MenuItem> menu = DAO_MenuItem.get18MenuItems(0, 18);
         int columns = 3;
@@ -432,5 +428,17 @@ public class SellPage extends JPanel {
             allProductButtons.add(productButton);
         }
         currentOffset = 18;
+    }
+
+    public void showLoadingSuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Tải thêm 18 sản phẩm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showFindingSuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Tìm kiếm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showCategorizingSuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Lấy theo loại thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
     }
 }
