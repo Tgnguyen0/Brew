@@ -107,6 +107,10 @@ public class ActionListener_SellPage implements ActionListener {
         }
     }
 
+//    public void reloadAllProducts() { sellPage.productPanel.removeAll(); sellPage.currentOffset = sellPage.previousOffset; GridBagConstraints gbc = new GridBagConstraints(); gbc.insets = new Insets(10, 10, 10, 10); int columns = 3; for (int i = 0; i < sellPage.allProductButtons.size(); i++) { gbc.gridx = i % columns; gbc.gridy = i / columns; sellPage.productPanel.add(sellPage.allProductButtons.get(i), gbc); } sellPage.productPanel.revalidate(); sellPage.productPanel.repaint(); }
+//    private void loadBasedOnName(GridBagConstraints gbc, String name) { if (sellPage.isLoading) return; sellPage.isLoading = true; JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage); sellPage.showLoadingDialog(frame); SwingWorker<List<MenuItem>, Void> worker = new SwingWorker<>() { @Override protected List<MenuItem> doInBackground() { return DAO_MenuItem.findMultipleMenuItem(name); } @Override protected void done() { try { List<MenuItem> menuBatch = get(); sellPage.productPanel.removeAll(); int columns = 3; int index = 0; for (MenuItem item : menuBatch) { ImagePanelButton button = new ImagePanelButton( item, sellPage.collectionBillDetails, "asset/placeholder.png", 200, 200, 0.8 ); button.setPreferredSize(new Dimension(250, 250)); gbc.gridx = index % columns; gbc.gridy = index / columns; sellPage.productPanel.add(button, gbc); index++; } sellPage.productPanel.revalidate(); sellPage.productPanel.repaint(); } catch (Exception ex) { ex.printStackTrace(); } finally { sellPage.loadingDialog.dispose(); sellPage.showLoadingSuccessfullyOptionPane(); sellPage.isLoading = false; } } }; worker.execute(); SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true)); }
+//    private void loadMoreMenuItems(GridBagConstraints gbc) { if (sellPage.isLoading) return; sellPage.isLoading = true; JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage); sellPage.showLoadingDialog(frame); SwingWorker<Void, ImagePanelButton> worker = new SwingWorker<>() { List<MenuItem> menuBatch; @Override protected Void doInBackground() { menuBatch = DAO_MenuItem.get18MenuItems(sellPage.currentOffset, 18); for (MenuItem item : menuBatch) { ImagePanelButton button = new ImagePanelButton( item, sellPage.collectionBillDetails, "asset/placeholder.png", 200, 200, 0.8 ); button.setPreferredSize(new Dimension(250, 250)); publish(button); sellPage.currentOffset++; try { Thread.sleep(50); } catch (InterruptedException ignored) {} } return null; } @Override protected void process(List<ImagePanelButton> chunks) { int columns = 3; for (ImagePanelButton productButton : chunks) { int index = sellPage.productPanel.getComponentCount(); gbc.gridx = index % columns; gbc.gridy = index / columns; sellPage.productPanel.add(productButton, gbc); sellPage.allProductButtons.add(productButton); } sellPage.productPanel.revalidate(); sellPage.productPanel.repaint(); } @Override protected void done() { sellPage.loadingDialog.dispose(); sellPage.showLoadingSuccessfullyOptionPane(); sellPage.isLoading = false; sellPage.previousOffset = sellPage.currentOffset; } }; worker.execute(); SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true)); }
+
     public void reloadAllProducts() {
         sellPage.productPanel.removeAll();
         sellPage.currentOffset = sellPage.previousOffset;
@@ -125,6 +129,62 @@ public class ActionListener_SellPage implements ActionListener {
         sellPage.productPanel.repaint();
     }
 
+//    private void loadMoreMenuItems(GridBagConstraints gbc) {
+//        if (sellPage.isLoading) return;
+//        sellPage.isLoading = true;
+//
+//        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
+//        sellPage.showLoadingDialog(frame);
+//
+//        SwingWorker<Void, ImagePanelButton> worker = new SwingWorker<>() {
+//            List<MenuItem> menuBatch;
+//
+//            @Override protected Void doInBackground() {
+//                menuBatch = DAO_MenuItem.get18MenuItems(sellPage.currentOffset, 18);
+//                for (MenuItem item : menuBatch) {
+//                    ImagePanelButton button = new ImagePanelButton(
+//                            item,
+//                            sellPage.collectionBillDetails,
+//                            "asset/placeholder.png",
+//                            200, 200, 0.8
+//                    );
+//
+//                    button.setPreferredSize(new Dimension(250, 250));
+//                    publish(button);
+//                    sellPage.currentOffset++;
+//
+//                    try { Thread.sleep(50); }
+//                    catch (InterruptedException ignored) {}
+//                }
+//
+//                return null;
+//            }
+//
+//            @Override protected void process(List<ImagePanelButton> chunks) {
+//                int columns = 3;
+//                for (ImagePanelButton productButton : chunks) {
+//                    int index = sellPage.productPanel.getComponentCount();
+//                    gbc.gridx = index % columns;
+//                    gbc.gridy = index / columns;
+//                    sellPage.productPanel.add(productButton, gbc);
+//                    sellPage.allProductButtons.add(productButton);
+//                }
+//                sellPage.productPanel.revalidate();
+//                sellPage.productPanel.repaint();
+//            }
+//
+//            @Override protected void done() {
+//                sellPage.loadingDialog.dispose();
+//                sellPage.showLoadingSuccessfullyOptionPane();
+//                sellPage.isLoading = false;
+//                sellPage.previousOffset = sellPage.currentOffset;
+//            }
+//        };
+//
+//        worker.execute();
+//        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
+//    }
+
     private void loadMoreMenuItems(GridBagConstraints gbc) {
         if (sellPage.isLoading) return;
         sellPage.isLoading = true;
@@ -132,31 +192,59 @@ public class ActionListener_SellPage implements ActionListener {
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
         sellPage.showLoadingDialog(frame);
 
-        var worker = new MenuItemLoaderWorker(
-                sellPage, gbc, null, MODE.LOAD, // Chế độ load thêm
-                (menuBatch) -> {
-                    int columns = 3;
-                    for (MenuItem item : menuBatch) {
-                        ImagePanelButton button = new ImagePanelButton(
-                                item, sellPage.collectionBillDetails, "asset/placeholder.png", 200, 200, 0.8
-                        );
-                        button.setPreferredSize(new Dimension(250, 250));
-                        int index = sellPage.productPanel.getComponentCount();
-                        gbc.gridx = index % columns;
-                        gbc.gridy = index / columns;
-                        sellPage.productPanel.add(button, gbc);
-                        sellPage.allProductButtons.add(button);
-                        sellPage.currentOffset++;
-                    }
-                    sellPage.productPanel.revalidate();
-                    sellPage.productPanel.repaint();
-                    sellPage.previousOffset = sellPage.currentOffset;
-                }
-        );
-
+        var worker = new MenuItemLoaderWorker(sellPage, gbc, null, MODE.LOAD);
         worker.execute();
-        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
     }
+
+
+//    private void loadBasedOnName(GridBagConstraints gbc, String name) {
+//        if (sellPage.isLoading) return;
+//        sellPage.isLoading = true;
+//        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
+//        sellPage.showLoadingDialog(frame);
+//
+//        SwingWorker<List<MenuItem>, Void> worker = new SwingWorker<>() {
+//            @Override
+//            protected List<MenuItem> doInBackground() {
+//                return DAO_MenuItem.findMultipleMenuItem(name);
+//            }
+//
+//            @Override
+//            protected void done() {
+//                try {
+//                    List<MenuItem> menuBatch = get();
+//                    sellPage.productPanel.removeAll();
+//                    int columns = 3;
+//                    int index = 0;
+//                    for (MenuItem item : menuBatch) {
+//                        ImagePanelButton button = new ImagePanelButton(
+//                                item,
+//                                sellPage.collectionBillDetails,
+//                                "asset/placeholder.png",
+//                                200,
+//                                200,
+//                                0.8 );
+//                        button.setPreferredSize(new Dimension(250, 250));
+//                        gbc.gridx = index % columns;
+//                        gbc.gridy = index / columns;
+//                        sellPage.productPanel.add(button, gbc);
+//                        index++;
+//                    }
+//                    sellPage.productPanel.revalidate();
+//                    sellPage.productPanel.repaint();
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                } finally {
+//                    sellPage.loadingDialog.dispose();
+//                    sellPage.showLoadingSuccessfullyOptionPane();
+//                    sellPage.isLoading = false;
+//                }
+//            }
+//        };
+//
+//        worker.execute();
+//        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
+//    }
 
     private void loadBasedOnName(GridBagConstraints gbc, String name) {
         if (sellPage.isLoading) return;
@@ -165,62 +253,86 @@ public class ActionListener_SellPage implements ActionListener {
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
         sellPage.showLoadingDialog(frame);
 
-        var worker = new MenuItemLoaderWorker(
-                sellPage, gbc, name, MODE.SEARCH, // Chế độ search
-                (menuBatch) -> {
-                    sellPage.productPanel.removeAll();
-                    int columns = 3;
-                    int index = 0;
-                    for (MenuItem item : menuBatch) {
-                        ImagePanelButton button = new ImagePanelButton(
-                                item, sellPage.collectionBillDetails, "asset/placeholder.png", 200, 200, 0.8
-                        );
-                        button.setPreferredSize(new Dimension(250, 250));
-
-                        gbc.gridx = index % columns;
-                        gbc.gridy = index / columns;
-                        sellPage.productPanel.add(button, gbc);
-                        index++;
-                    }
-                    sellPage.productPanel.revalidate();
-                    sellPage.productPanel.repaint();
-                }
-        );
-
+        sellPage.productPanel.removeAll();
+        var worker = new MenuItemLoaderWorker(sellPage, gbc, name, MODE.SEARCH);
         worker.execute();
-        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
     }
 
-    private void loadBaseOnCategory(GridBagConstraints gbc, String category) {
+//    private void loadBasedOnName(GridBagConstraints gbc, String name) {
+//        if (sellPage.isLoading) return;
+//        sellPage.isLoading = true;
+//
+//        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
+//        sellPage.showLoadingDialog(frame);
+//
+//        var worker = new MenuItemLoaderWorker(
+//                sellPage, gbc, name, MODE.SEARCH, // Chế độ search
+//                (menuBatch) -> {
+//                    sellPage.productPanel.removeAll();
+//                    int columns = 3;
+//                    int index = 0;
+//                    for (MenuItem item : menuBatch) {
+//                        ImagePanelButton button = new ImagePanelButton(
+//                                item, sellPage.collectionBillDetails, "asset/placeholder.png", 200, 200, 0.8
+//                        );
+//                        button.setPreferredSize(new Dimension(250, 250));
+//
+//                        gbc.gridx = index % columns;
+//                        gbc.gridy = index / columns;
+//                        sellPage.productPanel.add(button, gbc);
+//                        index++;
+//                    }
+//                    sellPage.productPanel.revalidate();
+//                    sellPage.productPanel.repaint();
+//                }
+//        );
+//
+//        worker.execute();
+//        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
+//    }
+
+//    private void loadBaseOnCategory(GridBagConstraints gbc, String category) {
+//        if (sellPage.isLoading) return;
+//        sellPage.isLoading = true;
+//
+//        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
+//        sellPage.showLoadingDialog(frame);
+//
+//        var worker = new MenuItemLoaderWorker(
+//                sellPage, gbc, category, MODE.CATEGORY, // Chế độ category
+//                (menuBatch) -> {
+//                    sellPage.productPanel.removeAll();
+//                    int columns = 3;
+//                    int index = 0;
+//                    for (MenuItem item : menuBatch) {
+//                        ImagePanelButton button = new ImagePanelButton(
+//                                item, sellPage.collectionBillDetails,"asset/placeholder.png", 200, 200, 0.8
+//                        );
+//                        button.setPreferredSize(new Dimension(250, 250));
+//
+//                        gbc.gridx = index % columns;
+//                        gbc.gridy = index / columns;
+//                        sellPage.productPanel.add(button, gbc);
+//                        index++;
+//                    }
+//                    sellPage.productPanel.revalidate();
+//                    sellPage.productPanel.repaint();
+//                }
+//        );
+//
+//        worker.execute();
+//        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
+//    }
+
+    private void loadBaseOnCategory(GridBagConstraints gbc, String name) {
         if (sellPage.isLoading) return;
         sellPage.isLoading = true;
 
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
         sellPage.showLoadingDialog(frame);
 
-        var worker = new MenuItemLoaderWorker(
-                sellPage, gbc, category, MODE.CATEGORY, // Chế độ category
-                (menuBatch) -> {
-                    sellPage.productPanel.removeAll();
-                    int columns = 3;
-                    int index = 0;
-                    for (MenuItem item : menuBatch) {
-                        ImagePanelButton button = new ImagePanelButton(
-                                item, sellPage.collectionBillDetails,"asset/placeholder.png", 200, 200, 0.8
-                        );
-                        button.setPreferredSize(new Dimension(250, 250));
-
-                        gbc.gridx = index % columns;
-                        gbc.gridy = index / columns;
-                        sellPage.productPanel.add(button, gbc);
-                        index++;
-                    }
-                    sellPage.productPanel.revalidate();
-                    sellPage.productPanel.repaint();
-                }
-        );
-
+        sellPage.productPanel.removeAll();
+        var worker = new MenuItemLoaderWorker(sellPage, gbc, name, MODE.CATEGORY);
         worker.execute();
-        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
     }
 }
