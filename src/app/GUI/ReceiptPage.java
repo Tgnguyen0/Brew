@@ -3,6 +3,10 @@ package app.GUI;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
 import app.InitFont.CustomFont;
+import app.DAO.DAO_Bill;
+import app.Object.Bill;
+import app.Utils.PDF_Exporter;
+import java.io.IOException;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -34,6 +38,7 @@ import javax.swing.RowSorter.SortKey;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
+
 import javax.swing.table.TableColumn;
 
 public class ReceiptPage extends JPanel {
@@ -41,23 +46,14 @@ public class ReceiptPage extends JPanel {
     private DefaultTableModel productTableModel;
     private JTable productTable;
     private JTextField searchInput;
-    private JTextField fromDateInput; // Trường nhập ngày bắt đầu
-    private JTextField toDateInput;   // Trường nhập ngày kết thúc
+    private JTextField fromDateInput; 
+    private JTextField toDateInput; 
     private TableRowSorter<DefaultTableModel> sorter;
-    // Đã xóa: private DateSortControl dateSortControl; 
+    private DAO_Bill billDAO = new DAO_Bill();
 
-    // Dữ liệu mẫu ban đầu
-    private final Object[][] initialData = {
-        {1, "HD0001", "Nguyễn Văn A", "Trần Thị B", "0901234567", "25/10/2025 10:30", 3, "75,000"},
-        {2, "HD0002", "Lê Thị C", "Khách lẻ", "N/A", "25/10/2025 11:00", 2, "60,000"},
-        {3, "HD0003", "Nguyễn Văn A", "Phạm Văn D", "0909876543", "24/10/2025 15:45", 5, "120,000"},
-        {4, "HD0004", "Trần Văn E", "Nguyễn Thị F", "0912345678", "24/10/2025 09:15", 4, "95,000"},
-        {5, "HD0005", "Lê Thị C", "Khách đoàn", "N/A", "26/10/2025 14:00", 10, "250,000"},
-        {6, "HD0006", "Phạm Thị G", "Khách lẻ", "N/A", "27/10/2025 08:00", 1, "35,000"}
-    };
-
-    // Index của cột Creation Date (cột 5)
-    private static final int DATE_COLUMN_INDEX = 5; 
+    private static final int DATE_COLUMN_INDEX = 1; 
+    private static final int DATE_TIME_COLUMN_INDEX = 1; 
+    private static final int SOTIEN_COLUMN_INDEX = 6; 
 
     public ReceiptPage() {
         setPreferredSize(new Dimension(1100, 500));
@@ -65,8 +61,7 @@ public class ReceiptPage extends JPanel {
         setOpaque(true);
         setBackground(Color.white);
 
-        // --- Cải tiến Focus cho F5 ---
-        setFocusTraversalKeysEnabled(false); 
+        setFocusTraversalKeysEnabled(false);
         setFocusable(true);
         requestFocusInWindow();
         
@@ -85,9 +80,7 @@ public class ReceiptPage extends JPanel {
                 requestFocusInWindow();
             }
         });
-        // -----------------------------
-
-        // Vùng đệm 2 bên
+        
         JPanel emptyL = new JPanel();
         emptyL.setPreferredSize(new Dimension(16, 500));
         emptyL.setOpaque(false);
@@ -100,8 +93,6 @@ public class ReceiptPage extends JPanel {
 
         add(createReceiptPanel(), BorderLayout.CENTER);
         
-        // Thêm tiêu đề vào NORTH
-        // Đã đổi: "Invoices List" -> "Danh Sách Hóa Đơn"
         JLabel introLabel = new JLabel("<html><div style='font-size:20px'><b>Danh Sách Hóa Đơn</b></div></html>", SwingConstants.CENTER);
         introLabel.setForeground(Color.BLACK);
         introLabel.setBackground(Color.white);
@@ -115,7 +106,6 @@ public class ReceiptPage extends JPanel {
         mainPanel.setOpaque(false);
         mainPanel.setLayout(new BorderLayout(0, 10)); 
 
-        // --- Table Setup (Đặt trước để có productTable và sorter) ---
         productTableModel = createTableModel();
         loadInitialData();
         productTable = new JTable(productTableModel);
@@ -123,7 +113,6 @@ public class ReceiptPage extends JPanel {
         sorter = new TableRowSorter<>(productTableModel);
         productTable.setRowSorter(sorter);
         
-        // Cài đặt Comparator cho cột Creation Date để sắp xếp đúng ngày tháng
         setupDateSorter(); 
         
         customizeTable(productTable);
@@ -134,44 +123,46 @@ public class ReceiptPage extends JPanel {
         
         mainPanel.add(scrollPane, BorderLayout.CENTER);
         
-        // Sắp xếp mặc định: Creation Date, Mới nhất trước (DESCENDING)
         setupDefaultSort();
         
-        // --- Panel Chức năng TOP (Tìm kiếm & Lọc ngày) ---
         JPanel topControlPanel = createTopControlPanel();
         mainPanel.add(topControlPanel, BorderLayout.NORTH);
 
         return mainPanel;
     }
     
-    /**
-     * Cài đặt Comparator tùy chỉnh để sắp xếp cột ngày tháng (dd/MM/yyyy HH:mm)
-     */
     private void setupDateSorter() {
-        sorter.setComparator(DATE_COLUMN_INDEX, new Comparator<String>() {
-            private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        sorter.setComparator(DATE_TIME_COLUMN_INDEX, new Comparator<String>() { 
+            private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); 
             
             @Override
             public int compare(String dateStr1, String dateStr2) {
                 try {
                     Date date1 = formatter.parse(dateStr1);
                     Date date2 = formatter.parse(dateStr2);
-                    // Sắp xếp ngày
                     return date1.compareTo(date2); 
                 } catch (ParseException e) {
-                    // Nếu lỗi, sắp xếp theo chuỗi
                     return dateStr1.compareTo(dateStr2); 
+                }
+            }
+        });
+        
+        sorter.setComparator(SOTIEN_COLUMN_INDEX, new Comparator<String>() {
+            @Override
+            public int compare(String moneyStr1, String moneyStr2) {
+                try {
+                    double val1 = Double.parseDouble(moneyStr1.replaceAll("[^\\d.]", "")); 
+                    double val2 = Double.parseDouble(moneyStr2.replaceAll("[^\\d.]", ""));
+                    return Double.compare(val1, val2);
+                } catch (NumberFormatException e) {
+                    return moneyStr1.compareTo(moneyStr2); 
                 }
             }
         });
     }
     
-    /**
-     * Sắp xếp mặc định: Creation Date, Mới nhất trước (DESCENDING)
-     */
     private void setupDefaultSort() {
-        // Áp dụng sắp xếp mặc định (Mới nhất trước)
-        sorter.setSortKeys(List.of(new SortKey(DATE_COLUMN_INDEX, SortOrder.DESCENDING)));
+        sorter.setSortKeys(List.of(new SortKey(DATE_TIME_COLUMN_INDEX, SortOrder.DESCENDING)));
     }
 
 
@@ -181,16 +172,24 @@ public class ReceiptPage extends JPanel {
             public boolean isCellEditable(int row, int column) {
                 return false; 
             }
+            
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == SOTIEN_COLUMN_INDEX) { 
+                    return String.class; 
+                }
+                return super.getColumnClass(columnIndex);
+            }
         };
-        // Tên cột đã được Việt hóa
-        model.addColumn("STT");
-        model.addColumn("Mã HĐ");
-        model.addColumn("Nhân Viên Lập");
-        model.addColumn("Tên Khách Hàng");
-        model.addColumn("SĐT Khách");
-        model.addColumn("Ngày Lập"); // Creation Date
-        model.addColumn("SL Mặt Hàng");
-        model.addColumn("Tổng Tiền");
+        model.addColumn("ID");                 
+        model.addColumn("Ngày khởi tạo");      
+        model.addColumn("Giờ vào");            
+        model.addColumn("Giờ out");             
+        model.addColumn("Tên khách hàng");     
+        model.addColumn("SĐT");                
+        model.addColumn("Tổng cộng");          
+        model.addColumn("Trạng thái");         
+        model.addColumn("Nhân viên phục vụ");  
         return model;
     }
     
@@ -209,25 +208,30 @@ public class ReceiptPage extends JPanel {
             table.getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
         }
         
-        TableColumn colSTT = table.getColumnModel().getColumn(0);
-        colSTT.setPreferredWidth(30);
-        colSTT.setMinWidth(30);
-
-        TableColumn colMaHD = table.getColumnModel().getColumn(1);
-        colMaHD.setPreferredWidth(80);
-        colMaHD.setMinWidth(80);
-
-        TableColumn colNgayLap = table.getColumnModel().getColumn(5);
-        colNgayLap.setPreferredWidth(120);
-        colNgayLap.setMinWidth(120);
+        TableColumn colID = table.getColumnModel().getColumn(0);
+        colID.setPreferredWidth(80);
+        colID.setMinWidth(80);
+        
+        TableColumn colNgayLap = table.getColumnModel().getColumn(1);
+        colNgayLap.setPreferredWidth(100);
+        colNgayLap.setMinWidth(100);
+        
+        TableColumn colSDT = table.getColumnModel().getColumn(5);
+        colSDT.setPreferredWidth(100);
+        colSDT.setMinWidth(100);
+        
+        TableColumn colTongCong = table.getColumnModel().getColumn(6);
+        colTongCong.setPreferredWidth(90);
+        colTongCong.setMinWidth(90);
+        
+        TableColumn colTrangThai = table.getColumnModel().getColumn(7); 
+        colTrangThai.setPreferredWidth(90);
+        colTrangThai.setMinWidth(90);
     }
     
-    /**
-     * Helper method to create styled JTextFields for date input with placeholder logic.
-     */
     private JTextField createDateInputField(String placeholder) {
         JTextField field = new JTextField(placeholder);
-        field.setPreferredSize(new Dimension(125, 25)); // Đã tăng kích thước
+        field.setPreferredSize(new Dimension(125, 25)); 
         field.setBackground(new Color(241, 211, 178));
         field.setBorder(BorderFactory.createLineBorder(new Color(79, 92, 133)));
         field.setForeground(Color.GRAY);
@@ -248,7 +252,6 @@ public class ReceiptPage extends JPanel {
             }
         });
         
-        // Dùng ENTER để kích hoạt lọc
         field.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -267,7 +270,6 @@ public class ReceiptPage extends JPanel {
         controlPanel.setLayout(new BorderLayout());
         controlPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0)); 
 
-        // --- WEST PANEL: Keyword Search ---
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         leftPanel.setOpaque(false);
         
@@ -278,7 +280,6 @@ public class ReceiptPage extends JPanel {
         findLabel.setPreferredSize(new Dimension(110, 25)); 
         leftPanel.add(findLabel);
 
-        // Đã đổi: "Invoice ID or Customer Phone No." -> "Mã HĐ hoặc SĐT Khách"
         searchInput = new JTextField("Mã HĐ hoặc SĐT Khách"); 
         searchInput.setPreferredSize(new Dimension(180, 25)); 
         searchInput.setBackground(new Color(241, 211, 178));
@@ -312,7 +313,6 @@ public class ReceiptPage extends JPanel {
         });
         leftPanel.add(searchInput);
 
-        // Đã đổi: "Search" -> "Tìm"
         JButton findButton = new JButton("Tìm");
         findButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         findButton.setPreferredSize(new Dimension(80, 25));
@@ -323,35 +323,27 @@ public class ReceiptPage extends JPanel {
         
         controlPanel.add(leftPanel, BorderLayout.WEST);
 
-        // --- CENTER PANEL: Date Filtering ---
         JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         centerPanel.setOpaque(false);
 
-        // Đã đổi: "Sort by Date:" -> "Lọc Theo Ngày:"
         JLabel dateFilterLabel = new JLabel("Lọc Theo Ngày:");
         dateFilterLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         dateFilterLabel.setForeground(Color.BLACK);
         centerPanel.add(dateFilterLabel);
 
-        // Đã đổi: "From Date (dd/MM/yyyy)" -> "Từ Ngày (dd/MM/yyyy)"
         fromDateInput = createDateInputField("Từ Ngày (dd/MM/yyyy)");
-        // Kích thước đã được chỉnh trong createDateInputField
         centerPanel.add(fromDateInput);
 
-        // Đã đổi: "to" -> "đến"
         JLabel toLabel = new JLabel("đến");
         toLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         centerPanel.add(toLabel);
 
-        // Đã đổi: "To Date (dd/MM/yyyy)" -> "Đến Ngày (dd/MM/yyyy)"
         toDateInput = createDateInputField("Đến Ngày (dd/MM/yyyy)");
-        // Kích thước đã được chỉnh trong createDateInputField
         centerPanel.add(toDateInput);
 
-        // Đã đổi: "Sort" -> "Lọc"
         JButton filterDateButton = new JButton("Lọc");
         filterDateButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        filterDateButton.setPreferredSize(new Dimension(70, 25)); // Đã tăng kích thước
+        filterDateButton.setPreferredSize(new Dimension(70, 25)); 
         filterDateButton.setForeground(Color.BLACK);
         filterDateButton.setBackground(new Color(241, 211, 178));
         filterDateButton.addActionListener(e -> applyFilter()); 
@@ -359,23 +351,22 @@ public class ReceiptPage extends JPanel {
 
         controlPanel.add(centerPanel, BorderLayout.CENTER);
         
-        // --- EAST PANEL: Chức năng ---
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0)); 
         rightPanel.setOpaque(false);
         
-        // --- Nút chức năng ---
-        // Đã đổi: "Details" -> "Chi Tiết"
-        JButton invoicesButton = new JButton("Chi Tiết");
-        invoicesButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        invoicesButton.setForeground(Color.BLACK);
-        invoicesButton.setBackground(new Color(241, 211, 178));
-        rightPanel.add(invoicesButton);
+        JButton detailButton = new JButton("Chi Tiết");
+        detailButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        detailButton.setForeground(Color.BLACK);
+        detailButton.setBackground(new Color(241, 211, 178));
+        rightPanel.add(detailButton);
+        detailButton.addActionListener(e -> showBillDetail()); 
+        rightPanel.add(detailButton);
 
-        // Đã đổi: "Export" -> "Xuất File"
         JButton exportButton = new JButton("Xuất File");
         exportButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         exportButton.setForeground(Color.BLACK);
         exportButton.setBackground(new Color(241, 211, 178));
+        exportButton.addActionListener(e -> exportFileAction());
         rightPanel.add(exportButton);
         
         JButton infoButton = new JButton("i");
@@ -392,32 +383,45 @@ public class ReceiptPage extends JPanel {
         return controlPanel;
     }
     
-    // --- Các phương thức xử lý sự kiện ---
-
     private void loadInitialData() {
         productTableModel.setRowCount(0);
-        for (Object[] row : initialData) {
+        List<Bill> billList = billDAO.selectAll();
+
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        
+        for (Bill bill : billList) {
+            String dateStr = bill.getDateCreated() != null ? dateFormatter.format(java.sql.Date.valueOf(bill.getDateCreated())) : "";
+            String hourInStr = bill.getHourIn() != null ? timeFormatter.format(bill.getHourIn()) : "";
+            String hourOutStr = bill.getHourOut() != null ? timeFormatter.format(bill.getHourOut()) : "";
+            
+            String totalStr = String.format("%,.0f", bill.getTotal());
+
+            Object[] row = new Object[] {
+                bill.getBillId(),                                   
+                dateStr,                                            
+                hourInStr,                                          
+                hourOutStr,                                         
+                bill.getCustomerName() != null ? bill.getCustomerName() : "Khách lẻ", 
+                bill.getPhoneNumber(),                              
+                totalStr,                                           
+                bill.getStatus(),                                   
+                bill.getEmployeeName() != null ? bill.getEmployeeName() : bill.getEmployeeId() 
+            };
             productTableModel.addRow(row);
         }
     }
-    
-    /**
-     * Áp dụng bộ lọc kết hợp giữa từ khóa (Invoice ID/Phone No.) và khoảng ngày.
-     */
+ 
     private void applyFilter() { 
         String keyword = searchInput.getText().trim();
         String fromDateStr = fromDateInput.getText().trim();
         String toDateStr = toDateInput.getText().trim();
 
-        // Đã cập nhật giá trị Placeholder tiếng Việt
         final String keywordPlaceholder = "Mã HĐ hoặc SĐT Khách"; 
-        final String datePlaceholder = "dd/MM/yyyy";
         
-        // Kiểm tra trạng thái kích hoạt của từng bộ lọc
         final boolean isKeywordActive = !(keyword.equals(keywordPlaceholder) || keyword.isEmpty());
         final boolean isFromDateActive = !(fromDateStr.contains("Từ Ngày") || fromDateStr.isEmpty());
         final boolean isToDateActive = !(toDateStr.contains("Đến Ngày") || toDateStr.isEmpty());
-        // Lọc ngày CHỈ được kích hoạt khi CẢ 2 ô ngày đều được nhập
         final boolean isDateFilterActive = isFromDateActive && isToDateActive; 
 
         if (!isKeywordActive && !isDateFilterActive) {
@@ -426,14 +430,10 @@ public class ReceiptPage extends JPanel {
         }
         
         if ((isFromDateActive && !isToDateActive) || (!isFromDateActive && isToDateActive)) {
-              // Đã đổi thông báo lỗi sang tiếng Việt
               JOptionPane.showMessageDialog(this, "Vui lòng nhập cả Ngày Bắt Đầu và Ngày Kết Thúc để lọc.", "Lỗi Lọc Dữ Liệu", JOptionPane.ERROR_MESSAGE);
               return;
         }
 
-
-        // Khai báo formatter cho cột (có giờ) và cho input (chỉ ngày)
-        final SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         
         Date filterFromDate = null;
@@ -441,27 +441,22 @@ public class ReceiptPage extends JPanel {
 
         if (isDateFilterActive) {
             try {
-                // Parse From Date: Lấy ngày bắt đầu, thời gian 00:00:00
                 Date startDay = dateFormatter.parse(fromDateStr);
                 filterFromDate = startDay; 
 
-                // Parse To Date: Lấy ngày kết thúc, sau đó cộng thêm 1 ngày
                 Date endDay = dateFormatter.parse(toDateStr);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(endDay);
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 filterToDate = calendar.getTime(); 
                 
-                // Kiểm tra logic ngày: From Date không được sau To Date
                 if (filterFromDate.after(endDay)) {
-                      // Đã đổi thông báo lỗi sang tiếng Việt
                       JOptionPane.showMessageDialog(this, "Ngày Bắt Đầu không được sau Ngày Kết Thúc.", "Lỗi Lọc Dữ Liệu", JOptionPane.ERROR_MESSAGE);
                       sorter.setRowFilter(null);
                       return;
                 }
 
             } catch (ParseException e) {
-                 // Đã đổi thông báo lỗi sang tiếng Việt
                  JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày. Vui lòng sử dụng dd/MM/yyyy (ví dụ: 25/10/2025).", "Lỗi Lọc Dữ Liệu", JOptionPane.ERROR_MESSAGE);
                  sorter.setRowFilter(null);
                  return;
@@ -474,41 +469,37 @@ public class ReceiptPage extends JPanel {
         RowFilter<Object, Object> combinedFilter = new RowFilter<Object, Object>() {
             public boolean include(Entry<?, ?> entry) {
                 
-                // --- 1. Keyword Filter Logic (Áp dụng AND) ---
                 if (isKeywordActive) {
-                    String maHD = entry.getStringValue(1).toLowerCase(); 
-                    String sdt = entry.getStringValue(4).toLowerCase(); 
+                    String maHD = entry.getStringValue(0).toLowerCase(); 
+                    String sdt = entry.getStringValue(5).toLowerCase(); 
+                    String customerName = entry.getStringValue(4).toLowerCase(); 
+                    String employeeName = entry.getStringValue(8).toLowerCase(); 
                     String k = keyword.toLowerCase();
-                    if (!(maHD.contains(k) || sdt.contains(k))) {
-                        return false; // Không khớp từ khóa -> Bỏ qua hàng
+                    if (!(maHD.contains(k) || sdt.contains(k) || customerName.contains(k) || employeeName.contains(k))) {
+                        return false; 
                     }
                 }
                 
-                // --- 2. Date Filter Logic (Áp dụng AND) ---
                 if (isDateFilterActive) {
-                    String dateStr = entry.getStringValue(DATE_COLUMN_INDEX);
+                    String dateStr = entry.getStringValue(DATE_TIME_COLUMN_INDEX); 
                     try {
-                        // Phân tích cú pháp ngày giờ đầy đủ từ cột bảng
-                        Date entryDate = dateTimeFormatter.parse(dateStr); 
+                        Date entryDate = dateFormatter.parse(dateStr); 
                         
-                        // Kiểm tra entryDate >= filterFromDate
                         boolean isAfterOrEqualFrom = !entryDate.before(finalFilterFromDate); 
-                                                                    
-                        // Kiểm tra entryDate < finalFilterToDate
+                                                
                         boolean isBeforeTo = entryDate.before(finalFilterToDate); 
 
                         if (!(isAfterOrEqualFrom && isBeforeTo)) {
-                            return false; // Không nằm trong khoảng ngày -> Bỏ qua hàng
+                            return false; 
                         }
 
                     } catch (ParseException e) {
-                        // Bỏ qua nếu ngày trong bảng không đúng định dạng
                         System.err.println("Error parsing date in table row: " + dateStr);
                         return false; 
                     }
                 }
 
-                return true; // Khớp tất cả các bộ lọc đã kích hoạt
+                return true; 
             }
         };
         
@@ -516,55 +507,122 @@ public class ReceiptPage extends JPanel {
         requestFocusInWindow(); 
     }
     
-    /**
-     * Xử lý chức năng làm mới dữ liệu (Refresh) - Gán cho F5
-     */
     private void refreshData() {
-        // 1. Reset bộ lọc tìm kiếm
         sorter.setRowFilter(null);
         
-        // 2. Xóa tất cả sắp xếp và áp dụng sắp xếp mặc định (Mới nhất trước)
         sorter.setSortKeys(null);
         setupDefaultSort(); 
 
-        // 3. Reset ô tìm kiếm
-        // Đã đổi: "Invoice ID or Customer Phone No." -> "Mã HĐ hoặc SĐT Khách"
         searchInput.setText("Mã HĐ hoặc SĐT Khách"); 
         searchInput.setForeground(Color.GRAY);
         
-        // 4. Reset ô lọc ngày
-        // Đã đổi: "From Date (dd/MM/yyyy)" -> "Từ Ngày (dd/MM/yyyy)"
         fromDateInput.setText("Từ Ngày (dd/MM/yyyy)");
         fromDateInput.setForeground(Color.GRAY);
-        // Đã đổi: "To Date (dd/MM/yyyy)" -> "Đến Ngày (dd/MM/yyyy)"
         toDateInput.setText("Đến Ngày (dd/MM/yyyy)");
         toDateInput.setForeground(Color.GRAY);
         
-        // 5. Bỏ chọn hàng trong JTable 
         productTable.clearSelection(); 
         
-        // 6. Load lại dữ liệu ban đầu
         loadInitialData();
         
-        // 7. Trả lại focus cho JPanel
         requestFocusInWindow();
         
-        // 8. Hiển thị thông báo thành công
-        // Đã đổi thông báo sang tiếng Việt
         JOptionPane.showMessageDialog(this, "Dữ liệu đã được làm mới thành công. (Phím tắt F5)", "Làm Mới Thành Công", JOptionPane.INFORMATION_MESSAGE);
     }
     
+    private void showBillDetail() {
+        int selectedRow = productTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một hóa đơn để xem chi tiết.", "Chưa Chọn Hóa Đơn", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Chuyển đổi index từ view sang model (nếu có sắp xếp/lọc)
+        int modelRow = productTable.convertRowIndexToModel(selectedRow);
+        String billId = productTableModel.getValueAt(modelRow, 0).toString(); 
+
+        // Gọi phương thức DAO mới
+        Bill selectedBill = billDAO.getBillById(billId); 
+
+        if (selectedBill != null) {
+            // Hóa đơn đã được nạp đầy đủ thông tin chi tiết (bao gồm cả danh sách sản phẩm)
+            BillDetailPage detailPage = new BillDetailPage(selectedBill);
+            detailPage.showDetailWindow(); 
+        } else {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy chi tiết hóa đơn ID: " + billId, "Lỗi Dữ Liệu", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
+    //Hàm xử lí Export PDF
+    private void exportFileAction() {
+        int selectedRow = productTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một hóa đơn để xuất file.", "Chưa Chọn Hóa Đơn", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Chuyển đổi index từ view sang model (quan trọng nếu bảng đang được sắp xếp/lọc)
+        int modelRow = productTable.convertRowIndexToModel(selectedRow);
+        String selectedBillId = productTableModel.getValueAt(modelRow, 0).toString(); 
+        
+        // Hộp thoại xác nhận
+        int confirm = JOptionPane.showConfirmDialog(
+            this, 
+            "Bạn có chắc chắn muốn xuất hóa đơn " + selectedBillId + " thành file PDF?", 
+            "Xác nhận Xuất File", 
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return; // Hủy bỏ
+        }
+        
+        try {
+            // Lấy đối tượng Bill hoàn chỉnh từ CSDL (đã được cập nhật trong DAO_Bill ở trên)
+            Bill billToExport = billDAO.getBillById(selectedBillId);
+            
+            if (billToExport == null) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy dữ liệu hóa đơn ID: " + selectedBillId, "Lỗi Dữ Liệu", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Khởi tạo và Xuất file PDF (yêu cầu file PDF_Exporter đã được sửa lỗi Font/JAR)
+            // Constructor của PDF_Exporter cần throws IOException
+            PDF_Exporter exporter = new PDF_Exporter(); 
+            String filePath = exporter.exportBillToPDF(billToExport); 
+            
+            // Thông báo thành công
+            JOptionPane.showMessageDialog(this, 
+                "Xuất file PDF thành công! Hóa đơn " + selectedBillId + " đã được lưu tại:\n" + filePath, 
+                "Xuất Hóa Đơn Thành Công", 
+                JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (IOException e) {
+            // Lỗi IO có thể xảy ra khi đọc font hoặc ghi file PDF
+            JOptionPane.showMessageDialog(this, 
+                "Lỗi khi xuất file PDF. Vui lòng kiểm tra đã thêm đủ các file JAR iText và font RobotoMono trong thư mục 'font' hay chưa.", 
+                "Lỗi Xuất File (Font/JAR)", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (Exception e) {
+            // Bắt các lỗi khác (ví dụ: lỗi SQL, lỗi trong BillDetail...)
+            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi hệ thống: " + e.getMessage(), "Lỗi Hệ Thống", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    
+    //Hiển thị information của trang
     private void showInfoMessage() {
-        // Đã Việt hóa toàn bộ nội dung trong showInfoMessage
         String info = "<html>"
                       + "<h3>Tổng Quan: Quản Lý Hóa Đơn</h3>" 
-                      + "<p>Trang này cho phép bạn quản lý, tìm kiếm và xuất các hóa đơn đã tạo.</p>" 
+                      + "<p>Trang này hiển thị <b>25 Hóa Đơn Gần Nhất</b> để tối ưu hiệu suất.</p>" 
                       + "<hr>"
                       + "<h4>Các Tính Năng Chính:</h4>" 
                       + "<ul>"
-                      + "<li><b>Tìm Kiếm:</b> Tra cứu theo Mã Hóa Đơn hoặc Số Điện Thoại Khách Hàng.</li>" 
+                      + "<li><b>Tìm Kiếm:</b> Tra cứu theo Mã Hóa Đơn, Tên Khách Hàng, SĐT Khách Hàng hoặc Tên Nhân Viên.</li>" 
                       + "<li><b>Lọc Theo Ngày:</b> Nhập khoảng ngày (dd/MM/yyyy) để thu hẹp kết quả, sau đó nhấn 'Lọc'.</li>" 
-                      + "<li><b>Sắp Xếp Mặc Định:</b> Tự động sắp xếp theo Ngày Lập (Mới nhất trước).</li>" 
+                      + "<li><b>Sắp Xếp Mặc Định:</b> Tự động sắp xếp theo Ngày Khởi Tạo (Mới nhất trước).</li>" 
                       + "<li><b>Chi Tiết/Xuất:</b> Sử dụng nút 'Chi Tiết' và 'Xuất File' cho các hóa đơn đã chọn.</li>" 
                       + "</ul>"
                       + "<h4>Phím Tắt:</h4>" 

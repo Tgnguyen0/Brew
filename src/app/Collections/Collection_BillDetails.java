@@ -27,11 +27,9 @@ public class Collection_BillDetails {
 
     public Boolean updateBillDetail(BillDetail billDetail) {
         for (BillDetail bd : bds) {
-            if (bd.getItemId().equals(billDetail.getItemId())) {
+            if (bd.getItemId().equals(billDetail.getItemId())) { 
                 bd.setQuantity(billDetail.getQuantity());
-                bd.setTotal_price(bd.getQuantity(), bd.getTotal_price());
                 System.out.println(bds);
-
                 return true;
             }
         }
@@ -45,12 +43,12 @@ public class Collection_BillDetails {
 
     public boolean deleteBillDetail(String id) {
         for (int i = 0 ; i < bds.size() ; i++) {
-            // if (bds.get(i).getItem().getId().equals(id)) {
-            //     bds.remove(i);
-            //     return true;
-            // }
+            // SỬA LỖI: Dùng getItemId() đã khôi phục/ánh xạ
+            if (bds.get(i).getItemId().equals(id)) { 
+                bds.remove(i);
+                return true;
+            }
         }
-
         return false;
     }
 }

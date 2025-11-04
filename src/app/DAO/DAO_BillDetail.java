@@ -1,0 +1,56 @@
+package app.DAO;
+
+import app.Connection.XJdbc;
+import app.Object.BillDetail;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DAO_BillDetail {
+
+    public List<BillDetail> selectByBillId(String billId) {
+        // Dựa trên sơ đồ DB (BillDetail JOIN MenuItem)
+        String sql = "SELECT \n" +
+                "    BD.billDetailId, BD.billId, BD.menuId, BD.soLuong, BD.amount, BD.totalPrice, \n" +
+                "    MI.item_name, MI.category \n" + 
+                "FROM \n" +
+                "    BillDetail BD \n" +
+                "JOIN \n" +
+                "    MenuItem MI ON BD.menuId = MI.itemId \n" + 
+                "WHERE \n" +
+                "    BD.billId = ?";
+
+        List<BillDetail> list = new ArrayList<>();
+        
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, billId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    BillDetail bd = new BillDetail();
+                    
+                    bd.setBillId(rs.getString("billId"));
+                    bd.setMenuId(rs.getString("menuId"));
+                    bd.setQuantity(rs.getInt("soLuong")); 
+                    bd.setAmount(rs.getDouble("amount"));
+                    bd.setTotalPrice(rs.getDouble("totalPrice")); ;
+                    
+                    bd.setItemName(rs.getString("item_name"));
+                    bd.setCategory(rs.getString("category"));
+                    
+                    list.add(bd);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi truy vấn SQL trong DAO_BillDetail.selectByBillId(): " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+}
