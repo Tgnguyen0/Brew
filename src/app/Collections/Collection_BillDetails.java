@@ -28,7 +28,7 @@ public class Collection_BillDetails {
 
     public Boolean updateBillDetail(BillDetail billDetail) {
         for (BillDetail bd : bds) {
-            if (bd.getItemId().equals(billDetail.getItemId())) { 
+            if (bd.getMenuId().equals(billDetail.getMenuId())) {
                 bd.setQuantity(billDetail.getQuantity());
                 bd.setPrice(billDetail.getPrice());
                 bd.Total_price();
@@ -73,7 +73,7 @@ public class Collection_BillDetails {
 
     public boolean deleteBillDetailById(String id) {
         for (int i = 0 ; i < bds.size() ; i++) {
-             if (bds.get(i).getItemId().equals(id)) {
+             if (bds.get(i).getMenuId().equals(id)) {
                  bds.remove(bds.get(i));
                  return true;
              }

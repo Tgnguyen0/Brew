@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class LoginDAO {
 
     public static String login(String username, String password) {
-        String sql = "SELECT role FROM Account WHERE username = ? AND password = ?";
+        String sql = "SELECT role, employeeId FROM Account WHERE username = ? AND password = ?";
         try (Connection conn = XJdbc.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -19,7 +19,10 @@ public class LoginDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getString("role"); // Trả về ADMIN hoặc EMPLOYEE
+                    // Ghép cả role và employeeId vào một chuỗi để trả về
+                    String role = rs.getString("role");
+                    String employeeId = rs.getString("employeeId");
+                    return role + "," + employeeId;  // Ví dụ: "ADMIN,EMP001"
                 }
             }
 
