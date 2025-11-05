@@ -114,7 +114,7 @@ public class ActionListener_SellPage implements ActionListener {
             CardLayout cardLayout = (CardLayout) BrewGUI.pageContainer.getLayout();
             cardLayout.show(BrewGUI.pageContainer, "Receipt Page");
 
-            DAO_Bill.
+            //DAO_Bill.
         }
     }
 
