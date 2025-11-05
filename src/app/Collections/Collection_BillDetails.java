@@ -28,7 +28,7 @@ public class Collection_BillDetails {
 
     public Boolean updateBillDetail(BillDetail billDetail) {
         for (BillDetail bd : bds) {
-            if (bd.getItemId().equals(billDetail.getItemId())) {
+            if (bd.getItemId().equals(billDetail.getItemId())) { 
                 bd.setQuantity(billDetail.getQuantity());
                 bd.setPrice(billDetail.getPrice());
                 bd.Total_price();
@@ -78,7 +78,6 @@ public class Collection_BillDetails {
                  return true;
              }
         }
-
         return false;
     }
 
