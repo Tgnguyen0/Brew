@@ -160,6 +160,7 @@ public class BrewGUI extends JFrame implements MouseListener {
         navbarButton.setForeground(Color.BLACK);
         navbarButton.setBackground(Color.WHITE);
         navbarButton.setFocusPainted(false);
+        navbarButton.setPreferredSize(new Dimension(100, 25));
         navbarButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -170,7 +171,10 @@ public class BrewGUI extends JFrame implements MouseListener {
                 }
             }
         });
+
+        infoBar.add(Box.createVerticalStrut(10));
         infoBar.add(navbarButton, BorderLayout.WEST); // căn trái
+        infoBar.add(Box.createVerticalStrut(10));
 
         // Panel bên phải (thông tin nhân viên)
         JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 5));

@@ -37,7 +37,7 @@ public class SellPage extends JPanel {
     public JComboBox<String> productCategory;
     public int currentOffset = 0;
     public int previousOffset = 0;
-    public List<ImagePanelButton> allProductButtons = new ArrayList<>();
+    public List<ImagePanelButton> allProductButtons;
     public boolean isLoading = false;
     public GridBagConstraints gbc;
     public JPanel productPanel;
@@ -60,6 +60,7 @@ public class SellPage extends JPanel {
 
         action = new ActionListener_SellPage(this);
         choosenTableList = new ArrayList<Table>();
+        allProductButtons = new ArrayList<>();
 
         JPanel emptyL = new JPanel();
         emptyL.setPreferredSize(new Dimension(16, 500));
@@ -110,7 +111,7 @@ public class SellPage extends JPanel {
         searchBar.setBackground(new Color(241, 211, 178));
         searchBar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         searchBar.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        searchBar.setPreferredSize(new Dimension(180, 25)); // Thay đổi kích thước cho phù hợp và vị trí
+        searchBar.setPreferredSize(new Dimension(175, 25)); // Thay đổi kích thước cho phù hợp và vị trí
         northN.add(searchBar);
 
         findProduct = new JButton("Tìm Kiếm");
@@ -152,7 +153,7 @@ public class SellPage extends JPanel {
         clearSearchButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         clearSearchButton.setForeground(Color.BLACK);
         clearSearchButton.setBackground(new Color(241, 211, 178));
-        clearSearchButton.setPreferredSize(new Dimension(170, 25));
+        clearSearchButton.setPreferredSize(new Dimension(190, 25));
         clearSearchButton.addActionListener(action);
         northN.add(clearSearchButton);
 
@@ -427,6 +428,7 @@ public class SellPage extends JPanel {
             productPanel.add(productButton, gbc);
             allProductButtons.add(productButton);
         }
+
         currentOffset = 18;
     }
 

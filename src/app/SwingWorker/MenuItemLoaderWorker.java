@@ -7,6 +7,7 @@ import app.Object.MenuItem;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -63,7 +64,10 @@ public class MenuItemLoaderWorker extends SwingWorker<Void, ImagePanelButton> {
             gbc.gridx = index % columns;
             gbc.gridy = index / columns;
             sellPage.productPanel.add(button, gbc);
-            sellPage.allProductButtons.add(button);
+
+            if (mode.equals(MODE.LOAD)) {
+                sellPage.allProductButtons.add(button);
+            }
         }
         sellPage.productPanel.revalidate();
         sellPage.productPanel.repaint();
