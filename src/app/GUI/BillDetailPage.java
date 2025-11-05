@@ -163,8 +163,8 @@ public class BillDetailPage extends JDialog {
                 String quantity = String.valueOf(detail.getQuantity());
                 String category = detail.getCategory() != null ? detail.getCategory() : "N/A";
                 
-                String amount = String.format("%,.0f", detail.getAmount());
-                String totalPrice = String.format("%,.0f", detail.getTotalPrice());
+                String amount = String.format("%,.0f", detail.getPrice());
+                String totalPrice = String.format("%,.0f", detail.getTotal_price());
                 
                 JPanel detailRow = createProductRow(itemName, quantity, category, amount, totalPrice, false);
                 productListContent.add(detailRow);

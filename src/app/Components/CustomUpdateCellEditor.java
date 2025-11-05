@@ -70,7 +70,7 @@ public class CustomUpdateCellEditor extends AbstractCellEditor implements TableC
                 }
 
                 SellPage.productTableModel.removeRow(selectedRow);
-                collectionBillDetails.deleteBillDetailById(bd.getItemId());
+                collectionBillDetails.deleteBillDetailById(bd.getMenuId());
                 return;
             }
 

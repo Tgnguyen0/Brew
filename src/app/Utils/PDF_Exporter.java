@@ -126,8 +126,8 @@ public class PDF_Exporter {
             for (BillDetail bd : details) {
                 table.addCell(createCell(bd.getItemName() != null ? bd.getItemName() : "Món đã xóa", false));
                 table.addCell(createCell(String.valueOf(bd.getQuantity()), false).setTextAlignment(TextAlignment.CENTER));
-                table.addCell(createCell(String.format("%,.0f", bd.getAmount()), false).setTextAlignment(TextAlignment.RIGHT));
-                table.addCell(createCell(String.format("%,.0f", bd.getTotalPrice()), false).setTextAlignment(TextAlignment.RIGHT));
+                table.addCell(createCell(String.format("%,.0f", bd.getPrice()), false).setTextAlignment(TextAlignment.RIGHT));
+                table.addCell(createCell(String.format("%,.0f", bd.getTotal_price()), false).setTextAlignment(TextAlignment.RIGHT));
             }
         }
         

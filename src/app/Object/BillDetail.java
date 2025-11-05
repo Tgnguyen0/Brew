@@ -7,7 +7,7 @@ public class BillDetail{
     private String billId;
     private String menuId; // Đổi itemId thành menuId cho đúng sơ đồ DB
     private int quantity; // soLuong
-    private double price; // đơn giá/price (từ BillDetail.amount)
+    private float price; // đơn giá/price (từ BillDetail.amount)
     private double totalPrice; // totalPrice (từ BillDetail.totalPrice)
     
     // Thuộc tính bổ sung từ MenuItem (sau khi JOIN)
@@ -31,7 +31,7 @@ public class BillDetail{
     }
 
     public BillDetail(String itemId, int quantity, float price) {
-        this.itemId = itemId;
+        this.menuId = itemId;
         this.quantity = quantity;
         this.price = price;
         Total_price();
@@ -53,12 +53,12 @@ public class BillDetail{
       this.menuId = menuId;
     }
 
-    public int getQuantity() {
-      return quantity;
-    }
-
     public void setQuantity(int quantity) {
       this.quantity = quantity;
+    }
+
+    public int getQuantity() {
+        return this.quantity;
     }
 
     public String getItemName() {
@@ -77,10 +77,6 @@ public class BillDetail{
       this.category = category;
     }
 
-    public double getINC() {
-        return this.INC;
-    }
-
     public float getPrice() {
         return price;
     }
@@ -90,11 +86,11 @@ public class BillDetail{
     }
 
     public double getTotal_price() {
-        return this.total_price;
+        return this.totalPrice;
     }
 
     public void Total_price() {
-        this.total_price = price * quantity;
+        this.totalPrice = price * quantity;
     }
 
     @Override
@@ -102,22 +98,24 @@ public class BillDetail{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BillDetail that = (BillDetail) o;
-        return Objects.equals(itemId, that.itemId);
+        return Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(itemId);
+        return Objects.hash(menuId);
     }
 
     @Override
     public String toString() {
         return "BillDetail{" +
                 "billId='" + billId + '\'' +
-                ", itemId='" + itemId + '\'' +
+                ", menuId='" + menuId + '\'' +
                 ", quantity=" + quantity +
-                ", total_price=" + total_price +
-                ", INC=" + INC +
+                ", price=" + price +
+                ", totalPrice=" + totalPrice +
+                ", itemName='" + itemName + '\'' +
+                ", category='" + category + '\'' +
                 '}';
     }
 }

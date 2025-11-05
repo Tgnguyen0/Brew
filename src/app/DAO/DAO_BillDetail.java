@@ -38,9 +38,8 @@ public class DAO_BillDetail {
                     bd.setBillId(rs.getString("billId"));
                     bd.setMenuId(rs.getString("menuId"));
                     bd.setQuantity(rs.getInt("soLuong")); 
-                    bd.setAmount(rs.getDouble("amount"));
-                    bd.setTotalPrice(rs.getDouble("totalPrice")); ;
-                    
+                    bd.setPrice(rs.getFloat("amount"));
+                    bd.Total_price();
                     bd.setItemName(rs.getString("item_name"));
                     bd.setCategory(rs.getString("category"));
                     
@@ -62,7 +61,7 @@ public class DAO_BillDetail {
 
             for (BillDetail bd : list) {
                 ps.setString(1, bd.getBillId());
-                ps.setString(2, bd.getItemId());
+                ps.setString(2, bd.getMenuId());
                 ps.setInt(3, bd.getQuantity());
                 ps.setFloat(4, bd.getPrice());
                 ps.setDouble(5, bd.getTotal_price());
