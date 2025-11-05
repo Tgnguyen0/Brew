@@ -3,20 +3,31 @@ package app.Object;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class BillDetail implements Serializable {
-    String billId;
-    String itemId;
-    int quantity;
-    float price;
-    double total_price;
-    private final double INC = 5.0;
+public class BillDetail{
+    private String billId;
+    private String menuId; // Đổi itemId thành menuId cho đúng sơ đồ DB
+    private int quantity; // soLuong
+    private double price; // đơn giá/price (từ BillDetail.amount)
+    private double totalPrice; // totalPrice (từ BillDetail.totalPrice)
+    
+    // Thuộc tính bổ sung từ MenuItem (sau khi JOIN)
+    private String itemName;   
+    private String category;   
 
-    public BillDetail(String billId, String itemId, int quantity, float price) {
+    // Constructor mặc định cần thiết cho DAO
+    public BillDetail() {} 
+
+    // Constructor đã có, giữ lại
+    public BillDetail(String billId, String menuId, int quantity) {
         this.billId = billId;
-        this.itemId = itemId;
+        this.menuId = menuId;
         this.quantity = quantity;
         this.price = price;
         Total_price();
+    }
+
+    public BillDetail(String menuId, int quantity) {
+        this.menuId = menuId;
     }
 
     public BillDetail(String itemId, int quantity, float price) {
@@ -27,27 +38,47 @@ public class BillDetail implements Serializable {
     }
 
     public String getBillId() {
-        return this.billId;
+      return billId;
     }
 
     public void setBillId(String billId) {
-        this.billId = billId;
+      this.billId = billId;
     }
 
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
+    public String getMenuId() {
+      return menuId;
+    }
+
+    public void setMenuId(String menuId) {
+      this.menuId = menuId;
+    }
+
+    public int getQuantity() {
+      return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+      this.quantity = quantity;
+    }
+
+    public String getItemName() {
+      return itemName;
+    }
+
+    public void setItemName(String itemName) {
+      this.itemName = itemName;
+    }
+
+    public String getCategory() {
+      return category;
+    }
+
+    public void setCategory(String category) {
+      this.category = category;
     }
 
     public double getINC() {
         return this.INC;
-    }
-
-    public String getItemId() {
-        return this.itemId;
-    }
-
-    public void setItem(String itemId) {
-        this.itemId = itemId;
     }
 
     public float getPrice() {
@@ -64,14 +95,6 @@ public class BillDetail implements Serializable {
 
     public void Total_price() {
         this.total_price = price * quantity;
-    }
-
-    public int getQuantity() {
-        return this.quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     @Override
