@@ -72,7 +72,19 @@ public class MenuItemLoaderWorker extends SwingWorker<Void, ImagePanelButton> {
     @Override
     protected void done() {
         sellPage.loadingDialog.dispose();
-        sellPage.showLoadingSuccessfullyOptionPane();
+
+        switch (mode) {
+            case SEARCH:
+                sellPage.showSearchingSuccessfullyOptionPane();
+                break;
+            case CATEGORY:
+                sellPage.showCategorizingSuccessfullyOptionPane();
+                break;
+            default:
+                sellPage.showLoadingSuccessfullyOptionPane();
+                break;
+        }
+
         sellPage.isLoading = false;
         sellPage.previousOffset = sellPage.currentOffset;
     }

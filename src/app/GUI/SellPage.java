@@ -434,7 +434,7 @@ public class SellPage extends JPanel {
         JOptionPane.showMessageDialog(this, "Tải thêm 18 sản phẩm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void showFindingSuccessfullyOptionPane() {
+    public void showSearchingSuccessfullyOptionPane() {
         JOptionPane.showMessageDialog(this, "Tìm kiếm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
     }
 
