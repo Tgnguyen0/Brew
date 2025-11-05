@@ -65,7 +65,7 @@ public class ImagePanelButton extends JPanel {
         textLabel = new JLabel("<html>" +
                 "<div style='text-align:left;'>" +
                 "<p style='font-size:13px'><b>" + mi.getName() + "</b></p>" +
-                "<p style='font-size:10px'><b>" + mi.getDescription() + "</b></p>" +
+                "<p style='font-size:10px'><b>" + "" + "</b></p>" +
                 "</div></html>");
         textLabel.setPreferredSize(new Dimension(250, 50));
         textLabel.setVerticalAlignment(SwingConstants.NORTH);

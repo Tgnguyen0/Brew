@@ -7,7 +7,7 @@ public class BillDetail{
     private String billId;
     private String menuId; // Đổi itemId thành menuId cho đúng sơ đồ DB
     private int quantity; // soLuong
-    private double amount; // đơn giá/price (từ BillDetail.amount)
+    private double price; // đơn giá/price (từ BillDetail.amount)
     private double totalPrice; // totalPrice (từ BillDetail.totalPrice)
     
     // Thuộc tính bổ sung từ MenuItem (sau khi JOIN)
@@ -22,75 +22,102 @@ public class BillDetail{
         this.billId = billId;
         this.menuId = menuId;
         this.quantity = quantity;
+        this.price = price;
+        Total_price();
     }
 
     public BillDetail(String menuId, int quantity) {
         this.menuId = menuId;
-        this.quantity = quantity;
     }
 
-	public String getBillId() {
-		return billId;
-	}
+    public BillDetail(String itemId, int quantity, float price) {
+        this.itemId = itemId;
+        this.quantity = quantity;
+        this.price = price;
+        Total_price();
+    }
 
-	public void setBillId(String billId) {
-		this.billId = billId;
-	}
+    public String getBillId() {
+      return billId;
+    }
 
-	public String getMenuId() {
-		return menuId;
-	}
+    public void setBillId(String billId) {
+      this.billId = billId;
+    }
 
-	public void setMenuId(String menuId) {
-		this.menuId = menuId;
-	}
+    public String getMenuId() {
+      return menuId;
+    }
 
-	public int getQuantity() {
-		return quantity;
-	}
+    public void setMenuId(String menuId) {
+      this.menuId = menuId;
+    }
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+    public int getQuantity() {
+      return quantity;
+    }
 
-	public double getAmount() {
-		return amount;
-	}
+    public void setQuantity(int quantity) {
+      this.quantity = quantity;
+    }
 
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
+    public String getItemName() {
+      return itemName;
+    }
 
-	public double getTotalPrice() {
-		return totalPrice;
-	}
+    public void setItemName(String itemName) {
+      this.itemName = itemName;
+    }
 
-	public void setTotalPrice(double totalPrice) {
-		this.totalPrice = totalPrice;
-	}
+    public String getCategory() {
+      return category;
+    }
 
-	public String getItemName() {
-		return itemName;
-	}
+    public void setCategory(String category) {
+      this.category = category;
+    }
 
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
-	}
+    public double getINC() {
+        return this.INC;
+    }
 
-	public String getCategory() {
-		return category;
-	}
+    public float getPrice() {
+        return price;
+    }
 
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	public String getItemId() {
-	    return this.menuId; 
-	}
+    public void setPrice(float price) {
+        this.price = price;
+    }
 
-	public void setItemId(String itemId) {
-	    this.menuId = itemId;
-	}
-    
-   
+    public double getTotal_price() {
+        return this.total_price;
+    }
+
+    public void Total_price() {
+        this.total_price = price * quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BillDetail that = (BillDetail) o;
+        return Objects.equals(itemId, that.itemId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(itemId);
+    }
+
+    @Override
+    public String toString() {
+        return "BillDetail{" +
+                "billId='" + billId + '\'' +
+                ", itemId='" + itemId + '\'' +
+                ", quantity=" + quantity +
+                ", total_price=" + total_price +
+                ", INC=" + INC +
+                '}';
+    }
 }

@@ -182,8 +182,8 @@ CREATE TABLE BillDetail (
     billDetailId INT IDENTITY(1,1) PRIMARY KEY,
     billId NVARCHAR(10),
     menuId NVARCHAR(10),
-    soLuong INT,
-    amount FLOAT,
+    amount INT,
+    org_price FLOAT,
     totalPrice FLOAT,
     FOREIGN KEY (billId) REFERENCES Bill(billId),
     FOREIGN KEY (menuId) REFERENCES MenuItem(itemId)
@@ -425,7 +425,7 @@ VALUES
 ('2025-12-31', '2025-12-31 18:00', '2025-12-31 18:50', '0905000012', 280000, 280000, N'Đã thanh toán', 'KH00006', 'NV00001', 'TA00001');
 
 
-INSERT INTO BillDetail (billId, menuId, soLuong, amount, totalPrice)
+INSERT INTO BillDetail (billId, menuId, amount, org_price, totalPrice)
 VALUES
 ('BI00001', 'MI00001', 2, 25000, 50000),
 ('BI00001', 'MI00003', 1, 40000, 40000),
@@ -447,7 +447,7 @@ VALUES
 ('BI00005', 'MI00007', 2, 15000, 30000);
 
 -- Tháng 10/2025 (BI00001, BI00002, BI00003, BI00029)
-INSERT INTO BillDetail (billId, menuId, soLuong, amount, totalPrice) VALUES
+INSERT INTO BillDetail (billId, menuId, amount, org_price, totalPrice) VALUES
 ('BI00001', 'MI00001', 2, 25000, 50000),
 ('BI00001', 'MI00003', 2, 45000, 90000),
 
@@ -492,7 +492,7 @@ INSERT INTO BillDetail VALUES
 -- ===============================
 -- DỮ LIỆU BILLDETAIL
 -- ===============================
-INSERT INTO BillDetail (billId, menuId, soLuong, amount, totalPrice)
+INSERT INTO BillDetail (billId, menuId, amount, org_price, totalPrice)
 VALUES
 ('BI00030', 'MI00001', 2, 25000, 50000),
 ('BI00030', 'MI00009', 1, 25000, 25000),

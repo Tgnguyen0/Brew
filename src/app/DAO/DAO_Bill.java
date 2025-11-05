@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DAO_Bill {
-
-	public List<Bill> selectAll() {
+	  public List<Bill> selectAll() {
 		String sql = "SELECT TOP 35 \n" + 
                 "    B.billId, B.dateCreated, B.hourIn, B.hourOut, B.phoneNumber, B.total, B.custPayment, B.status, B.customerId, B.employeeId, B.tableId,\n" +
                 "    CONCAT(C.firstName, ' ', C.lastName) AS customerFullName, \n" + 
@@ -67,7 +66,6 @@ public class DAO_Bill {
         return list;
     }
     
-
     public static void createBill() {
         String sql = "INSERT INTO BILL (dateCreated, hourIn) VALUES (GETDATE(), GETDATE())";
 
@@ -101,7 +99,7 @@ public class DAO_Bill {
 
         return null;
     }
-    
+
     public Bill getBillById(String billId) {
         String sql = "SELECT \n" +
                      "B.billId, B.dateCreated, B.hourIn, B.hourOut, B.phoneNumber, B.total, B.custPayment, B.status, B.customerId, B.employeeId, B.tableId, \n" +

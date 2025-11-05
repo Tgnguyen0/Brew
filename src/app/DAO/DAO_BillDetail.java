@@ -53,4 +53,25 @@ public class DAO_BillDetail {
         }
         return list;
     }
+  
+    public static void saveAllBD(List<BillDetail> list) {
+        String sql = "INSERT INTO BillDetail (billId, menuId, amount, org_price, totalPrice) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            for (BillDetail bd : list) {
+                ps.setString(1, bd.getBillId());
+                ps.setString(2, bd.getItemId());
+                ps.setInt(3, bd.getQuantity());
+                ps.setFloat(4, bd.getPrice());
+                ps.setDouble(5, bd.getTotal_price());
+                ps.addBatch(); // Thêm vào batch
+            }
+
+            ps.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
