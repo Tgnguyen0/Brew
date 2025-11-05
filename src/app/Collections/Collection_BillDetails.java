@@ -30,7 +30,8 @@ public class Collection_BillDetails {
         for (BillDetail bd : bds) {
             if (bd.getItemId().equals(billDetail.getItemId())) {
                 bd.setQuantity(billDetail.getQuantity());
-                bd.setTotal_price(bd.getQuantity(), bd.getTotal_price());
+                bd.setPrice(billDetail.getPrice());
+                bd.Total_price();
                 System.out.println("updateBillDetail: " + bds);
 
                 return true;
@@ -40,11 +41,20 @@ public class Collection_BillDetails {
         return false;
     }
 
+    public boolean updateAllBillDetail(String billId) {
+        for (BillDetail bd: bds) {
+            bd.setBillId(billId);
+        }
+
+        return true;
+    }
+
     public void updateBDOnOrder(int pos, int quantity, float price) {
         for (int i = 0 ; i < bds.size(); i++) {
             if (i == pos) {
                 bds.get(i).setQuantity(quantity);
-                bds.get(i).setTotal_price(bds.get(i).getQuantity(), price);
+                bds.get(i).setPrice(price);
+                bds.get(i).Total_price();
             }
         }
 

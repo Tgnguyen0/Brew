@@ -19,7 +19,7 @@ public class ActionListener_ImagePanelButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean isAdded = imagePanelButton.collectionBillDetails.addBillDetail(new BillDetail(imagePanelButton.mi.getItemId(), 1));
+        boolean isAdded = imagePanelButton.collectionBillDetails.addBillDetail(new BillDetail(imagePanelButton.mi.getItemId(), 1, imagePanelButton.mi.getPrice()));
 
         if (isAdded) {
             Vector<String> row = new Vector<String>();
@@ -38,7 +38,7 @@ public class ActionListener_ImagePanelButton implements ActionListener {
                     }
                     SellPage.productTableModel.setValueAt(ammount, i, 1);
                     SellPage.productTableModel.setValueAt(ammount * imagePanelButton.mi.getPrice(), i, 2);
-                    imagePanelButton.collectionBillDetails.updateBillDetail(new BillDetail(imagePanelButton.mi.getItemId(), ammount));
+                    imagePanelButton.collectionBillDetails.updateBillDetail(new BillDetail(imagePanelButton.mi.getItemId(), ammount, imagePanelButton.mi.getPrice()));
                     break;
                 }
             }

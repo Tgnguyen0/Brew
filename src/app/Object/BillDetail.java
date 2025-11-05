@@ -7,18 +7,23 @@ public class BillDetail implements Serializable {
     String billId;
     String itemId;
     int quantity;
+    float price;
     double total_price;
     private final double INC = 5.0;
 
-    public BillDetail(String billId, String itemId, int quantity) {
+    public BillDetail(String billId, String itemId, int quantity, float price) {
         this.billId = billId;
         this.itemId = itemId;
         this.quantity = quantity;
+        this.price = price;
+        Total_price();
     }
 
-    public BillDetail(String itemId, int quantity) {
+    public BillDetail(String itemId, int quantity, float price) {
         this.itemId = itemId;
         this.quantity = quantity;
+        this.price = price;
+        Total_price();
     }
 
     public String getBillId() {
@@ -45,12 +50,20 @@ public class BillDetail implements Serializable {
         this.itemId = itemId;
     }
 
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
     public double getTotal_price() {
         return this.total_price;
     }
 
-    public void setTotal_price(int ammount, double price) {
-        this.total_price = price + INC * ammount;
+    public void Total_price() {
+        this.total_price = price * quantity;
     }
 
     public int getQuantity() {
