@@ -1,7 +1,6 @@
 package app.Collections;
 
 import app.Object.Customer;
-
 import java.util.ArrayList;
 
 public class Collection_Member {
@@ -16,22 +15,26 @@ public class Collection_Member {
     }
 
     public boolean addMember(Customer newMember) {
+
+        if (ml.stream().anyMatch(c -> c.getCustomerId().equals(newMember.getCustomerId()))) {
+            return false;
+        }
         return ml.add(newMember);
     }
-
-    public boolean addAllMember(ArrayList<Customer> newList) {
-        return ml.addAll(newList);
-    }
-
-    public boolean deleteMember(String id) {
+    
+    // Thêm phương thức để cập nhật
+    public boolean updateMember(Customer updatedMember) {
         for (int i = 0 ; i < ml.size() ; i++) {
-            if (ml.get(i).getId().equals(id)) {
-                ml.remove(i);
+            if (ml.get(i).getCustomerId().equals(updatedMember.getCustomerId())) {
+                ml.set(i, updatedMember);
                 return true;
             }
         }
-
         return false;
+    }
+
+    public boolean deleteMember(String id) {
+        return ml.removeIf(c -> c.getCustomerId().equals(id));
     }
 
     public Customer searchMember(String phone) {
@@ -40,7 +43,16 @@ public class Collection_Member {
                 return ml.get(i);
             }
         }
-
+        return null;
+    }
+    
+    // Thêm phương thức search theo ID
+    public Customer searchMemberById(String id) {
+        for (int i = 0 ; i < ml.size() ; i++) {
+            if (ml.get(i).getCustomerId().equals(id)) {
+                return ml.get(i);
+            }
+        }
         return null;
     }
 }

@@ -27,7 +27,7 @@ public class Collection_BillDetails {
 
     public Boolean updateBillDetail(BillDetail billDetail) {
         for (BillDetail bd : bds) {
-            if (bd.getItemId().equals(billDetail.getItemId())) { 
+            if (bd.getMenuItem().getItemId().equals(billDetail.getMenuItem().getItemId())) { 
                 bd.setQuantity(billDetail.getQuantity());
                 System.out.println(bds);
                 return true;
@@ -43,8 +43,7 @@ public class Collection_BillDetails {
 
     public boolean deleteBillDetail(String id) {
         for (int i = 0 ; i < bds.size() ; i++) {
-            // SỬA LỖI: Dùng getItemId() đã khôi phục/ánh xạ
-            if (bds.get(i).getItemId().equals(id)) { 
+            if (bds.get(i).getMenuItem().getItemId().equals(id)) { 
                 bds.remove(i);
                 return true;
             }

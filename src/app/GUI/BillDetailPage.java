@@ -65,7 +65,7 @@ public class BillDetailPage extends JDialog {
         topRightPanel.add(dateLabel);
 
         // Nhân viên phụ trách
-        String employeeName = bill.getEmployeeName() != null ? bill.getEmployeeName() : "NV Lẻ (ID: " + bill.getEmployeeId() + ")";
+        String employeeName = bill.getEmployee().getName() != null ? bill.getEmployee().getName() : "NV Lẻ (ID: " + bill.getEmployee().getId()  + ")";
         JLabel employeeLabel = new JLabel("NV: " + employeeName, SwingConstants.RIGHT);
         employeeLabel.setFont(infoFont);
         employeeLabel.setForeground(Color.WHITE);
@@ -99,7 +99,7 @@ public class BillDetailPage extends JDialog {
         addRow(summaryPanel, gbc, row++, "Thời Gian:", hourInStr + " - " + hourOutStr, labelFont, valueFont);
         
         
-        String customerName = bill.getCustomerName() != null ? bill.getCustomerName() : "Khách lẻ (ID: " + bill.getCustomerId() + ")";
+        String customerName = bill.getCustomer().getFullName() != null ? bill.getCustomer().getFullName() : "Khách lẻ (ID: " + bill.getCustomer().getCustomerId() + ")";
         addRow(summaryPanel, gbc, row++, "Tên Khách Hàng:", customerName, labelFont, valueFont);
         
         
@@ -159,9 +159,9 @@ public class BillDetailPage extends JDialog {
         List<BillDetail> details = bill.getDetails(); 
         if (details != null && !details.isEmpty()) {
             for (BillDetail detail : details) {
-                String itemName = detail.getItemName() != null ? detail.getItemName() : "Món đã xóa";
+                String itemName = detail.getMenuItem().getName() != null ? detail.getMenuItem().getName() : "Món đã xóa";
                 String quantity = String.valueOf(detail.getQuantity());
-                String category = detail.getCategory() != null ? detail.getCategory() : "N/A";
+                String category = detail.getMenuItem().getCategory() != null ? detail.getMenuItem().getCategory() : "N/A";
                 
                 String amount = String.format("%,.0f", detail.getAmount());
                 String totalPrice = String.format("%,.0f", detail.getTotalPrice());

@@ -1,7 +1,9 @@
 package app.DAO;
 
 import app.Connection.XJdbc;
+import app.Object.Bill;
 import app.Object.BillDetail;
+import app.Object.MenuItem;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,15 +36,22 @@ public class DAO_BillDetail {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     BillDetail bd = new BillDetail();
+                    bd.setBill(new Bill());
+                    bd.setMenuItem(new MenuItem());
                     
-                    bd.setBillId(rs.getString("billId"));
-                    bd.setMenuId(rs.getString("menuId"));
+                    bd.getBill().setBillId(rs.getString("billId"));
+                    //bd.setBillId(rs.getString("billId"));
+                    bd.getMenuItem().setItemId(rs.getString("menuId"));
+                    //bd.setMenuId(rs.getString("menuId"));
                     bd.setQuantity(rs.getInt("soLuong")); 
                     bd.setAmount(rs.getDouble("amount"));
                     bd.setTotalPrice(rs.getDouble("totalPrice")); ;
                     
-                    bd.setItemName(rs.getString("item_name"));
-                    bd.setCategory(rs.getString("category"));
+                    bd.getMenuItem().setName(rs.getString("item_name"));
+                    bd.getMenuItem().setCategory(rs.getString("category"));
+
+                    //bd.setItemName(rs.getString("item_name"));
+                    //bd.setCategory(rs.getString("category"));
                     
                     list.add(bd);
                 }

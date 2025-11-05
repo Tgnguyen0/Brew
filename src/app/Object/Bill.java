@@ -13,41 +13,41 @@ public class Bill {
     private double total;          
     private double custPayment;    
     private String status;         
-    private String customerId;
-    private String employeeId;
-    private String tableId;
     
     private List<BillDetail> details;
-    private String customerName; 
-    private String employeeName; 
-    private int quantityOfItems; 
+    private Customer customer; 
+    private Employee employee; 
+    private Table table;
 
     public Bill() {
     }
 
     // Constructor ĐẦY ĐỦ NHẤT 
-    public Bill(String billId, LocalDate dateCreated, Timestamp hourIn, Timestamp hourOut, String phoneNumber, double total, double custPayment, String status, String customerId, String employeeId, String tableId, String customerName, String employeeName) {
-        this.billId = billId;
-        this.dateCreated = dateCreated;
-        this.hourIn = hourIn;
-        this.hourOut = hourOut;
-        this.phoneNumber = phoneNumber;
-        this.total = total;
-        this.custPayment = custPayment;
-        this.status = status;
-        this.customerId = customerId;
-        this.employeeId = employeeId;
-        this.tableId = tableId;
-        this.customerName = customerName;
-        this.employeeName = employeeName;
-        this.quantityOfItems = 0; 
-    }
-
+    
     public Bill(String billId, LocalDate dateCreated, Timestamp hourIn) {
         this.billId = billId;
         this.dateCreated = dateCreated;
         this.hourIn = hourIn;
     }
+
+	public Bill(String billId, LocalDate dateCreated, Timestamp hourIn, Timestamp hourOut, String phoneNumber,
+			double total, double custPayment, String status,
+			List<BillDetail> details, Customer customer, Employee employee, Table table) {
+		super();
+		this.billId = billId;
+		this.dateCreated = dateCreated;
+		this.hourIn = hourIn;
+		this.hourOut = hourOut;
+		this.phoneNumber = phoneNumber;
+		this.total = total;
+		this.custPayment = custPayment;
+		this.status = status;
+
+		this.details = details;
+		this.customer = customer;
+		this.employee = employee;
+		this.table=table;
+	}
 
 	public String getBillId() {
 		return billId;
@@ -113,54 +113,6 @@ public class Bill {
 		this.status = status;
 	}
 
-	public String getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
-	}
-
-	public String getEmployeeId() {
-		return employeeId;
-	}
-
-	public void setEmployeeId(String employeeId) {
-		this.employeeId = employeeId;
-	}
-
-	public String getTableId() {
-		return tableId;
-	}
-
-	public void setTableId(String tableId) {
-		this.tableId = tableId;
-	}
-
-	public String getCustomerName() {
-		return customerName;
-	}
-
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
-
-	public String getEmployeeName() {
-		return employeeName;
-	}
-
-	public void setEmployeeName(String employeeName) {
-		this.employeeName = employeeName;
-	}
-
-	public int getQuantityOfItems() {
-		return quantityOfItems;
-	}
-
-	public void setQuantityOfItems(int quantityOfItems) {
-		this.quantityOfItems = quantityOfItems;
-	}
-
 	public List<BillDetail> getDetails() {
 		return details;
 	}
@@ -169,6 +121,40 @@ public class Bill {
 		this.details = details;
 	}
 
+	public Customer getCustomer() {
+		return customer;
+	}
 
-    
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	public Table getTable() {
+		return table;
+	}
+
+	public void setTable(Table table) {
+		this.table = table;
+	}
+
+	public int getQuantityOfItems() {
+        if (details == null) {
+            return 0;
+        }
+        int totalQuantity = 0;
+        for (BillDetail detail : details) {
+            totalQuantity += detail.getQuantity();
+        }
+        return totalQuantity;
+	}
+	
+
 }

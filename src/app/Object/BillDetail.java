@@ -1,96 +1,90 @@
 package app.Object;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class BillDetail{
-    private String billId;
-    private String menuId; // Đổi itemId thành menuId cho đúng sơ đồ DB
-    private int quantity; // soLuong
-    private double amount; // đơn giá/price (từ BillDetail.amount)
-    private double totalPrice; // totalPrice (từ BillDetail.totalPrice)
+    private Bill bill;
+    private MenuItem menuItem; 
+    private int quantity; 
+    private double amount; 
+    private double totalPrice; 
     
-    // Thuộc tính bổ sung từ MenuItem (sau khi JOIN)
-    private String itemName;   
-    private String category;   
 
-    // Constructor mặc định cần thiết cho DAO
     public BillDetail() {} 
 
-    // Constructor đã có, giữ lại
-    public BillDetail(String billId, String menuId, int quantity) {
-        this.billId = billId;
-        this.menuId = menuId;
-        this.quantity = quantity;
-    }
+    
 
-    public BillDetail(String menuId, int quantity) {
-        this.menuId = menuId;
-        this.quantity = quantity;
-    }
-
-	public String getBillId() {
-		return billId;
+	public BillDetail(Bill bill,MenuItem menuItem, int quantity, double amount, double totalPrice) {
+		super();
+		this.bill = bill;
+		this.menuItem = menuItem;
+		this.quantity = quantity;
+		this.amount = amount;
+		this.totalPrice = totalPrice;
 	}
 
-	public void setBillId(String billId) {
-		this.billId = billId;
+	
+
+
+	public Bill getBill() {
+		return bill;
 	}
 
-	public String getMenuId() {
-		return menuId;
+
+	public void setBill(Bill bill) {
+		this.bill = bill;
 	}
 
-	public void setMenuId(String menuId) {
-		this.menuId = menuId;
+
+
+
+	public MenuItem getMenuItem() {
+		return menuItem;
 	}
+
+
+
+	public void setMenuItem(MenuItem menuItem) {
+		this.menuItem = menuItem;
+	}
+
+
 
 	public int getQuantity() {
 		return quantity;
 	}
 
+
+
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
+
+
 
 	public double getAmount() {
 		return amount;
 	}
 
+
+
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
+
+
 
 	public double getTotalPrice() {
 		return totalPrice;
 	}
 
+
+
 	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 
-	public String getItemName() {
-		return itemName;
-	}
 
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
-	}
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	public String getItemId() {
-	    return this.menuId; 
-	}
-
-	public void setItemId(String itemId) {
-	    this.menuId = itemId;
-	}
-    
-   
 }

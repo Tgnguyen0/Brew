@@ -402,11 +402,11 @@ public class ReceiptPage extends JPanel {
                 dateStr,                                            
                 hourInStr,                                          
                 hourOutStr,                                         
-                bill.getCustomerName() != null ? bill.getCustomerName() : "Khách lẻ", 
+                bill.getCustomer().getFullName() != null ? bill.getCustomer().getFullName() : "Khách lẻ", 
                 bill.getPhoneNumber(),                              
                 totalStr,                                           
                 bill.getStatus(),                                   
-                bill.getEmployeeName() != null ? bill.getEmployeeName() : bill.getEmployeeId() 
+                bill.getEmployee().getName() != null ? bill.getEmployee().getName() : bill.getEmployee().getId() 
             };
             productTableModel.addRow(row);
         }
@@ -537,7 +537,6 @@ public class ReceiptPage extends JPanel {
             return;
         }
 
-        // Chuyển đổi index từ view sang model (nếu có sắp xếp/lọc)
         int modelRow = productTable.convertRowIndexToModel(selectedRow);
         String billId = productTableModel.getValueAt(modelRow, 0).toString(); 
 
@@ -545,7 +544,6 @@ public class ReceiptPage extends JPanel {
         Bill selectedBill = billDAO.getBillById(billId); 
 
         if (selectedBill != null) {
-            // Hóa đơn đã được nạp đầy đủ thông tin chi tiết (bao gồm cả danh sách sản phẩm)
             BillDetailPage detailPage = new BillDetailPage(selectedBill);
             detailPage.showDetailWindow(); 
         } else {
@@ -586,8 +584,6 @@ public class ReceiptPage extends JPanel {
                 return;
             }
 
-            // Khởi tạo và Xuất file PDF (yêu cầu file PDF_Exporter đã được sửa lỗi Font/JAR)
-            // Constructor của PDF_Exporter cần throws IOException
             PDF_Exporter exporter = new PDF_Exporter(); 
             String filePath = exporter.exportBillToPDF(billToExport); 
             
@@ -598,14 +594,12 @@ public class ReceiptPage extends JPanel {
                 JOptionPane.INFORMATION_MESSAGE);
 
         } catch (IOException e) {
-            // Lỗi IO có thể xảy ra khi đọc font hoặc ghi file PDF
             JOptionPane.showMessageDialog(this, 
                 "Lỗi khi xuất file PDF. Vui lòng kiểm tra đã thêm đủ các file JAR iText và font RobotoMono trong thư mục 'font' hay chưa.", 
                 "Lỗi Xuất File (Font/JAR)", 
                 JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         } catch (Exception e) {
-            // Bắt các lỗi khác (ví dụ: lỗi SQL, lỗi trong BillDetail...)
             JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi hệ thống: " + e.getMessage(), "Lỗi Hệ Thống", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }

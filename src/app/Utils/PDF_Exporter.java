@@ -93,8 +93,8 @@ public class PDF_Exporter {
     }
     
     private void addSummaryInfo(Document document, Bill bill) {
-        String customerName = bill.getCustomerName() != null ? bill.getCustomerName() : "Khách lẻ";
-        String employeeName = bill.getEmployeeName() != null ? bill.getEmployeeName() : "N/A";
+        String customerName = bill.getCustomer().getFullName() != null ? bill.getCustomer().getFullName(): "Khách lẻ";
+        String employeeName = bill.getEmployee().getName() != null ? bill.getEmployee().getName() : "N/A";
 
         Table summaryTable = new Table(UnitValue.createPercentArray(new float[]{1, 1}));
         summaryTable.setWidth(UnitValue.createPercentValue(100));
@@ -124,7 +124,7 @@ public class PDF_Exporter {
         
         if (details != null) {
             for (BillDetail bd : details) {
-                table.addCell(createCell(bd.getItemName() != null ? bd.getItemName() : "Món đã xóa", false));
+                table.addCell(createCell(bd.getMenuItem().getName()!= null ? bd.getMenuItem().getName() : "Món đã xóa", false));
                 table.addCell(createCell(String.valueOf(bd.getQuantity()), false).setTextAlignment(TextAlignment.CENTER));
                 table.addCell(createCell(String.format("%,.0f", bd.getAmount()), false).setTextAlignment(TextAlignment.RIGHT));
                 table.addCell(createCell(String.format("%,.0f", bd.getTotalPrice()), false).setTextAlignment(TextAlignment.RIGHT));

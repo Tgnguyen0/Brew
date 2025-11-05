@@ -36,51 +36,48 @@ public class MenuItem implements Serializable {
 
 
     public String getItemId() {
-        return this.itemId;
-    }
+		return itemId;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public float getPrice() {
-        return this.price;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setPrice(float price) {
-        this.price = price;
-    }
+	public float getPrice() {
+		return price;
+	}
 
-    public String getCategory() {
-        return category;
-    }
+	public void setPrice(float price) {
+		this.price = price;
+	}
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+	public String getCategory() {
+		return category;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MenuItem menuItem = (MenuItem) o;
-        return Objects.equals(itemId, menuItem.itemId);
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    @Override
+	@Override
     public int hashCode() {
         return Objects.hashCode(itemId);
     }
+
 }
