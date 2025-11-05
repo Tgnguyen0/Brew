@@ -15,9 +15,8 @@ import java.util.List;
 public class DAO_BillDetail {
 
     public List<BillDetail> selectByBillId(String billId) {
-        // Dựa trên sơ đồ DB (BillDetail JOIN MenuItem)
         String sql = "SELECT \n" +
-                "    BD.billDetailId, BD.billId, BD.menuId, BD.soLuong, BD.amount, BD.totalPrice, \n" +
+                "    BD.billDetailId, BD.billId, BD.menuId, BD.amount, BD.org_price, BD.totalPrice, \n" +
                 "    MI.item_name, MI.category \n" + 
                 "FROM \n" +
                 "    BillDetail BD \n" +
@@ -43,8 +42,8 @@ public class DAO_BillDetail {
                     //bd.setBillId(rs.getString("billId"));
                     bd.getMenuItem().setItemId(rs.getString("menuId"));
                     //bd.setMenuId(rs.getString("menuId"));
-                    bd.setQuantity(rs.getInt("soLuong")); 
-                    bd.setAmount(rs.getDouble("amount"));
+                    bd.setQuantity(rs.getInt("amount")); 
+                    bd.setAmount(rs.getDouble("org_price"));
                     bd.setTotalPrice(rs.getDouble("totalPrice")); ;
                     
                     bd.getMenuItem().setName(rs.getString("item_name"));

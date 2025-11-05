@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public class BillDetail{
+public class BillDetail implements Serializable{
     private Bill bill;
     private MenuItem menuItem; 
     private int quantity; 

@@ -1,10 +1,11 @@
 package app.Object;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Bill {
+public class Bill implements Serializable{
     private String billId;
     private LocalDate dateCreated; 
     private Timestamp hourIn;       
