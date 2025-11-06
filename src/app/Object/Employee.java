@@ -6,25 +6,26 @@ import java.util.Objects;
 
 public class Employee implements Serializable {
     private String id;
-    private String name;
-    private String gender;
-    private LocalDate dob;
+    private String firstName;
+    private String lastName;
+    private boolean gender;
     private String phone;
     private String email;
-    private String responsibility;
+    private String role;
+    private String address;
 
     public Employee() {
     }
 
-    public Employee(String id, String name, String gender, LocalDate dob, String phone, String email,
-                    String responsibility) {
+    public Employee(String id, String firstName, String lastName, boolean gender, String phone, String email,
+                    String role, String address) {
         this.id = id;
-        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.gender = gender;
-        this.dob = dob;
         this.phone = phone;
         this.email = email;
-        this.responsibility = responsibility;
+        this.role = role;
     }
 
     public String getId() {
@@ -35,28 +36,32 @@ public class Employee implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return this.name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getGender() {
-        return this.gender;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public LocalDate getDob() {
-        return this.dob;
+    public boolean isGender() {
+        return gender;
     }
 
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getPhone() {
@@ -75,11 +80,11 @@ public class Employee implements Serializable {
         this.email = email;
     }
 
-    public String getResponsibility() {
-        return this.responsibility;
+    public String getRole() {
+        return this.role;
     }
 
-    public void setResponsibility(String responsibility) {
-        this.responsibility = responsibility;
+    public void setRole(String role) {
+        this.role = role;
     }
 }

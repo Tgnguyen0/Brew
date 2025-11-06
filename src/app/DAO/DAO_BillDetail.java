@@ -15,7 +15,7 @@ public class DAO_BillDetail {
     public List<BillDetail> selectByBillId(String billId) {
         // Dựa trên sơ đồ DB (BillDetail JOIN MenuItem)
         String sql = "SELECT \n" +
-                "    BD.billDetailId, BD.billId, BD.menuId, BD.soLuong, BD.amount, BD.totalPrice, \n" +
+                "    BD.billDetailId, BD.billId, BD.menuId, BD.amount, BD.org_price, BD.totalPrice, \n" +
                 "    MI.item_name, MI.category \n" + 
                 "FROM \n" +
                 "    BillDetail BD \n" +
