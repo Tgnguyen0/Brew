@@ -94,7 +94,6 @@ public class BrewLogin extends JFrame {
                 BorderFactory.createEmptyBorder(40, 50, 40, 50)
         ));
 
-
         JLabel lblFormTitle = new JLabel("Đăng nhập hệ thống", SwingConstants.CENTER);
         lblFormTitle.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 22));
         lblFormTitle.setForeground(textColor);
