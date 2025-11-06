@@ -2,6 +2,7 @@ package app.GUI;
 
 import app.Components.NavbarPanel;
 import app.InitFont.CustomFont;
+import app.Object.Account;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.*;
@@ -27,6 +28,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 // old OnClick Color: 196, 125, 44
 
 public class BrewGUI extends JFrame implements MouseListener {
+    private Account acc;
     private MigLayout layout;
     private JPanel right;
     public static JPanel pageContainer;
@@ -46,13 +48,14 @@ public class BrewGUI extends JFrame implements MouseListener {
     private Animator animator;
 
     // Function tạo GUI chính
-    public BrewGUI() {
+    public BrewGUI(Account acc) {
+        this.acc = acc;
+
         ImageIcon icon = new ImageIcon("asset/icon.png");
         setTitle("Brew");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         setIconImage(icon.getImage());
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(true);
         layout = new MigLayout("fill", "0[]0[100%, fill]0", "0[fill, top]0");
@@ -181,13 +184,14 @@ public class BrewGUI extends JFrame implements MouseListener {
         userPanel.setOpaque(false);
 
         JLabel lblDateTime = new JLabel("Đang tải...");
+        lblDateTime.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.BOLD, 12));
         lblDateTime.setForeground(Color.WHITE);
 
-        JLabel lblEmployeeName = new JLabel("Ngọc Thành");
+        JLabel lblEmployeeName = new JLabel(acc.getEmployee().getFirstName() + " " + acc.getEmployee().getLastName());
         lblEmployeeName.setForeground(Color.WHITE);
-        lblEmployeeName.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.BOLD, 14));
+        lblEmployeeName.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.BOLD, 12));
 
-        JLabel lblRole = new JLabel("Nhân viên pha chế");
+        JLabel lblRole = new JLabel(acc.getEmployee().getRole());
         lblRole.setForeground(Color.LIGHT_GRAY);
         lblRole.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
 
@@ -328,11 +332,11 @@ public class BrewGUI extends JFrame implements MouseListener {
 //        exitedButton.setBorder(BorderFactory.createLineBorder(Color.white));
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // Mongo.getConnection();
-            BrewGUI devCafeGUI = new BrewGUI();
-            devCafeGUI.setVisible(true);
-        });
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> {
+//            // Mongo.getConnection();
+//            BrewGUI devCafeGUI = new BrewGUI();
+//            devCafeGUI.setVisible(true);
+//        });
+//    }
 }

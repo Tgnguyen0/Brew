@@ -3,7 +3,7 @@ package app.Object;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class BillDetail{
+public class BillDetail {
     private String billId;
     private String menuId; // Đổi itemId thành menuId cho đúng sơ đồ DB
     private int quantity; // soLuong

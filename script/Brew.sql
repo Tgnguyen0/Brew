@@ -259,7 +259,8 @@ VALUES
 (N'Nguyễn', N'Minh Quân', '0988000002', N'quanly1.brew@gmail.com', 1, N'Quản lý', N'TP. Hồ Chí Minh'),
 (N'Trần', N'Thiên Phúc', '0988000003', N'quanly2.brew@gmail.com', 0, N'Quản lý', N'Hà Nội'),
 (N'Lê', N'Thị Mai', '0988000004', N'nv1.brew@gmail.com', 1, N'Nhân viên', N'Đà Nẵng'),
-(N'Phạm', N'Thi Hồng', '0988000005', N'nv2.brew@gmail.com', 0, N'Nhân viên', N'Cần Thơ');
+(N'Phạm', N'Thi Hồng', '0988000005', N'nv2.brew@gmail.com', 0, N'Nhân viên', N'Cần Thơ'),
+(N'Nguyễn', N'Nhật Tấn', '07658885', N'quanly1.brew@gmail.com', 1, N'Quản lý', N'TP. Hồ Chí Minh');
 
 INSERT INTO MenuItem (item_name, price, category, description) VALUES
 (N'Cà phê sữa đá', 25000, N'Cà phê', N'Cà phê pha phin với sữa đặc và đá.'),
@@ -324,7 +325,7 @@ VALUES
 ('quanly1', '123', 'QuanLy', 'NV00002'),
 ('quanly2', 'l123', 'QuanLy', 'NV00003'),
 ('nv1', '123', 'NhanVien', 'NV00004'),
-('nv2', '123', 'NhanVien', 'NV00005');
+('nv2', '123', 'NhanVien', 'NV00005')
 
 
 USE Brew;
@@ -671,3 +672,20 @@ VALUES
 ('BI00065', 'MI00006', 1, 28000, 28000),
 ('BI00065', 'MI00022', 1, 45000, 45000),
 ('BI00065', 'MI00036', 1, 38000, 38000);
+
+USE Brew
+INSERT INTO Employee (firstName, lastName, phoneNumber, email, sex, role, address)
+VALUES
+(N'Nguyễn', N'Nhật Tấn', '07658885', N'nhattan.brew@gmail.com', 1, N'Quản lý', N'TP. Hồ Chí Minh'),
+(N'Phạm', N'Ngọc Thành', '07658885', N'ngocthanh.brew@gmail.com', 1, N'Quản lý', N'Gia Lai'),
+(N'Dương', N'Thế Khánh', '07658885', N'thekhanh.brew@gmail.com', 1, N'Quản lý', N'Đồng Nai'),
+(N'Nguyễn', N'Hoàng Phong', '07658885', N'hoangphong.brew@gmail.com', 1, N'Quản lý', N'TP. Hồ Chí Minh');
+
+-- Thêm dữ liệu mẫu cho bảng Account với mật khẩu dễ nhớ
+USE Brew
+INSERT INTO Account (username, password, role, employeeId)
+VALUES
+('AdminTan', '123', 'Admin', 'NV00012'),
+('AdminThanh', '123', 'Admin', 'NV00013'),
+('AdminKhanh', '123', 'Admin', 'NV00014'),
+('AdminPhong', '123', 'Admin', 'NV00015');
