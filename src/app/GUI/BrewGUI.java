@@ -335,7 +335,7 @@ public class BrewGUI extends JFrame implements MouseListener {
 //    public static void main(String[] args) {
 //        SwingUtilities.invokeLater(() -> {
 //            // Mongo.getConnection();
-//            BrewGUI devCafeGUI = new BrewGUI();
+//            BrewGUI devCafeGUI = new BrewGUI(new Account());
 //            devCafeGUI.setVisible(true);
 //        });
 //    }
