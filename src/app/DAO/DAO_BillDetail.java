@@ -12,37 +12,47 @@ import java.util.List;
 
 public class DAO_BillDetail {
 
-    public List<BillDetail> selectByBillId(String billId) {
-        // Dựa trên sơ đồ DB (BillDetail JOIN MenuItem)
+    public static List<BillDetail> selectByBillId(String billId) {
         String sql = "SELECT \n" +
                 "    BD.billDetailId, BD.billId, BD.menuId, BD.amount, BD.org_price, BD.totalPrice, \n" +
-                "    MI.item_name, MI.category \n" + 
+                "    MI.item_name, MI.category \n" +
                 "FROM \n" +
                 "    BillDetail BD \n" +
                 "JOIN \n" +
-                "    MenuItem MI ON BD.menuId = MI.itemId \n" + 
+                "    MenuItem MI ON BD.menuId = MI.itemId \n" +
                 "WHERE \n" +
                 "    BD.billId = ?";
 
         List<BillDetail> list = new ArrayList<>();
-        
+
         try (Connection con = XJdbc.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, billId);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     BillDetail bd = new BillDetail();
-                    
+
+
                     bd.setBillId(rs.getString("billId"));
+                    //bd.setBillId(rs.getString("billId"));
                     bd.setMenuId(rs.getString("menuId"));
-                    bd.setQuantity(rs.getInt("soLuong")); 
-                    bd.setPrice(rs.getFloat("amount"));
+
+                    //bd.setMenuId(rs.getString("menuId"));
+                    bd.setQuantity(rs.getInt("amount"));
+
+                    bd.setPrice(rs.getFloat("org_price"));
                     bd.Total_price();
+//                  bd.setTotalPrice(rs.getDouble("totalPrice")); ;
+
                     bd.setItemName(rs.getString("item_name"));
+//                    bd.setName(rs.getString("item_name"));
                     bd.setCategory(rs.getString("category"));
-                    
+
+                    //bd.setItemName(rs.getString("item_name"));
+                    //bd.setCategory(rs.getString("category"));
+
                     list.add(bd);
                 }
             }

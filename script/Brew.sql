@@ -331,12 +331,12 @@ VALUES
 USE Brew;
 INSERT INTO CafeTable (floor, current_occupancy, capacity, status)
 VALUES
-('Tầng trệt', 0, 3, 'SẴN SÀNG'),
-('Tầng trệt', 0, 3, 'SẴN SÀNG'),
-('Tầng trệt', 0, 3, 'SẴN SÀNG'),
-('Tầng trệt', 0, 3, 'SẴN SÀNG'),
-('Tầng trệt', 0, 3, 'SẴN SÀNG'),
-('Tầng trệt', 0, 3, 'SẴN SÀNG');
+('Tầng trệt', 0, 3, 'AVAILABLE'),
+('Tầng trệt', 0, 3, 'AVAILABLE'),
+('Tầng trệt', 0, 3, 'AVAILABLE'),
+('Tầng trệt', 0, 3, 'AVAILABLE'),
+('Tầng trệt', 0, 3, 'AVAILABLE'),
+('Tầng trệt', 0, 3, 'AVAILABLE');
 
 
 

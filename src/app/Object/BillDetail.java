@@ -8,7 +8,7 @@ public class BillDetail {
     private String menuId; // Đổi itemId thành menuId cho đúng sơ đồ DB
     private int quantity; // soLuong
     private float price; // đơn giá/price (từ BillDetail.amount)
-    private double totalPrice; // totalPrice (từ BillDetail.totalPrice)
+    private double totalPrice; // Đây là thuộc tính dẫn xuất nên không truyền giá trị
     
     // Thuộc tính bổ sung từ MenuItem (sau khi JOIN)
     private String itemName;   
@@ -22,12 +22,7 @@ public class BillDetail {
         this.billId = billId;
         this.menuId = menuId;
         this.quantity = quantity;
-        this.price = price;
         Total_price();
-    }
-
-    public BillDetail(String menuId, int quantity) {
-        this.menuId = menuId;
     }
 
     public BillDetail(String itemId, int quantity, float price) {
@@ -89,6 +84,7 @@ public class BillDetail {
         return this.totalPrice;
     }
 
+    // Thuộc tính dẫn xuất. Chỉ kêu khi đã truyền price với amount
     public void Total_price() {
         this.totalPrice = price * quantity;
     }
