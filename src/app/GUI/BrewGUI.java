@@ -28,7 +28,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 // old OnClick Color: 196, 125, 44
 
 public class BrewGUI extends JFrame implements MouseListener {
-    private Account acc;
+    public static Account acc;
     private MigLayout layout;
     private JPanel right;
     public static JPanel pageContainer;

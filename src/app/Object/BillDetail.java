@@ -25,10 +25,12 @@ public class BillDetail {
         Total_price();
     }
 
-    public BillDetail(String itemId, int quantity, float price) {
+    public BillDetail(String itemId, int quantity, float price, String name, String category) {
         this.menuId = itemId;
         this.quantity = quantity;
         this.price = price;
+        this.itemName = name;
+        this.category = category;
         Total_price();
     }
 

@@ -53,30 +53,23 @@ public class ActionListener_CafeLayoutPage implements ActionListener {
 
     private void handleTableClick(TableButton tb) {
         layoutPage.choosenTableId = tb.getText();
-        layoutPage.tableLabel.setText("Table " + layoutPage.choosenTableId + ": ");
+        // layoutPage.tableLabel.setText("Table " + layoutPage.choosenTableId + ": ");
         Table table = DAO_Table.findTable(layoutPage.choosenTableId);
 
         if (table == null) return;
 
         if (!tb.isChoosen()) {
-            if (table.isFull()) {
-                tb.setBackground(Color.RED);
-                tb.setChoosen(false);
-                System.out.println("⚠ Bàn " + layoutPage.choosenTableId + " đã đủ người!");
-            } else {
-                tb.setChoosen(true);
-                tb.setBackground(Color.ORANGE);
-                System.out.println("✅ Đã thêm 1 người vào bàn " + layoutPage.choosenTableId + " (" + table.getCurrentOccupancy() + "/" + table.getCapacity() + ")");
-            }
+            tb.setChoosen(true);
+            tb.setBackground(Color.ORANGE);
+
+            layoutPage.collectionTable.addTable(table);
+            System.out.println(layoutPage.collectionTable.getAllTables().toString());
         } else {
             tb.setChoosen(false);
             tb.setBackground(table.getCurrentOccupancy() == 0 ? Color.WHITE : Color.ORANGE);
-            layoutPage.tableLabel.setText("Table: ");
-            layoutPage.sizeField.setText("0");
-            layoutPage.choosenTableId = "";
-            System.out.println("↩ Đã bỏ chọn bàn " + layoutPage.choosenTableId + " (" + table.getCurrentOccupancy() + "/" + table.getCapacity() + ")");
-        }
 
-        if (table.isFull()) tb.setBackground(Color.RED);
+            layoutPage.collectionTable.removeTable(table);
+            System.out.println(layoutPage.collectionTable.getAllTables().toString());
+        }
     }
 }

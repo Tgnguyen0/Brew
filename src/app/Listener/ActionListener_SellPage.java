@@ -106,11 +106,14 @@ public class ActionListener_SellPage implements ActionListener {
         if (o == sellPage.toInvoiceButton) {
             DAO_Bill.createBill();
             Bill bill = DAO_Bill.getLatestBill();
-            System.out.println(bill.toString());
 
             sellPage.collectionBillDetails.updateAllBillDetail(bill.getBillId());
+            bill.setDetails(sellPage.collectionBillDetails.getList());
             DAO_BillDetail.saveAllBD(sellPage.collectionBillDetails.getList());
 
+            bill.setEmployee(BrewGUI.acc.employee);
+
+            System.out.println(bill.toString());
             CardLayout cardLayout = (CardLayout) BrewGUI.pageContainer.getLayout();
             cardLayout.show(BrewGUI.pageContainer, "Receipt Page");
 

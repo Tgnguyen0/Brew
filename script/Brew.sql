@@ -336,7 +336,6 @@ VALUES
 ('Tầng trệt', 0, 3, 'AVAILABLE'),
 ('Tầng trệt', 0, 3, 'AVAILABLE'),
 ('Tầng trệt', 0, 3, 'AVAILABLE'),
-('Tầng trệt', 0, 3, 'AVAILABLE'),
 ('Tầng trệt', 0, 3, 'AVAILABLE');
 
 
@@ -688,3 +687,7 @@ VALUES
 ('AdminThanh', '123', 'Admin', 'NV00013'),
 ('AdminKhanh', '123', 'Admin', 'NV00014'),
 ('AdminPhong', '123', 'Admin', 'NV00015');
+
+/*UPDATE CafeTable
+SET status = 'AVAILABLE'
+WHERE tableId = (SELECT MAX(tableId) FROM CafeTable);*/
