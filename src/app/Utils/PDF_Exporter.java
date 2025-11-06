@@ -93,8 +93,19 @@ public class PDF_Exporter {
     }
     
     private void addSummaryInfo(Document document, Bill bill) {
-        String customerName = bill.getCustomerName() != null ? bill.getCustomerName() : "Khách lẻ";
-        String employeeName = bill.getEmployeeName() != null ? bill.getEmployeeName() : "N/A";
+        String customerName; //Ghép tên
+        if (bill.getCustomer().getFirstName() == null && bill.getCustomer().getLastName() == null) {
+            customerName = "Khách lẻ";
+        } else {
+            customerName = bill.getCustomer().getFirstName() + " " + bill.getCustomer().getLastName();
+        }
+
+        String employeeName; //Ghép tên
+        if (bill.getEmployee().getFirstName() == null && bill.getEmployee().getLastName() == null) {
+            employeeName = "N/A";
+        } else {
+            employeeName = bill.getEmployee().getFirstName() + " " + bill.getEmployee().getLastName();
+        }
 
         Table summaryTable = new Table(UnitValue.createPercentArray(new float[]{1, 1}));
         summaryTable.setWidth(UnitValue.createPercentValue(100));

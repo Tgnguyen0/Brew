@@ -25,7 +25,7 @@ public class Collection_Member {
 
     public boolean deleteMember(String id) {
         for (int i = 0 ; i < ml.size() ; i++) {
-            if (ml.get(i).getId().equals(id)) {
+            if (ml.get(i).getCustomerId().equals(id)) {
                 ml.remove(i);
                 return true;
             }
