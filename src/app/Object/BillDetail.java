@@ -1,82 +1,110 @@
 package app.Object;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
-public class BillDetail implements Serializable{
-    private Bill bill;
-    private MenuItem menuItem; 
+public class BillDetail {
+    private String billId;
+    private String menuId; 
     private int quantity; 
-    private double amount; 
+    private float price; 
     private double totalPrice; 
     
+
+    private String itemName;   
+    private String category;   
+
 
     public BillDetail() {} 
 
     
 
-	public BillDetail(Bill bill,MenuItem menuItem, int quantity, double amount, double totalPrice) {
+    public BillDetail(String billId, String menuId, int quantity, float price, double totalPrice, String itemName,
+			String category) {
 		super();
-		this.bill = bill;
-		this.menuItem = menuItem;
+		this.billId = billId;
+		this.menuId = menuId;
 		this.quantity = quantity;
-		this.amount = amount;
+		this.price = price;
 		this.totalPrice = totalPrice;
-	}
-
-	
-
-
-	public Bill getBill() {
-		return bill;
-	}
-
-
-	public void setBill(Bill bill) {
-		this.bill = bill;
+		this.itemName = itemName;
+		this.category = category;
 	}
 
 
 
+	public BillDetail(String itemId, int quantity, float price) {
+        this.menuId = itemId;
+        this.quantity = quantity;
+        this.price = price;
+    }
 
-	public MenuItem getMenuItem() {
-		return menuItem;
-	}
+    public String getBillId() {
+      return billId;
+    }
 
+    public void setBillId(String billId) {
+      this.billId = billId;
+    }
 
+    public String getMenuId() {
+      return menuId;
+    }
 
-	public void setMenuItem(MenuItem menuItem) {
-		this.menuItem = menuItem;
-	}
+    public void setMenuId(String menuId) {
+      this.menuId = menuId;
+    }
 
+    public void setQuantity(int quantity) {
+      this.quantity = quantity;
+    }
 
+    public int getQuantity() {
+        return this.quantity;
+    }
 
-	public int getQuantity() {
-		return quantity;
-	}
+    public String getItemName() {
+      return itemName;
+    }
 
+    public void setItemName(String itemName) {
+      this.itemName = itemName;
+    }
 
+    public String getCategory() {
+      return category;
+    }
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+    public void setCategory(String category) {
+      this.category = category;
+    }
 
+    public float getPrice() {
+        return price;
+    }
 
+    public void setPrice(float price) {
+        this.price = price;
+    }
 
-	public double getAmount() {
-		return amount;
-	}
+//    public double getTotal_price() {
+//        return this.totalPrice;
+//    }
+//
+//    public void Total_price() {
+//        this.totalPrice = price * quantity;
+//    }
+    
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BillDetail that = (BillDetail) o;
+        return Objects.equals(menuId, that.menuId);
+    }
 
-
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
-
-
-
-	public double getTotalPrice() {
+    public double getTotalPrice() {
 		return totalPrice;
 	}
 
@@ -87,4 +115,22 @@ public class BillDetail implements Serializable{
 	}
 
 
+
+	@Override
+    public int hashCode() {
+        return Objects.hash(menuId);
+    }
+
+    @Override
+    public String toString() {
+        return "BillDetail{" +
+                "billId='" + billId + '\'' +
+                ", menuId='" + menuId + '\'' +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", totalPrice=" + totalPrice +
+                ", itemName='" + itemName + '\'' +
+                ", category='" + category + '\'' +
+                '}';
+    }
 }

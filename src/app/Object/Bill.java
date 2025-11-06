@@ -21,8 +21,12 @@ public class Bill implements Serializable{
     private Table table;
 
     public Bill() {
+        super();
+        this.customer = new Customer();  
+        this.employee = new Employee();  
+        this.table = new Table();        
     }
-
+   
     // Constructor ĐẦY ĐỦ NHẤT 
     
     public Bill(String billId, LocalDate dateCreated, Timestamp hourIn) {
@@ -49,6 +53,8 @@ public class Bill implements Serializable{
 		this.employee = employee;
 		this.table=table;
 	}
+
+	
 
 	public String getBillId() {
 		return billId;

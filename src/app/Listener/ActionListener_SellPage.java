@@ -2,7 +2,9 @@ package app.Listener;
 
 import app.Components.ImagePanelButton;
 import app.DAO.DAO_Bill;
+import app.DAO.DAO_BillDetail;
 import app.DAO.DAO_MenuItem;
+import app.GUI.BrewGUI;
 import app.GUI.CafeLayoutPage;
 import app.GUI.SellPage;
 import app.Object.Bill;
@@ -31,7 +33,7 @@ public class ActionListener_SellPage implements ActionListener {
         Object o = e.getSource();
 
         if (o == sellPage.findProduct) {
-            loadBasedOnName(sellPage.gbc, sellPage.searchBar.getText());
+            loadMBaseOnMode(sellPage.gbc, sellPage.searchBar.getText(), MODE.SEARCH);
         }
 
         if (o == sellPage.takeAwayRadioButton) {
@@ -46,7 +48,7 @@ public class ActionListener_SellPage implements ActionListener {
         }
 
         if (o == sellPage.loadProductButton) {
-            loadMoreMenuItems(sellPage.gbc);
+            loadMBaseOnMode(sellPage.gbc, null, MODE.LOAD);
         }
 
         if (o == sellPage.clearSearchButton) {
@@ -59,17 +61,60 @@ public class ActionListener_SellPage implements ActionListener {
             if (selectedItem.equals("Tất cả")) {
                 reloadAllProducts();
             } else {
-                loadBaseOnCategory(sellPage.gbc, (String) sellPage.productCategory.getSelectedItem());
+                loadMBaseOnMode(sellPage.gbc, (String) sellPage.productCategory.getSelectedItem(), MODE.CATEGORY);
             }
         }
 
         if (o == sellPage.updateButton) {
-            // System.out.println(sellPage.collectionMenuItem.getListOfItem());
+            if (SellPage.productTable.isEditing()) {
+                SellPage.productTable.getCellEditor().stopCellEditing();
+            }
+
+            for (int row = 0; row < SellPage.productTable.getRowCount(); row++) {
+                Object quantityObj = SellPage.productTable.getValueAt(row, 1);
+                Object priceObj = SellPage.productTable.getValueAt(row, 2);
+
+                int amount;
+                float price;
+
+                // Ép kiểu an toàn
+                if (quantityObj instanceof String)
+                    amount = Integer.parseInt((String) quantityObj);
+                else if (quantityObj instanceof Number)
+                    amount = ((Number) quantityObj).intValue();
+                else
+                    amount = 0;
+
+                if (priceObj instanceof String)
+                    price = Float.parseFloat((String) priceObj);
+                else if (priceObj instanceof Number)
+                    price = ((Number) priceObj).floatValue();
+                else
+                    price = 0f;
+
+                sellPage.collectionBillDetails.updateBDOnOrder(row, amount, price);
+            }
+        }
+
+        if (o == sellPage.deleteButton) {
+            for (int i = SellPage.productTableModel.getRowCount() - 1; i >= 0; i--) {
+                SellPage.productTableModel.removeRow(i);
+            }
+            sellPage.collectionBillDetails.removeAll();
         }
 
         if (o == sellPage.toInvoiceButton) {
-//            DAO_Bill.createBill();
-//            Bill bill = DAO_Bill.getLatestBill();
+            DAO_Bill.createBill();
+            Bill bill = DAO_Bill.getLatestBill();
+            System.out.println(bill.toString());
+
+            sellPage.collectionBillDetails.updateAllBillDetail(bill.getBillId());
+            DAO_BillDetail.saveAllBD(sellPage.collectionBillDetails.getList());
+
+            CardLayout cardLayout = (CardLayout) BrewGUI.pageContainer.getLayout();
+            cardLayout.show(BrewGUI.pageContainer, "Receipt Page");
+
+            //DAO_Bill.
         }
     }
 
@@ -91,102 +136,18 @@ public class ActionListener_SellPage implements ActionListener {
         sellPage.productPanel.repaint();
     }
 
-    private void loadMoreMenuItems(GridBagConstraints gbc) {
+    private void loadMBaseOnMode(GridBagConstraints gbc, String keyword, MODE mode) {
         if (sellPage.isLoading) return;
         sellPage.isLoading = true;
 
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
         sellPage.showLoadingDialog(frame);
 
-        var worker = new MenuItemLoaderWorker(
-                sellPage, gbc, null, MODE.LOAD, // Chế độ load thêm
-                (menuBatch) -> {
-                    int columns = 3;
-                    for (MenuItem item : menuBatch) {
-                        ImagePanelButton button = new ImagePanelButton(
-                                item, sellPage.collectionBillDetails, "asset/placeholder.png", 200, 200, 0.8
-                        );
-                        button.setPreferredSize(new Dimension(250, 250));
-                        int index = sellPage.productPanel.getComponentCount();
-                        gbc.gridx = index % columns;
-                        gbc.gridy = index / columns;
-                        sellPage.productPanel.add(button, gbc);
-                        sellPage.allProductButtons.add(button);
-                        sellPage.currentOffset++;
-                    }
-                    sellPage.productPanel.revalidate();
-                    sellPage.productPanel.repaint();
-                    sellPage.previousOffset = sellPage.currentOffset;
-                }
-        );
+        if (mode.equals(MODE.CATEGORY) || mode.equals(MODE.SEARCH)) {
+            sellPage.productPanel.removeAll();
+        }
 
+        var worker = new MenuItemLoaderWorker(sellPage, gbc, keyword, mode);
         worker.execute();
-        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
-    }
-
-    private void loadBasedOnName(GridBagConstraints gbc, String name) {
-        if (sellPage.isLoading) return;
-        sellPage.isLoading = true;
-
-        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
-        sellPage.showLoadingDialog(frame);
-
-        var worker = new MenuItemLoaderWorker(
-                sellPage, gbc, name, MODE.SEARCH, // Chế độ search
-                (menuBatch) -> {
-                    sellPage.productPanel.removeAll();
-                    int columns = 3;
-                    int index = 0;
-                    for (MenuItem item : menuBatch) {
-                        ImagePanelButton button = new ImagePanelButton(
-                                item, sellPage.collectionBillDetails, "asset/placeholder.png", 200, 200, 0.8
-                        );
-                        button.setPreferredSize(new Dimension(250, 250));
-
-                        gbc.gridx = index % columns;
-                        gbc.gridy = index / columns;
-                        sellPage.productPanel.add(button, gbc);
-                        index++;
-                    }
-                    sellPage.productPanel.revalidate();
-                    sellPage.productPanel.repaint();
-                }
-        );
-
-        worker.execute();
-        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
-    }
-
-    private void loadBaseOnCategory(GridBagConstraints gbc, String category) {
-        if (sellPage.isLoading) return;
-        sellPage.isLoading = true;
-
-        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(sellPage);
-        sellPage.showLoadingDialog(frame);
-
-        var worker = new MenuItemLoaderWorker(
-                sellPage, gbc, category, MODE.CATEGORY, // Chế độ category
-                (menuBatch) -> {
-                    sellPage.productPanel.removeAll();
-                    int columns = 3;
-                    int index = 0;
-                    for (MenuItem item : menuBatch) {
-                        ImagePanelButton button = new ImagePanelButton(
-                                item, sellPage.collectionBillDetails,"asset/placeholder.png", 200, 200, 0.8
-                        );
-                        button.setPreferredSize(new Dimension(250, 250));
-
-                        gbc.gridx = index % columns;
-                        gbc.gridy = index / columns;
-                        sellPage.productPanel.add(button, gbc);
-                        index++;
-                    }
-                    sellPage.productPanel.revalidate();
-                    sellPage.productPanel.repaint();
-                }
-        );
-
-        worker.execute();
-        SwingUtilities.invokeLater(() -> sellPage.loadingDialog.setVisible(true));
     }
 }

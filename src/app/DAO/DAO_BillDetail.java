@@ -35,19 +35,22 @@ public class DAO_BillDetail {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     BillDetail bd = new BillDetail();
-                    bd.setBill(new Bill());
-                    bd.setMenuItem(new MenuItem());
+                  
                     
-                    bd.getBill().setBillId(rs.getString("billId"));
+                    bd.setBillId(rs.getString("billId"));
                     //bd.setBillId(rs.getString("billId"));
-                    bd.getMenuItem().setItemId(rs.getString("menuId"));
+                    bd.setMenuId(rs.getString("menuId"));
+                    
                     //bd.setMenuId(rs.getString("menuId"));
                     bd.setQuantity(rs.getInt("amount")); 
-                    bd.setAmount(rs.getDouble("org_price"));
-                    bd.setTotalPrice(rs.getDouble("totalPrice")); ;
                     
-                    bd.getMenuItem().setName(rs.getString("item_name"));
-                    bd.getMenuItem().setCategory(rs.getString("category"));
+                    bd.setPrice(rs.getFloat("org_price"));
+                    bd.setTotalPrice(rs.getDouble("totalPrice"));
+//                  bd.setTotalPrice(rs.getDouble("totalPrice")); ;
+                    
+                    bd.setItemName(rs.getString("item_name"));
+//                    bd.setName(rs.getString("item_name"));
+                    bd.setCategory(rs.getString("category"));
 
                     //bd.setItemName(rs.getString("item_name"));
                     //bd.setCategory(rs.getString("category"));
@@ -60,5 +63,26 @@ public class DAO_BillDetail {
             e.printStackTrace();
         }
         return list;
+    }
+  
+    public static void saveAllBD(List<BillDetail> list) {
+        String sql = "INSERT INTO BillDetail (billId, menuId, amount, org_price, totalPrice) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            for (BillDetail bd : list) {
+                ps.setString(1, bd.getBillId());
+                ps.setString(2, bd.getMenuId());
+                ps.setInt(3, bd.getQuantity());
+                ps.setFloat(4, bd.getPrice());
+                ps.setDouble(5, bd.getTotalPrice());
+                ps.addBatch(); 
+            }
+
+            ps.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

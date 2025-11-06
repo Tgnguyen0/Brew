@@ -20,6 +20,17 @@
     <orderEntry type="library" name="timingframework-1.0" level="project" />
     <orderEntry type="library" name="mssql-jdbc-13.2.1.jre11" level="project" />
     <orderEntry type="library" name="imageio-core-3.10.1" level="project" />
-    <orderEntry type="library" name="commons-codec-1.15" level="project" />
+    <orderEntry type="library" name="pdfa-9.3.0" level="project" />
+    <orderEntry type="library" name="kernel-9.3.0" level="project" />
+    <orderEntry type="library" name="layout-9.3.0" level="project" />
+    <orderEntry type="library" name="io-9.3.0" level="project" />
+    <orderEntry type="library" name="slf4j-api-2.0.17" level="project" />
+    <orderEntry type="library" name="commons-9.3.0" level="project" />
+    <orderEntry type="library" name="poi-5.2.3" level="project" />
+    <orderEntry type="library" name="poi-examples-5.2.3" level="project" />
+    <orderEntry type="library" name="poi-ooxml-5.2.3" level="project" />
+    <orderEntry type="library" name="xmlbeans-5.1.1" level="project" />
+    <orderEntry type="library" name="commons-collections4-4.4" level="project" />
+    <orderEntry type="library" name="commons-compress-1.26.1" level="project" />
   </component>
 </module>

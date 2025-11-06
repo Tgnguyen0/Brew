@@ -159,11 +159,11 @@ public class BillDetailPage extends JDialog {
         List<BillDetail> details = bill.getDetails(); 
         if (details != null && !details.isEmpty()) {
             for (BillDetail detail : details) {
-                String itemName = detail.getMenuItem().getName() != null ? detail.getMenuItem().getName() : "Món đã xóa";
+                String itemName = detail.getItemName() != null ? detail.getItemName() : "Món đã xóa";
                 String quantity = String.valueOf(detail.getQuantity());
-                String category = detail.getMenuItem().getCategory() != null ? detail.getMenuItem().getCategory() : "N/A";
+                String category = detail.getCategory() != null ?detail.getCategory() : "N/A";
                 
-                String amount = String.format("%,.0f", detail.getAmount());
+                String amount = String.format("%,.0f", detail.getPrice());
                 String totalPrice = String.format("%,.0f", detail.getTotalPrice());
                 
                 JPanel detailRow = createProductRow(itemName, quantity, category, amount, totalPrice, false);

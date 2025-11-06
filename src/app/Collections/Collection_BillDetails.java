@@ -1,5 +1,6 @@
 package app.Collections;
 
+import app.Object.Bill;
 import app.Object.BillDetail;
 
 import java.util.ArrayList;
@@ -27,9 +28,14 @@ public class Collection_BillDetails {
 
     public Boolean updateBillDetail(BillDetail billDetail) {
         for (BillDetail bd : bds) {
-            if (bd.getMenuItem().getItemId().equals(billDetail.getMenuItem().getItemId())) { 
+
+            if (bd.getMenuId().equals(billDetail.getMenuId())) { 
+
                 bd.setQuantity(billDetail.getQuantity());
-                System.out.println(bds);
+                bd.setPrice(billDetail.getPrice());
+                bd.setTotalPrice(billDetail.getTotalPrice());
+                System.out.println("updateBillDetail: " + bds);
+
                 return true;
             }
         }
@@ -37,17 +43,48 @@ public class Collection_BillDetails {
         return false;
     }
 
-    public Boolean addListBillDetail(ArrayList<BillDetail> bdl) {
-        return bds.addAll(bdl);
+    public boolean updateAllBillDetail(String billId) {
+        for (BillDetail bd: bds) {
+            bd.setBillId(billId);
+        }
+
+        return true;
     }
 
-    public boolean deleteBillDetail(String id) {
+    public void updateBDOnOrder(int pos, int quantity, float price, double total) {
+        for (int i = 0 ; i < bds.size(); i++) {
+            if (i == pos) {
+                bds.get(i).setQuantity(quantity);
+                bds.get(i).setPrice(price);
+                bds.get(i).setTotalPrice(total);
+            }
+        }
+
+        System.out.println("updateBDOnOrder: " + bds);
+    }
+
+    public BillDetail getSelectedBillDetails(int pos) {
+        for (int i = 0 ; i < bds.size(); i++) {
+            if (i == pos) {
+                return bds.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    public boolean deleteBillDetailById(String id) {
         for (int i = 0 ; i < bds.size() ; i++) {
-            if (bds.get(i).getMenuItem().getItemId().equals(id)) { 
-                bds.remove(i);
-                return true;
-            }
+
+             if (bds.get(i).getMenuId().equals(id)) {
+                 bds.remove(bds.get(i));
+                 return true;
+             }
         }
         return false;
+    }
+
+    public boolean removeAll() {
+        return bds.removeAll(bds);
     }
 }
