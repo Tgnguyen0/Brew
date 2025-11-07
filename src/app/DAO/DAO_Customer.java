@@ -143,16 +143,17 @@ public class DAO_Customer {
     }
 
     public static Customer searchCustomerByPhoneNumber(String phoneNumber) {
-        Customer customer = new Customer();
-        // Tìm kiếm theo ID, Họ, Tên hoặc SĐT
+        Customer customer = null;
         String sql = "SELECT * FROM dbo.Customer WHERE phoneNumber = ?";
 
         try (Connection con = XJdbc.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
+            ps.setString(1, phoneNumber);
+
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                return new Customer(
+            if (rs.next()) {
+                customer = new Customer(
                         rs.getString("customerId"),
                         rs.getString("firstName"),
                         rs.getString("lastName"),
@@ -162,6 +163,7 @@ public class DAO_Customer {
                         rs.getDate("customerCreatedDate").toLocalDate().atStartOfDay()
                 );
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Lỗi khi tìm kiếm khách hàng: " + e.getMessage());

@@ -157,6 +157,7 @@ public class PaymentPage extends JFrame {
         isRegistedRadioButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         isRegistedRadioButton.setBackground(Color.white);
         isRegistedRadioButton.setForeground(Color.black);
+        isRegistedRadioButton.addActionListener(action);
         formPanel.add(isRegistedRadioButton, gbc);
 
         gbc.gridx = 0; gbc.gridy++;
@@ -196,6 +197,7 @@ public class PaymentPage extends JFrame {
         buttonPanel.setBackground(Color.white);
 
         confirmedButton = createButton("Thanh Toán");
+        confirmedButton.setPreferredSize(new Dimension(120, 35));
         exitButton = createButton("Thoát");
         buttonPanel.add(confirmedButton);
         buttonPanel.add(exitButton);
@@ -243,6 +245,26 @@ public class PaymentPage extends JFrame {
         btn.setForeground(Color.black);
         btn.addActionListener(action);
         return btn;
+    }
+
+    public void showPaySuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Thanh toán thành công!", "Thanh toán thành công", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showPayUnsuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Thanh toán thất bại!", "Thanh toán thất bại", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showPhoneInputEmptyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Số điện thoại không được rỗng!", "Thanh toán thất bại", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showCustPaymentEmptyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Tiền trả không được rỗng!", "Thanh toán thất bại", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showCustPaymentLowerOptionPane() {
+        JOptionPane.showMessageDialog(this, "Tiền trả phải lớn hơn 0 và lớn hơn hoặc bằng tổng hóa đơn!", "Thanh toán thất bại", JOptionPane.ERROR_MESSAGE);
     }
 
 //    public static void main(String[] args) {

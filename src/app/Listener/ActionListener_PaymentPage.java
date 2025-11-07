@@ -9,6 +9,8 @@ import app.GUI.BrewGUI;
 import app.GUI.PaymentPage;
 import app.Object.Bill;
 import app.Object.Customer;
+import app.Object.Table;
+import com.itextpdf.layout.element.Tab;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,15 +31,27 @@ public class ActionListener_PaymentPage implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
 
-        if (paymentPage.isRegistedRadioButton.isSelected()) {
-            paymentPage.phoneInput.setEnabled(false);
-            paymentPage.phoneInput.setBackground(Color.gray);
-        } else {
-            paymentPage.phoneInput.setEnabled(true);
-            paymentPage.phoneInput.setBackground(new Color(241, 211, 178));
+        if (o == paymentPage.isRegistedRadioButton) {
+            boolean isSelected = paymentPage.isRegistedRadioButton.isSelected();
+            paymentPage.phoneInput.setEnabled(isSelected);
+            if (isSelected) {
+                paymentPage.phoneInput.setBackground(Color.gray);
+            } else {
+                paymentPage.phoneInput.setBackground(new Color(241, 211, 178));
+            }
         }
 
         if (o.equals(paymentPage.confirmedButton)) {
+            if (paymentPage.phoneInput.getText().trim().isEmpty() && !paymentPage.isRegistedRadioButton.isSelected()) {
+                paymentPage.showPhoneInputEmptyOptionPane();
+                return;
+            }
+
+            if (paymentPage.custPaymentField.getText().trim().isEmpty()) {
+                paymentPage.showCustPaymentEmptyOptionPane();
+                return;
+            }
+
             try {
                 paymentPage.customerPayment = Float.parseFloat(paymentPage.custPaymentField.getText());
                 paymentPage.change = paymentPage.customerPayment - paymentPage.totalBill;
@@ -45,7 +59,8 @@ public class ActionListener_PaymentPage implements ActionListener {
                 System.out.println("paymentPage.customerPayment: " + paymentPage.customerPayment);
                 System.out.println("paymentPage.totalBill: " + paymentPage.totalBill);
                 if (paymentPage.change < 0) {
-                    JOptionPane.showMessageDialog(paymentPage, "Thanh toán thất bại !", "Thanh toán thất bại", JOptionPane.ERROR_MESSAGE);
+                    paymentPage.showCustPaymentLowerOptionPane();
+                    return;
                 } else {
                     paymentPage.changeValueLabel.setText(String.valueOf(paymentPage.change));
 
@@ -63,20 +78,31 @@ public class ActionListener_PaymentPage implements ActionListener {
                     DAO_BillDetail.saveAllBD(paymentPage.collectionBillDetails.getList());
 
                     Customer c = new Customer();
-                    if (paymentPage.isRegistedRadioButton.isSelected()) {
+                    if (!paymentPage.isRegistedRadioButton.isSelected()) {
                         c = DAO_Customer.searchCustomerByPhoneNumber(paymentPage.phoneInput.getText());
                     }
                     bill.setCustomer(c);
                     bill.setEmployee(BrewGUI.acc.employee);
-                    bill.setTable(paymentPage.collectionTable.getAllTables().get(paymentPage.collectionTable.getAllTables().size() - 1));
+
+                    if (paymentPage.collectionTable.getAllTables().isEmpty()) {
+                        Table t = new Table();
+                        bill.setTable(t);
+                    } else {
+                        bill.setTable(paymentPage.collectionTable.getAllTables().get(paymentPage.collectionTable.getAllTables().size() - 1));
+                    }
 
                     DAO_Bill.updateBill(bill);
+                    paymentPage.showPaySuccessfullyOptionPane();
 //                    CardLayout cardLayout = (CardLayout) BrewGUI.pageContainer.getLayout();
 //                    cardLayout.show(BrewGUI.pageContainer, "Receipt Page");
                 }
             } catch (NumberFormatException ex) {
                 ex.printStackTrace();
             }
+        }
+
+        if (paymentPage.exitButton == o) {
+            paymentPage.dispose();
         }
     }
 }
