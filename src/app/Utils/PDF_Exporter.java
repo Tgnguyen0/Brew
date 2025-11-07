@@ -79,7 +79,7 @@ public class PDF_Exporter {
         document.add(new Paragraph("Ngày xuất: " + dateTimeFormatter.format(new Date()))
                 .setFontSize(10)
                 .setTextAlignment(TextAlignment.CENTER)
-.setMarginBottom(15));
+                .setMarginBottom(15));
         
         // 4. Nội dung
         addSummaryInfo(document, bill);
@@ -93,8 +93,19 @@ public class PDF_Exporter {
     }
     
     private void addSummaryInfo(Document document, Bill bill) {
-        String customerName = bill.getCustomer().getFullName() != null ? bill.getCustomer().getFullName() : "Khách lẻ";
-        String employeeName = bill.getEmployee().getName() != null ? bill.getEmployee().getName() : "N/A";
+        String customerName; //Ghép tên
+        if (bill.getCustomer().getFirstName() == null && bill.getCustomer().getLastName() == null) {
+            customerName = "Khách lẻ";
+        } else {
+            customerName = bill.getCustomer().getFirstName() + " " + bill.getCustomer().getLastName();
+        }
+
+        String employeeName; //Ghép tên
+        if (bill.getEmployee().getFirstName() == null && bill.getEmployee().getLastName() == null) {
+            employeeName = "N/A";
+        } else {
+            employeeName = bill.getEmployee().getFirstName() + " " + bill.getEmployee().getLastName();
+        }
 
         Table summaryTable = new Table(UnitValue.createPercentArray(new float[]{1, 1}));
         summaryTable.setWidth(UnitValue.createPercentValue(100));
@@ -127,7 +138,7 @@ public class PDF_Exporter {
                 table.addCell(createCell(bd.getItemName() != null ? bd.getItemName() : "Món đã xóa", false));
                 table.addCell(createCell(String.valueOf(bd.getQuantity()), false).setTextAlignment(TextAlignment.CENTER));
                 table.addCell(createCell(String.format("%,.0f", bd.getPrice()), false).setTextAlignment(TextAlignment.RIGHT));
-                table.addCell(createCell(String.format("%,.0f", bd.getTotalPrice()), false).setTextAlignment(TextAlignment.RIGHT));
+                table.addCell(createCell(String.format("%,.0f", bd.getTotal_price()), false).setTextAlignment(TextAlignment.RIGHT));
             }
         }
         
@@ -137,7 +148,8 @@ public class PDF_Exporter {
     private void addFooterSummary(Document document, Bill bill) {
         Table footerTable = new Table(UnitValue.createPercentArray(new float[]{1.5f, 1}));
         footerTable.setWidth(UnitValue.createPercentValue(100));
-footerTable.addCell(createCell("TỔNG CỘNG:", true).setTextAlignment(TextAlignment.RIGHT));
+        
+        footerTable.addCell(createCell("TỔNG CỘNG:", true).setTextAlignment(TextAlignment.RIGHT));
         footerTable.addCell(createCell(String.format("%,.0f VNĐ", bill.getTotal()), true).setTextAlignment(TextAlignment.RIGHT));
         
         footerTable.addCell(createCell("Tiền khách trả:", false).setTextAlignment(TextAlignment.RIGHT));

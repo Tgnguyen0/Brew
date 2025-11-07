@@ -5,38 +5,31 @@ import java.util.Objects;
 
 public class BillDetail {
     private String billId;
-    private String menuId; 
-    private int quantity; 
-    private float price; 
-    private double totalPrice; 
+    private String menuId; // Đổi itemId thành menuId cho đúng sơ đồ DB
+    private int quantity; // soLuong
+    private float price; // đơn giá/price (từ BillDetail.amount)
+    private double totalPrice; // Đây là thuộc tính dẫn xuất nên không truyền giá trị
     
-
+    // Thuộc tính bổ sung từ MenuItem (sau khi JOIN)
     private String itemName;   
     private String category;   
 
-
+    // Constructor mặc định cần thiết cho DAO
     public BillDetail() {} 
 
-    
+    // Constructor đã có, giữ lại
+    public BillDetail(String billId, String menuId, int quantity) {
+        this.billId = billId;
+        this.menuId = menuId;
+        this.quantity = quantity;
+        Total_price();
+    }
 
-    public BillDetail(String billId, String menuId, int quantity, float price, double totalPrice, String itemName,
-			String category) {
-		super();
-		this.billId = billId;
-		this.menuId = menuId;
-		this.quantity = quantity;
-		this.price = price;
-		this.totalPrice = totalPrice;
-		this.itemName = itemName;
-		this.category = category;
-	}
-
-
-
-	public BillDetail(String itemId, int quantity, float price) {
+    public BillDetail(String itemId, int quantity, float price) {
         this.menuId = itemId;
         this.quantity = quantity;
         this.price = price;
+        Total_price();
     }
 
     public String getBillId() {
@@ -87,14 +80,14 @@ public class BillDetail {
         this.price = price;
     }
 
-//    public double getTotal_price() {
-//        return this.totalPrice;
-//    }
-//
-//    public void Total_price() {
-//        this.totalPrice = price * quantity;
-//    }
-    
+    public double getTotal_price() {
+        return this.totalPrice;
+    }
+
+    // Thuộc tính dẫn xuất. Chỉ kêu khi đã truyền price với amount
+    public void Total_price() {
+        this.totalPrice = price * quantity;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -104,19 +97,7 @@ public class BillDetail {
         return Objects.equals(menuId, that.menuId);
     }
 
-    public double getTotalPrice() {
-		return totalPrice;
-	}
-
-
-
-	public void setTotalPrice(double totalPrice) {
-		this.totalPrice = totalPrice;
-	}
-
-
-
-	@Override
+    @Override
     public int hashCode() {
         return Objects.hash(menuId);
     }

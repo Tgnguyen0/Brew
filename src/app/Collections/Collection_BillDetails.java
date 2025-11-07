@@ -28,12 +28,10 @@ public class Collection_BillDetails {
 
     public Boolean updateBillDetail(BillDetail billDetail) {
         for (BillDetail bd : bds) {
-
-            if (bd.getMenuId().equals(billDetail.getMenuId())) { 
-
+            if (bd.getMenuId().equals(billDetail.getMenuId())) {
                 bd.setQuantity(billDetail.getQuantity());
                 bd.setPrice(billDetail.getPrice());
-                bd.setTotalPrice(billDetail.getTotalPrice());
+                bd.Total_price();
                 System.out.println("updateBillDetail: " + bds);
 
                 return true;
@@ -51,12 +49,12 @@ public class Collection_BillDetails {
         return true;
     }
 
-    public void updateBDOnOrder(int pos, int quantity, float price, double total) {
+    public void updateBDOnOrder(int pos, int quantity, float price) {
         for (int i = 0 ; i < bds.size(); i++) {
             if (i == pos) {
                 bds.get(i).setQuantity(quantity);
                 bds.get(i).setPrice(price);
-                bds.get(i).setTotalPrice(total);
+                bds.get(i).Total_price();
             }
         }
 
@@ -75,7 +73,6 @@ public class Collection_BillDetails {
 
     public boolean deleteBillDetailById(String id) {
         for (int i = 0 ; i < bds.size() ; i++) {
-
              if (bds.get(i).getMenuId().equals(id)) {
                  bds.remove(bds.get(i));
                  return true;

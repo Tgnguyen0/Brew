@@ -6,39 +6,36 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Bill implements Serializable{
-    private String billId;
-    private LocalDate dateCreated; 
-    private Timestamp hourIn;       
-    private Timestamp hourOut;      
-    private String phoneNumber;   
-    private double total;          
-    private double custPayment;    
-    private String status;         
-    
-    private List<BillDetail> details;
-    private Customer customer; 
-    private Employee employee; 
-    private Table table;
+	private String billId;
+	private LocalDate dateCreated;
+	private Timestamp hourIn;
+	private Timestamp hourOut;
+	private String phoneNumber;
+	private double total;
+	private double custPayment;
+	private String status;
 
-    public Bill() {
-        super();
-        this.customer = new Customer();  
-        this.employee = new Employee();  
-        this.table = new Table();        
-    }
-   
-    // Constructor ĐẦY ĐỦ NHẤT 
-    
-    public Bill(String billId, LocalDate dateCreated, Timestamp hourIn) {
-        this.billId = billId;
-        this.dateCreated = dateCreated;
-        this.hourIn = hourIn;
-    }
+	private List<BillDetail> details;
+	private Customer customer;
+	private Employee employee;
+	private Table table;
+
+	public Bill() {
+		super();
+		this.customer = new Customer();
+		this.employee = new Employee();
+		this.table = new Table();
+	}
+
+	public Bill(String billId, LocalDate dateCreated, Timestamp hourIn) {
+		this.billId = billId;
+		this.dateCreated = dateCreated;
+		this.hourIn = hourIn;
+	}
 
 	public Bill(String billId, LocalDate dateCreated, Timestamp hourIn, Timestamp hourOut, String phoneNumber,
-			double total, double custPayment, String status,
-			List<BillDetail> details, Customer customer, Employee employee, Table table) {
-		super();
+				double total, double custPayment, String status,
+				List<BillDetail> details, Customer customer, Employee employee, Table table) {
 		this.billId = billId;
 		this.dateCreated = dateCreated;
 		this.hourIn = hourIn;
@@ -53,8 +50,6 @@ public class Bill implements Serializable{
 		this.employee = employee;
 		this.table=table;
 	}
-
-	
 
 	public String getBillId() {
 		return billId;
@@ -153,15 +148,13 @@ public class Bill implements Serializable{
 	}
 
 	public int getQuantityOfItems() {
-        if (details == null) {
-            return 0;
-        }
-        int totalQuantity = 0;
-        for (BillDetail detail : details) {
-            totalQuantity += detail.getQuantity();
-        }
-        return totalQuantity;
+		if (details == null) {
+			return 0;
+		}
+		int totalQuantity = 0;
+		for (BillDetail detail : details) {
+			totalQuantity += detail.getQuantity();
+		}
+		return totalQuantity;
 	}
-	
-
 }

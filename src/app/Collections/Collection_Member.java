@@ -22,16 +22,21 @@ public class Collection_Member {
         return ml.add(newMember);
     }
     
-    // Thêm phương thức để cập nhật
-    public boolean updateMember(Customer updatedMember) {
-        for (int i = 0 ; i < ml.size() ; i++) {
-            if (ml.get(i).getCustomerId().equals(updatedMember.getCustomerId())) {
-                ml.set(i, updatedMember);
-                return true;
-            }
-        }
-        return false;
-    }
+//    // Thêm phương thức để cập nhật
+//    public boolean updateMember(Customer updatedMember) {
+//        for (int i = 0 ; i < ml.size() ; i++) {
+//<<<<<<< HEAD
+//            if (ml.get(i).getCustomerId().equals(updatedMember.getCustomerId())) {
+//                ml.set(i, updatedMember);
+//=======
+//            if (ml.get(i).getCustomerId().equals(id)) {
+//                ml.remove(i);
+//>>>>>>> a401b2ce7accd4216e6d71484699c187012e86e3
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public boolean deleteMember(String id) {
         return ml.removeIf(c -> c.getCustomerId().equals(id));

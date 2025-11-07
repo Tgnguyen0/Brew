@@ -16,78 +16,78 @@ public class Customer implements Serializable {
     public Customer() {
     }
 
-	public Customer(String customerId, String firstName, String lastName, String phoneNumber, String email, Boolean sex,
-			LocalDateTime createdDate) {
-		super();
-		this.customerId = customerId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.phoneNumber = phoneNumber;
-		this.email = email;
-		this.sex = sex;
-		this.createdDate = createdDate;
-	}
+    public Customer(String customerId, String firstName, String lastName, String phoneNumber, String email, Boolean sex,
+                    LocalDateTime createdDate) {
+        super();
+        this.customerId = customerId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.sex = sex;
+        this.createdDate = createdDate;
+    }
 
-	public String getCustomerId() {
-		return customerId;
-	}
+    public String getCustomerId() {
+        return customerId;
+    }
 
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
-	}
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public Boolean getSex() {
-		return sex;
-	}
+    public Boolean getSex() {
+        return sex;
+    }
 
-	public void setSex(Boolean sex) {
-		this.sex = sex;
-	}
+    public void setSex(Boolean sex) {
+        this.sex = sex;
+    }
 
-	public LocalDateTime getCreatedDate() {
-		return createdDate;
-	}
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
 
-	public void setCreatedDate(LocalDateTime createdDate) {
-		this.createdDate = createdDate;
-	}
-    
-	public String getFullName() {
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getFullName() {
         return this.firstName + " " + this.lastName;
     }
-	public void setFullName(String fullName) {
+    public void setFullName(String fullName) {
         if (fullName == null || fullName.trim().isEmpty()) {
             this.firstName = "";
             this.lastName = "";
@@ -103,10 +103,8 @@ public class Customer implements Serializable {
             }
             this.lastName = this.lastName.trim();
         } else {
-             this.firstName = "";
-             this.lastName = "";
+            this.firstName = "";
+            this.lastName = "";
         }
     }
 }
-
-    

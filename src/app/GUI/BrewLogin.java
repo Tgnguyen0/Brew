@@ -2,21 +2,26 @@ package app.GUI;
 
 import app.DAO.LoginDAO;
 import app.InitFont.CustomFont;
+import app.Object.Account;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class LoginPage extends JFrame {
+public class BrewLogin extends JFrame {
     private CustomFont cf = new CustomFont();
     private final Font titleFont;
     private final Font labelFont;
     private final Font fieldFont;
     private JTextField nameField;
     private JPasswordField passwordField;
+    private static BrewLogin instance;
+    private JDialog loadingDialog;
+    private BrewGUI page;
+    private Account acc;
 
-    public LoginPage() {
+    public BrewLogin() {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (Exception e) {
@@ -32,6 +37,7 @@ public class LoginPage extends JFrame {
         titleFont = cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 30);
         labelFont = cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 16);
         fieldFont = cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 15);
+        instance = this;
 
         // ==== Màu nền ====
         Color bgColor = new Color(242, 238, 230);
@@ -155,14 +161,19 @@ public class LoginPage extends JFrame {
                 return;
             }
 
-            String role = LoginDAO.login(username, password);
+            acc = LoginDAO.loginAccount(username, password);
 
-            if (role != null) {
-                JOptionPane.showMessageDialog(this, "Đăng nhập thành công với vai trò: " + role, "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            if (acc == null) {
+                JOptionPane.showMessageDialog(this, "Sai tên đăng nhập hoặc mật khẩu!", "Đăng nhập thất bại", JOptionPane.ERROR_MESSAGE);
+            }
+
+            if (acc.getRole() != null) {
+                JOptionPane.showMessageDialog(this, "Đăng nhập thành công với vai trò: " + acc.getRole(), "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
 
-                if (role.equalsIgnoreCase("ADMIN")) {
-                    new BrewGUI().setVisible(true);
+                if (acc.getRole().equalsIgnoreCase("ADMIN")) {
+                    showLoadingDialog();
+                    initBrewGUI();
                 } else {
 //                    new EmployeeDashboard().setVisible(true);
                 }
@@ -208,6 +219,55 @@ public class LoginPage extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new LoginPage().setVisible(true));
+        SwingUtilities.invokeLater(() -> new BrewLogin().setVisible(true));
+    }
+
+    public void showLoadingDialog() {
+        loadingDialog = new JDialog(this, "Đang khởi tạo...", false); // false = non-modal
+        loadingDialog.setUndecorated(true);
+        loadingDialog.setSize(200, 230);
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setAlwaysOnTop(true);
+        loadingDialog.setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel label = new JLabel("Đang khởi tạo hệ thống...", SwingConstants.CENTER);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 10));
+        label.setPreferredSize(new Dimension(200, 25));
+
+        JLabel gifLabel = new JLabel(new ImageIcon("asset/loading.gif"));
+        gifLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(gifLabel);
+        panel.add(label);
+
+        loadingDialog.add(panel);
+        loadingDialog.setVisible(true);
+    }
+
+    public void initBrewGUI() {
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() {
+                page = new BrewGUI(acc);
+                page.setVisible(true);
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                page.setLocationRelativeTo(instance);
+                page.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                loadingDialog.dispose();
+            }
+        };
+        worker.execute();
     }
 }

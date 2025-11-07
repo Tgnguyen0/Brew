@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DAO_Customer {
-    
-    private Customer mapResultSetToCustomer(ResultSet rs) throws SQLException {
+    private static Customer mapResultSetToCustomer(ResultSet rs) throws SQLException {
         String id = rs.getString("customerId");
         String firstName = rs.getString("firstName");
         String lastName = rs.getString("lastName");
@@ -21,7 +20,7 @@ public class DAO_Customer {
 
         return new Customer(id, firstName, lastName, phoneNumber, email, sex, createdDate);
     }
-    
+
     public List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
         String sql = "SELECT * FROM dbo.Customer ORDER BY customerId";
@@ -39,15 +38,15 @@ public class DAO_Customer {
         }
         return customers;
     }
-    
+
     // --- READ (Tìm kiếm theo ID) ---
-    public Customer getCustomerById(String customerId) {
+    public static Customer getCustomerById(String customerId) {
         String sql = "SELECT * FROM dbo.Customer WHERE customerId = ?";
         Customer customer = null;
 
         try (Connection con = XJdbc.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
-            
+
             pstmt.setString(1, customerId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -59,14 +58,14 @@ public class DAO_Customer {
         }
         return customer;
     }
-    
+
 
     public boolean addCustomer(Customer customer) {
         String sql = "INSERT INTO dbo.Customer (customerId, firstName, lastName, phoneNumber, email, sex, customerCreatedDate) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        
+
         try (Connection con = XJdbc.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
-            
+
             pstmt.setString(1, customer.getCustomerId());
             pstmt.setString(2, customer.getFirstName());
             pstmt.setString(3, customer.getLastName());
@@ -74,23 +73,23 @@ public class DAO_Customer {
             pstmt.setString(5, customer.getEmail());
             pstmt.setBoolean(6, customer.getSex());
             // Chuyển LocalDateTime sang Timestamp để lưu vào DB
-            pstmt.setTimestamp(7, Timestamp.valueOf(customer.getCreatedDate())); 
+            pstmt.setTimestamp(7, Timestamp.valueOf(customer.getCreatedDate()));
 
             return pstmt.executeUpdate() > 0;
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-    
+
     // --- UPDATE (Cập nhật khách hàng) ---
     public boolean updateCustomer(Customer customer) {
         String sql = "UPDATE dbo.Customer SET firstName = ?, lastName = ?, phoneNumber = ?, email = ?, sex = ? WHERE customerId = ?";
-        
+
         try (Connection con = XJdbc.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
-            
+
             pstmt.setString(1, customer.getFirstName());
             pstmt.setString(2, customer.getLastName());
             pstmt.setString(3, customer.getPhoneNumber());
@@ -99,23 +98,23 @@ public class DAO_Customer {
             pstmt.setString(6, customer.getCustomerId());
 
             return pstmt.executeUpdate() > 0;
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-    
+
     // --- DELETE (Xóa khách hàng) ---
     public boolean deleteCustomer(String customerId) {
         String sql = "DELETE FROM dbo.Customer WHERE customerId = ?";
-        
+
         try (Connection con = XJdbc.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
-            
+
             pstmt.setString(1, customerId);
             return pstmt.executeUpdate() > 0;
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -126,7 +125,7 @@ public class DAO_Customer {
         List<Customer> customers = new ArrayList<>();
         // Tìm kiếm theo ID, Họ, Tên hoặc SĐT
         String sql = "SELECT * FROM dbo.Customer WHERE customerId LIKE ? OR firstName LIKE ? OR lastName LIKE ? OR phoneNumber LIKE ? ORDER BY customerId";
-        
+
         String searchPattern = "%" + keyword + "%";
 
         try (Connection con = XJdbc.getConnection();
