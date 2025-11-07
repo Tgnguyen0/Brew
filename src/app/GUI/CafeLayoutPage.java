@@ -42,7 +42,7 @@ public class CafeLayoutPage extends JFrame {
     public JButton decreaseButton;
     private Map<String, Integer> tableMap;
 
-    public CafeLayoutPage(List<Table> choosenTableList) {
+    public CafeLayoutPage(Collection_Table collectionTable) {
         INSTANCE = this;
 
         //setSize(new Dimension(800, 600));
@@ -61,8 +61,7 @@ public class CafeLayoutPage extends JFrame {
         }
 
         action = new ActionListener_CafeLayoutPage(this);
-        collectionTable = new Collection_Table();
-        collectionTable.addAll(choosenTableList);
+        this.collectionTable = collectionTable;
 
         JPanel labelPanel = new JPanel();
         labelPanel.setPreferredSize(new Dimension(400, 50));
@@ -343,7 +342,7 @@ public class CafeLayoutPage extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // Mongo.getConnection();
-            CafeLayoutPage layout = new CafeLayoutPage(new ArrayList<Table>());
+            CafeLayoutPage layout = new CafeLayoutPage(new Collection_Table());
             layout.setVisible(true);
         });
     }

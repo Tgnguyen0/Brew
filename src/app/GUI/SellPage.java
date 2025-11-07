@@ -2,6 +2,7 @@ package app.GUI;
 
 import app.Collections.Collection_BillDetails;
 import app.Collections.Collection_MenuItem;
+import app.Collections.Collection_Table;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
 import app.Components.CustomUpdateCellEditor;
@@ -28,7 +29,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 public class SellPage extends JPanel {
     public CustomFont customFont = new CustomFont();
     public Collection_BillDetails collectionBillDetails = new Collection_BillDetails();
-//    private Collection_BillDetails bdl = new Collection_BillDetails();
+    public Collection_Table collectionTable = new Collection_Table();
     private ActionListener_SellPage action;
     public JTextField searchBar;
     public JButton updateButton;
@@ -45,7 +46,6 @@ public class SellPage extends JPanel {
     public static JTable productTable;
     public JRadioButton takeAwayRadioButton;
     public JButton seatingButton;
-    public List<Table> choosenTableList;
 //    private final int PAGE_SIZE = 18;
     public JButton deleteButton;
     public JButton toInvoiceButton;
@@ -59,7 +59,6 @@ public class SellPage extends JPanel {
         setBackground(Color.white);
 
         action = new ActionListener_SellPage(this);
-        choosenTableList = new ArrayList<Table>();
         allProductButtons = new ArrayList<>();
 
         JPanel emptyL = new JPanel();
@@ -442,5 +441,9 @@ public class SellPage extends JPanel {
 
     public void showCategorizingSuccessfullyOptionPane() {
         JOptionPane.showMessageDialog(this, "Lấy theo loại thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showUpdateSuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Cập nhật thành công!", "Cập nhật thành công", JOptionPane.INFORMATION_MESSAGE);
     }
 }

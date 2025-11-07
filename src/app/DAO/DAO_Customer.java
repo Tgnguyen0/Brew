@@ -2,6 +2,8 @@ package app.DAO;
 
 import app.Connection.XJdbc;
 import app.Object.Customer;
+import app.Object.Employee;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -121,30 +123,50 @@ public class DAO_Customer {
         }
     }
 
-    public List<Customer> searchCustomers(String keyword) {
+    public List<Customer> searchCustomers(String phoneNumber) {
         List<Customer> customers = new ArrayList<>();
         // Tìm kiếm theo ID, Họ, Tên hoặc SĐT
         String sql = "SELECT * FROM dbo.Customer WHERE customerId LIKE ? OR firstName LIKE ? OR lastName LIKE ? OR phoneNumber LIKE ? ORDER BY customerId";
 
-        String searchPattern = "%" + keyword + "%";
+        try (Connection con = XJdbc.getConnection()) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, phoneNumber);
 
-        try (Connection con = XJdbc.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
 
-            pstmt.setString(1, searchPattern);
-            pstmt.setString(2, searchPattern);
-            pstmt.setString(3, searchPattern);
-            pstmt.setString(4, searchPattern);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    customers.add(mapResultSetToCustomer(rs));
-                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Lỗi khi tìm kiếm khách hàng: " + e.getMessage());
         }
         return customers;
+    }
+
+    public static Customer searchCustomerByPhoneNumber(String phoneNumber) {
+        Customer customer = new Customer();
+        // Tìm kiếm theo ID, Họ, Tên hoặc SĐT
+        String sql = "SELECT * FROM dbo.Customer WHERE phoneNumber = ?";
+
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return new Customer(
+                        rs.getString("customerId"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("phoneNumber"),
+                        rs.getString("email"),
+                        rs.getBoolean("sex"),
+                        rs.getDate("customerCreatedDate").toLocalDate().atStartOfDay()
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Lỗi khi tìm kiếm khách hàng: " + e.getMessage());
+        }
+
+        return customer;
     }
 }
