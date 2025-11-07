@@ -81,6 +81,16 @@ public class Collection_BillDetails {
         return false;
     }
 
+    public float total() {
+        float total = 0;
+
+        for (BillDetail bd : bds) {
+            total += bd.getTotal_price();
+        }
+
+        return total;
+    }
+
     public boolean removeAll() {
         return bds.removeAll(bds);
     }

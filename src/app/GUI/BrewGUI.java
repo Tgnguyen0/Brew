@@ -46,6 +46,7 @@ public class BrewGUI extends JFrame implements MouseListener {
     private boolean isOptionBarVisible = false;
     private JPanel infoBar;
     private Animator animator;
+    public static String BREW_HOTLINE = "1234567898";
 
     // Function tạo GUI chính
     public BrewGUI(Account acc) {

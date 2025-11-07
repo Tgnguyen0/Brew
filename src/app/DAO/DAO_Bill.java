@@ -185,4 +185,52 @@ public class DAO_Bill {
 
         return bill;
     }
+
+    public static boolean updateBill(Bill bill) {
+        String sql = """
+        UPDATE BILL
+        SET 
+            dateCreated = ?, 
+            hourIn = ?, 
+            hourOut = ?, 
+            phoneNumber = ?, 
+            total = ?, 
+            custPayment = ?, 
+            status = ?, 
+            customerId = ?, 
+            employeeId = ?, 
+            tableId = ?
+        WHERE billId = ?
+    """;
+
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            // 1️⃣ Gán giá trị cho từng tham số
+            ps.setDate(1, bill.getDateCreated() != null ? Date.valueOf(bill.getDateCreated()) : null);
+            ps.setTimestamp(2, bill.getHourIn());
+            ps.setTimestamp(3, bill.getHourOut());
+            ps.setString(4, bill.getPhoneNumber());
+            ps.setDouble(5, bill.getTotal());
+            ps.setDouble(6, bill.getCustPayment());
+            ps.setString(7, bill.getStatus());
+
+            // ⚠️ Nếu customer/employee/table có thể null thì cần kiểm tra
+            ps.setString(8, bill.getCustomer() != null ? bill.getCustomer().getCustomerId() : null);
+            ps.setString(9, bill.getEmployee() != null ? bill.getEmployee().getId() : null);
+            ps.setString(10, bill.getTable() != null ? bill.getTable().getTableId() : null);
+
+            ps.setString(11, bill.getBillId());
+
+            // 2️⃣ Thực thi câu lệnh
+            int rows = ps.executeUpdate();
+            return rows > 0; // Trả về true nếu có dòng bị ảnh hưởng
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi truy vấn SQL trong DAO_Bill.updateBill(): " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
