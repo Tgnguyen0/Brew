@@ -403,13 +403,12 @@ public class ReceiptPage extends JPanel {
                 name = bill.getEmployee().getFirstName() + " " + bill.getEmployee().getLastName();
             }
 
-
             Object[] row = new Object[] {
                     bill.getBillId(),
                     dateStr,
                     hourInStr,
                     hourOutStr,
-                    bill.getCustomer().getFullName() != null ? bill.getCustomer().getFullName() : "Khách lẻ",
+                    bill.getCustomer() != null ? bill.getCustomer().getFullName() : "Khách lẻ",
                     bill.getPhoneNumber(),
                     totalStr,
                     bill.getStatus(),

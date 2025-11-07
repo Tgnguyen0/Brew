@@ -107,4 +107,17 @@ public class Customer implements Serializable {
             this.lastName = "";
         }
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerId='" + customerId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", sex=" + sex +
+                ", createdDate=" + createdDate +
+                '}';
+    }
 }

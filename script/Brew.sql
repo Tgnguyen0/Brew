@@ -148,9 +148,9 @@ CREATE TABLE Bill (
     total FLOAT,
     custPayment FLOAT,
     status VARCHAR(50),
-    customerId NVARCHAR(10),
+    customerId NVARCHAR(10) NULL,
     employeeId NVARCHAR(10),
-    tableId NVARCHAR(10),
+    tableId NVARCHAR(10) NULL,
     FOREIGN KEY (customerId) REFERENCES Customer(customerId),
     FOREIGN KEY (employeeId) REFERENCES Employee(employeeId),
     FOREIGN KEY (tableId) REFERENCES CafeTable(tableId)

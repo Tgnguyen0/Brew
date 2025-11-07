@@ -333,11 +333,11 @@ public class BrewGUI extends JFrame implements MouseListener {
 //        exitedButton.setBorder(BorderFactory.createLineBorder(Color.white));
     }
 
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> {
-//            // Mongo.getConnection();
-//            BrewGUI devCafeGUI = new BrewGUI(new Account());
-//            devCafeGUI.setVisible(true);
-//        });
-//    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            // Mongo.getConnection();
+            BrewGUI devCafeGUI = new BrewGUI(new Account());
+            devCafeGUI.setVisible(true);
+        });
+    }
 }
