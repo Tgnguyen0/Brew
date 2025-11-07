@@ -1,5 +1,6 @@
 package app.Collections;
 
+import app.Object.Bill;
 import app.Object.BillDetail;
 
 import java.util.ArrayList;
@@ -15,39 +16,82 @@ public class Collection_BillDetails {
         return bds;
     }
 
-    // public Boolean addBillDetail(BillDetail newBillDetail) {
-    //     for (int i = 0 ; i < bds.size(); i++) {
-    //         if (newBillDetail.getItem().getId().equals(bds.get(i).getItem().getId())
-    //             && newBillDetail.getItem().getServeHot() == bds.get(i).getItem().getServeHot()) {
-    //             int old_quantity = bds.get(i).getQuantity();
-    //             double price = bds.get(i).getItem().getPrice();
-    //             old_quantity++;
-
-    //             bds.get(i).setQuantity(old_quantity);
-    //             bds.get(i).setTotal_price(old_quantity, price);
-    //             return false;
-    //         }
-    //     }
-
-    //     return bds.add(newBillDetail);
-    // }
-
-    public Boolean addListBillDetail(ArrayList<BillDetail> bdl) {
-        return bds.addAll(bdl);
-    }
-
-    public boolean deleteBillDetail(String id) {
-        for (int i = 0 ; i < bds.size() ; i++) {
-            // if (bds.get(i).getItem().getId().equals(id)) {
-            //     bds.remove(i);
-            //     return true;
-            // }
+    public Boolean addBillDetail(BillDetail newBillDetail) {
+        if (!bds.contains(newBillDetail)) {
+            bds.add(newBillDetail);
+            System.out.println(bds);
+            return true;
         }
 
         return false;
     }
 
-    public Integer getSize() {
-        return bds.size();
+    public Boolean updateBillDetail(BillDetail billDetail) {
+        for (BillDetail bd : bds) {
+            if (bd.getMenuId().equals(billDetail.getMenuId())) {
+                bd.setQuantity(billDetail.getQuantity());
+                bd.setPrice(billDetail.getPrice());
+                bd.Total_price();
+                System.out.println("updateBillDetail: " + bds);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean updateAllBillDetail(String billId) {
+        for (BillDetail bd: bds) {
+            bd.setBillId(billId);
+        }
+
+        return true;
+    }
+
+    public void updateBDOnOrder(int pos, int quantity, float price) {
+        for (int i = 0 ; i < bds.size(); i++) {
+            if (i == pos) {
+                bds.get(i).setQuantity(quantity);
+                bds.get(i).setPrice(price);
+                bds.get(i).Total_price();
+            }
+        }
+
+        System.out.println("updateBDOnOrder: " + bds);
+    }
+
+    public BillDetail getSelectedBillDetails(int pos) {
+        for (int i = 0 ; i < bds.size(); i++) {
+            if (i == pos) {
+                return bds.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    public boolean deleteBillDetailById(String id) {
+        for (int i = 0 ; i < bds.size() ; i++) {
+             if (bds.get(i).getMenuId().equals(id)) {
+                 bds.remove(bds.get(i));
+                 return true;
+             }
+        }
+        return false;
+    }
+
+    public float total() {
+        float total = 0;
+
+        for (BillDetail bd : bds) {
+            total += bd.getTotal_price();
+        }
+
+        return total;
+    }
+
+    public boolean removeAll() {
+        return bds.removeAll(bds);
     }
 }

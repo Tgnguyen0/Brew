@@ -1,8 +1,11 @@
 package app.GUI;
 
+import app.Collections.Collection_BillDetails;
 import app.Collections.Collection_MenuItem;
+import app.Collections.Collection_Table;
 import app.Components.CustomTableCellRenderer;
 import app.Components.CustomTableHeaderRenderer;
+import app.Components.CustomUpdateCellEditor;
 import app.Components.ImagePanelButton;
 import app.DAO.DAO_MenuItem;
 import app.InitFont.CustomFont;
@@ -15,6 +18,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import app.Object.MenuItem;
@@ -24,28 +28,29 @@ import org.kordamp.ikonli.swing.FontIcon;
 
 public class SellPage extends JPanel {
     public CustomFont customFont = new CustomFont();
-    public Collection_MenuItem collectionMenuItem = new Collection_MenuItem();
-//    private Collection_BillDetails bdl = new Collection_BillDetails();
+    public Collection_BillDetails collectionBillDetails = new Collection_BillDetails();
+    public Collection_Table collectionTable = new Collection_Table();
     private ActionListener_SellPage action;
-    public JRadioButton takeAwayRadioButton;
-    public JButton seatingButton;
-    private DefaultTableModel productTableModel;
-    private JTable productTable;
-    public List<Table> choosenTableList;
-    public int currentOffset = 0;
-    public int previousOffset = 0;
-    public List<ImagePanelButton> allProductButtons = new ArrayList<>();
-//    private final int PAGE_SIZE = 18;
-    public boolean isLoading = false;
+    public JTextField searchBar;
+    public JButton updateButton;
     public JButton loadProductButton;
     public JButton clearSearchButton;
     public JComboBox<String> productCategory;
-    public JPanel productPanel;
+    public int currentOffset = 0;
+    public int previousOffset = 0;
+    public List<ImagePanelButton> allProductButtons;
+    public boolean isLoading = false;
     public GridBagConstraints gbc;
+    public JPanel productPanel;
+    public static DefaultTableModel productTableModel;
+    public static JTable productTable;
+    public JRadioButton takeAwayRadioButton;
+    public JButton seatingButton;
+//    private final int PAGE_SIZE = 18;
+    public JButton deleteButton;
+    public JButton toInvoiceButton;
     public JDialog loadingDialog;
     public JButton findProduct;
-    public JTextField searchBar;
-    public JButton updateButton;
     public JScrollBar sb;
 
     public SellPage() {
@@ -54,7 +59,7 @@ public class SellPage extends JPanel {
         setBackground(Color.white);
 
         action = new ActionListener_SellPage(this);
-        choosenTableList = new ArrayList<Table>();
+        allProductButtons = new ArrayList<>();
 
         JPanel emptyL = new JPanel();
         emptyL.setPreferredSize(new Dimension(16, 500));
@@ -105,7 +110,7 @@ public class SellPage extends JPanel {
         searchBar.setBackground(new Color(241, 211, 178));
         searchBar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         searchBar.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        searchBar.setPreferredSize(new Dimension(180, 25)); // Thay đổi kích thước cho phù hợp và vị trí
+        searchBar.setPreferredSize(new Dimension(175, 25)); // Thay đổi kích thước cho phù hợp và vị trí
         northN.add(searchBar);
 
         findProduct = new JButton("Tìm Kiếm");
@@ -147,7 +152,7 @@ public class SellPage extends JPanel {
         clearSearchButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         clearSearchButton.setForeground(Color.BLACK);
         clearSearchButton.setBackground(new Color(241, 211, 178));
-        clearSearchButton.setPreferredSize(new Dimension(170, 25));
+        clearSearchButton.setPreferredSize(new Dimension(190, 25));
         clearSearchButton.addActionListener(action);
         northN.add(clearSearchButton);
 
@@ -219,28 +224,23 @@ public class SellPage extends JPanel {
         productTableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Make "Points" column (index 0,1,2) uneditable
-                return column != 0 && column != 1 && column != 3;
+                // Make "Points" column (index 0,2) uneditable
+                return column != 0 && column != 2;
             }
         };
         productTableModel.addColumn("Tên");
         productTableModel.addColumn("Số lượng");
         productTableModel.addColumn("Giá");
 
-        Object[] row = { "Cappuccino", "Hot", 1, 4.50 };
-        productTableModel.addRow(row);
-
-        Object[] row1 = { "Americano", "Hot", 1, 4.50 };
-        productTableModel.addRow(row1);
-
         productTable = new JTable(productTableModel);
         productTable.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         productTable.setForeground(Color.BLACK);
         productTable.setBackground(Color.white);
+        productTable.setRowHeight(30);
 
         TableColumnModel modelTable = productTable.getColumnModel();
         modelTable.getColumn(0).setPreferredWidth(80);
-        modelTable.getColumn(1).setPreferredWidth(20);
+        modelTable.getColumn(1).setPreferredWidth(80);
         modelTable.getColumn(2).setPreferredWidth(80);
 
         JTableHeader tableHeader = productTable.getTableHeader();
@@ -252,6 +252,8 @@ public class SellPage extends JPanel {
         tableHeader.setDefaultRenderer(new CustomTableHeaderRenderer());
         for (int i = 0; i < productTable.getColumnCount(); i++) {
             productTable.getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
+            if (i == 1)
+                productTable.getColumnModel().getColumn(i).setCellEditor(new CustomUpdateCellEditor(collectionBillDetails));
         }
 
         JScrollPane tableScrollPane = new JScrollPane(productTable);
@@ -360,18 +362,20 @@ public class SellPage extends JPanel {
         funcPanel.add(Box.createHorizontalStrut(10));
 
         FontIcon trashIcon = FontIcon.of(Feather.TRASH, 24, Color.BLACK);
-        JButton deleteButton = new JButton("Xóa", trashIcon);
+        deleteButton = new JButton("Xóa", trashIcon);
         deleteButton.setBackground(Color.white);
         deleteButton.setForeground(Color.black);
         deleteButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        deleteButton.addActionListener(action);
         funcPanel.add(deleteButton);
         funcPanel.add(Box.createHorizontalStrut(10));
 
         FontIcon invoiceIcon = FontIcon.of(Feather.FILE_TEXT, 24, Color.BLACK);
-        JButton toInvoiceButton = new JButton("Hóa đơn", invoiceIcon);
+        toInvoiceButton = new JButton("Hóa đơn", invoiceIcon);
         toInvoiceButton.setBackground(Color.white);
         toInvoiceButton.setForeground(Color.black);
         toInvoiceButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        toInvoiceButton.addActionListener(action);
         funcPanel.add(toInvoiceButton);
 
         ptPanel.add(scrollPane);
@@ -405,16 +409,12 @@ public class SellPage extends JPanel {
         loadingDialog.setVisible(true);
     }
 
-    public void showLoadingSuccessfullyOptionPane() {
-        JOptionPane.showMessageDialog(this, "Tải thêm 18 sản phẩm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
-    }
-
     public void loadFirst18MenuItem(GridBagConstraints gbc) {
         List<MenuItem> menu = DAO_MenuItem.get18MenuItems(0, 18);
         int columns = 3;
         for (int i = 0; i < 18; i++) {
             ImagePanelButton productButton = new ImagePanelButton(menu.get(i),
-                    collectionMenuItem,
+                    collectionBillDetails,
                     "asset/placeholder.png", 200,
                     200,
                     0.8);
@@ -427,6 +427,23 @@ public class SellPage extends JPanel {
             productPanel.add(productButton, gbc);
             allProductButtons.add(productButton);
         }
+
         currentOffset = 18;
+    }
+
+    public void showLoadingSuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Tải thêm 18 sản phẩm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showSearchingSuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Tìm kiếm thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showCategorizingSuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Lấy theo loại thành công!", "Tải thành công", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showUpdateSuccessfullyOptionPane() {
+        JOptionPane.showMessageDialog(this, "Cập nhật thành công!", "Cập nhật thành công", JOptionPane.INFORMATION_MESSAGE);
     }
 }

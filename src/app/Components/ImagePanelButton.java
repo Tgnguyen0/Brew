@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import app.Collections.Collection_BillDetails;
 import app.Collections.Collection_MenuItem;
 import app.InitFont.CustomFont;
 import app.Listener.ActionListener_ImagePanelButton;
@@ -19,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class ImagePanelButton extends JPanel {
-    public Collection_MenuItem collectionMenuItem;
+    public Collection_BillDetails collectionBillDetails;
     public ActionListener_ImagePanelButton action;
     public MenuItem mi;
     private CustomFont customFont = new CustomFont();
@@ -29,10 +30,10 @@ public class ImagePanelButton extends JPanel {
     private JButton addButton;
     private JLabel iconLabel;
 
-    public ImagePanelButton(MenuItem mi, Collection_MenuItem collectionMenuItem, String imagePath, int imageWidth, int imageHeight,
+    public ImagePanelButton(MenuItem mi, Collection_BillDetails collectionBillDetails, String imagePath, int imageWidth, int imageHeight,
                             double scale) {
         this.mi = mi;
-        this.collectionMenuItem = collectionMenuItem;
+        this.collectionBillDetails = collectionBillDetails;
         this.action = new ActionListener_ImagePanelButton(this);
 
         setLayout(new BorderLayout());
@@ -64,7 +65,7 @@ public class ImagePanelButton extends JPanel {
         textLabel = new JLabel("<html>" +
                 "<div style='text-align:left;'>" +
                 "<p style='font-size:13px'><b>" + mi.getName() + "</b></p>" +
-                "<p style='font-size:10px'><b>" + mi.getDescription() + "</b></p>" +
+                "<p style='font-size:10px'><b>" + "" + "</b></p>" +
                 "</div></html>");
         textLabel.setPreferredSize(new Dimension(250, 50));
         textLabel.setVerticalAlignment(SwingConstants.NORTH);

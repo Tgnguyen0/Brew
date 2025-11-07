@@ -1,10 +1,14 @@
 package app.Listener;
 
 import app.Components.ImagePanelButton;
+import app.DAO.DAO_Bill;
 import app.GUI.SellPage;
+import app.Object.Bill;
+import app.Object.BillDetail;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 public class ActionListener_ImagePanelButton implements ActionListener {
     private ImagePanelButton imagePanelButton;
@@ -15,6 +19,29 @@ public class ActionListener_ImagePanelButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        imagePanelButton.collectionMenuItem.addItem(imagePanelButton.mi);
+        boolean isAdded = imagePanelButton.collectionBillDetails.addBillDetail(new BillDetail(imagePanelButton.mi.getItemId(), 1, imagePanelButton.mi.getPrice(), imagePanelButton.mi.getName(), imagePanelButton.mi.getCategory()));
+
+        if (isAdded) {
+            Vector<String> row = new Vector<String>();
+            row.add(imagePanelButton.mi.getName());
+            row.add(String.valueOf(1));
+            row.add(String.valueOf(imagePanelButton.mi.getPrice()));
+            SellPage.productTableModel.addRow(row);
+        } else {
+            for (int i = 0 ; i < SellPage.productTableModel.getRowCount(); i++) {
+                if (SellPage.productTableModel.getValueAt(i, 0).equals(imagePanelButton.mi.getName())) {
+                    int ammount = Integer.parseInt(SellPage.productTableModel.getValueAt(i, 1).toString());
+                    ammount++;
+
+                    if (SellPage.productTable.isEditing()) {
+                        SellPage.productTable.getCellEditor().stopCellEditing();
+                    }
+                    SellPage.productTableModel.setValueAt(ammount, i, 1);
+                    SellPage.productTableModel.setValueAt(ammount * imagePanelButton.mi.getPrice(), i, 2);
+                    imagePanelButton.collectionBillDetails.updateBillDetail(new BillDetail(imagePanelButton.mi.getItemId(), ammount, imagePanelButton.mi.getPrice(), imagePanelButton.mi.getName(), imagePanelButton.mi.getCategory()));
+                    break;
+                }
+            }
+        }
     }
 }
