@@ -170,12 +170,8 @@ public class BrewLogin extends JFrame {
                 JOptionPane.showMessageDialog(this, "Đăng nhập thành công với vai trò: " + acc.getRole(), "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
 
-                if (acc.getRole().equalsIgnoreCase("ADMIN")) {
-                    showLoadingDialog();
-                    initBrewGUI();
-                } else {
-//                    new EmployeeDashboard().setVisible(true);
-                }
+                showLoadingDialog();
+                initBrewGUI();
             } else {
                 JOptionPane.showMessageDialog(this, "Sai tên đăng nhập hoặc mật khẩu!", "Đăng nhập thất bại", JOptionPane.ERROR_MESSAGE);
             }

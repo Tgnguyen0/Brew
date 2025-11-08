@@ -68,7 +68,6 @@ public class ActionListener_PaymentPage implements ActionListener {
                     Bill bill = DAO_Bill.getLatestBill();
 
                     bill.setHourOut(Timestamp.valueOf(LocalDateTime.now()));
-                    bill.setPhoneNumber(BrewGUI.BREW_HOTLINE);
                     bill.setTotal(paymentPage.collectionBillDetails.total());
                     bill.setCustPayment(paymentPage.customerPayment);
                     bill.setStatus("Ðã thanh toán");
@@ -80,6 +79,9 @@ public class ActionListener_PaymentPage implements ActionListener {
                     Customer c = new Customer();
                     if (!paymentPage.isRegistedRadioButton.isSelected()) {
                         c = DAO_Customer.searchCustomerByPhoneNumber(paymentPage.phoneInput.getText());
+                        bill.setPhoneNumber(c.getPhoneNumber());
+                    } else {
+                        bill.setPhoneNumber("");
                     }
                     bill.setCustomer(c);
                     bill.setEmployee(BrewGUI.acc.employee);

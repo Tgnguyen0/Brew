@@ -4,6 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
+import app.Object.Account;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -27,8 +28,11 @@ public class NavbarPanel extends JPanel {
     public NavbarButton employeeButton;
     // private final Animator animator;
     private boolean showMenu = true;
+    private Account acc;
 
-    public NavbarPanel() {
+    public NavbarPanel(Account acc) {
+        this.acc = acc;
+
         initNavbarButton();
         setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.black));
         this.setLayout(new MigLayout("wrap, fillx, insets 0", "[fill]", "[fill, 60!]0[fill, 40!]"));
@@ -96,6 +100,7 @@ public class NavbarPanel extends JPanel {
         statisticsButton = new NavbarButton("Thống Kê", Feather.BAR_CHART,
                 24, 200, 35, Font.PLAIN, 12, 10);
         statisticsButton.addActionListener(action);
+        statisticsButton.setEnabled(acc.getRole().equals("Admin"));
         this.add(statisticsButton);
 
         employeeButton = new NavbarButton("Nhân Viên", Feather.USER,
