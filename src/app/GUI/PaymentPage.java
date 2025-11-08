@@ -168,7 +168,7 @@ public class PaymentPage extends JFrame {
         formPanel.add(phoneInput, gbc);
 
         gbc.gridx = 0; gbc.gridy++;
-        formPanel.add(createLabel("Tiền cần trả:"), gbc);
+        formPanel.add(createLabel("Tiền khách trả:"), gbc);
 
         gbc.gridx = 1;
         custPaymentField = createInputField(180);

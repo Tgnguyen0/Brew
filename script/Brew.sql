@@ -144,7 +144,7 @@ CREATE TABLE Bill (
     dateCreated DATE,
     hourIn DATETIME,
     hourOut DATETIME,
-    phoneNumber VARCHAR(20),
+    phoneNumber VARCHAR(20) NULL,
     total FLOAT,
     custPayment FLOAT,
     status VARCHAR(50),

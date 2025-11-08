@@ -136,7 +136,7 @@ public class BrewGUI extends JFrame implements MouseListener {
         slidePanel.setLocation(-220, 0);
         slidePanel.setBackground(new Color(164, 56, 32));
 
-        optionBar = new NavbarPanel();
+        optionBar = new NavbarPanel(acc);
         optionBar.setBackground(new Color(164, 56, 32));
         optionBar.setBounds(0, 0, slidePanel.getWidth(), slidePanel.getHeight());
         optionBar.setBorder(BorderFactory.createLineBorder(new Color(164, 56, 32)));
