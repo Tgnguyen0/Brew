@@ -227,6 +227,10 @@ public class CafeLayoutPage extends JFrame {
                 }
             });
         } else {
+            if (collectionTable.getAllTables().contains(tables.get(0))) {
+                table1.setBackground(Color.ORANGE);
+                table1.setChoosen(true);
+            }
             table1.addActionListener(action);
         }
         groundFloor.add(table1);
@@ -247,6 +251,10 @@ public class CafeLayoutPage extends JFrame {
                 }
             });
         } else {
+            if (collectionTable.getAllTables().contains(tables.get(1))) {
+                table2.setBackground(Color.ORANGE);
+                table2.setChoosen(true);
+            }
             table2.addActionListener(action);
         }
         groundFloor.add(table2);
@@ -267,6 +275,10 @@ public class CafeLayoutPage extends JFrame {
                 }
             });
         } else {
+            if (collectionTable.getAllTables().contains(tables.get(2))) {
+                table3.setBackground(Color.ORANGE);
+                table3.setChoosen(true);
+            }
             table3.addActionListener(action);
         }
         groundFloor.add(table3);
@@ -287,6 +299,10 @@ public class CafeLayoutPage extends JFrame {
                 }
             });
         } else {
+            if (collectionTable.getAllTables().contains(tables.get(3))) {
+                table4.setBackground(Color.ORANGE);
+                table4.setChoosen(true);
+            }
             table4.addActionListener(action);
         }
         groundFloor.add(table4);
@@ -307,6 +323,10 @@ public class CafeLayoutPage extends JFrame {
                 }
             });
         } else {
+            if (collectionTable.getAllTables().contains(tables.get(4))) {
+                table5.setBackground(Color.ORANGE);
+                table5.setChoosen(true);
+            }
             table5.addActionListener(action);
         }
         groundFloor.add(table5);
