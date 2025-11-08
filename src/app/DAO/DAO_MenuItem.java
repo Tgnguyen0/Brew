@@ -116,4 +116,92 @@ public class DAO_MenuItem {
 
         return list;
     }
+    public static void insert(MenuItem m) {
+        String sql = "INSERT INTO MenuItem (item_name, price, category, description) VALUES (?, ?, ?, ?)";
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, m.getName());
+            ps.setFloat(2, m.getPrice());
+            ps.setString(3, m.getCategory());
+            ps.setString(4, m.getDescription());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Cập nhật
+    public static void update(MenuItem m) {
+        String sql = "UPDATE MenuItem SET item_name = ?, price = ?, category = ?, description = ? WHERE itemId = ?";
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, m.getName());
+            ps.setFloat(2, m.getPrice());
+            ps.setString(3, m.getCategory());
+            ps.setString(4, m.getDescription());
+            ps.setString(5, m.getItemId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Xóa
+    public static void delete(String itemId) {
+        String sql = "DELETE FROM MenuItem WHERE itemId = ?";
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, itemId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Lấy theo ID
+    public static MenuItem getById(String id) {
+        String sql = "SELECT * FROM MenuItem WHERE itemId = ?";
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new MenuItem(
+                        rs.getString("itemId"),
+                        rs.getString("item_name"),
+                        rs.getFloat("price"),
+                        rs.getString("category"),
+                        rs.getString("description")
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    // Search theo tên hoặc category
+    public static List<MenuItem> search(String keyword) {
+        List<MenuItem> list = new ArrayList<>();
+        String sql = "SELECT * FROM MenuItem WHERE item_name LIKE ? OR category LIKE ?";
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            String k = "%" + keyword.trim() + "%";
+            ps.setString(1, k);
+            ps.setString(2, k);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new MenuItem(
+                        rs.getString("itemId"),
+                        rs.getString("item_name"),
+                        rs.getFloat("price"),
+                        rs.getString("category"),
+                        rs.getString("description")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
 }

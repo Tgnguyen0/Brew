@@ -8,7 +8,7 @@ public class XJdbc {
     private static final String DB_URL =
             "jdbc:sqlserver://localhost\\MSSQLSERVER13:1433;databaseName=Brew;encrypt=false";
     private static final String USER = "sa";
-    private static final String PASSWORD = "123";
+    private static final String PASSWORD = "sapassword";
     private static final String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
     static {
