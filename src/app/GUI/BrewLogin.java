@@ -1,5 +1,6 @@
 package app.GUI;
 
+import app.DAO.DAO_Employee;
 import app.DAO.LoginDAO;
 import app.InitFont.CustomFont;
 import app.Object.Account;
@@ -161,6 +162,7 @@ public class BrewLogin extends JFrame {
             }
 
             acc = LoginDAO.loginAccount(username, password);
+            // System.out.println(LoginDAO.loginAccount(username, password).toString());
 
             if (acc == null) {
                 JOptionPane.showMessageDialog(this, "Sai tên đăng nhập hoặc mật khẩu!", "Đăng nhập thất bại", JOptionPane.ERROR_MESSAGE);
