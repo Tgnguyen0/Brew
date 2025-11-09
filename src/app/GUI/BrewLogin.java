@@ -30,6 +30,8 @@ public class BrewLogin extends JFrame {
         }
 
         setTitle("☕ Đăng Nhập - Brew");
+        ImageIcon icon = new ImageIcon("asset/icon.png");
+        setIconImage(icon.getImage());
         setSize(950, 550);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -222,7 +224,7 @@ public class BrewLogin extends JFrame {
     public void showLoadingDialog() {
         loadingDialog = new JDialog(this, "Đang khởi tạo...", false); // false = non-modal
         loadingDialog.setUndecorated(true);
-        loadingDialog.setSize(200, 230);
+        loadingDialog.setSize(200, 200);
         loadingDialog.setLocationRelativeTo(this);
         loadingDialog.setAlwaysOnTop(true);
         loadingDialog.setLayout(new BorderLayout());
@@ -232,17 +234,16 @@ public class BrewLogin extends JFrame {
         panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JLabel label = new JLabel("Đang khởi tạo hệ thống...", SwingConstants.CENTER);
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 10));
-        label.setPreferredSize(new Dimension(200, 25));
+//        JLabel label = new JLabel("Đang khởi tạo hệ thống...", SwingConstants.CENTER);
+//        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        label.setFont(cf.getRobotoFonts().get(0).deriveFont(Font.BOLD, 10));
+//        label.setPreferredSize(new Dimension(200, 25));
 
         JLabel gifLabel = new JLabel(new ImageIcon("asset/loading.gif"));
         gifLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        panel.add(Box.createVerticalStrut(10));
         panel.add(gifLabel);
-        panel.add(label);
+//        panel.add(label);
 
         loadingDialog.add(panel);
         loadingDialog.setVisible(true);
