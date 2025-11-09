@@ -1,4 +1,4 @@
-package app.Components;
+package app.GUI;
 
 import app.Object.Bill;
 import app.InitFont.CustomFont;
@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class HistoryDialog extends JDialog {
+
     private final Color PRIMARY_COLOR = new Color(178, 74, 55);
     private final Color SECONDARY_COLOR = new Color(241, 211, 178);
     private final Color TEXT_COLOR = new Color(21, 24, 48);
@@ -95,7 +96,7 @@ public class HistoryDialog extends JDialog {
                         ? bill.getHourIn().toLocalDateTime().format(DATE_TIME_FORMATTER)
                         : "N/A";
 
-                String totalFormatted = CURRENCY_FORMAT.format(bill.getTotal());
+                String totalFormatted = CURRENCY_FORMAT.format(bill.calculateTotal());
 
                 // --- Bổ sung STT (index + 1) ---
                 int stt = index + 1;

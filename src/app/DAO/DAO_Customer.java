@@ -53,6 +53,7 @@ public class DAO_Customer {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     customer = mapResultSetToCustomer(rs);
+
                 }
             }
         } catch (SQLException e) {
@@ -123,17 +124,25 @@ public class DAO_Customer {
         }
     }
 
-    public List<Customer> searchCustomers(String phoneNumber) {
+    public List<Customer> searchCustomers(String keyword) {
         List<Customer> customers = new ArrayList<>();
         // Tìm kiếm theo ID, Họ, Tên hoặc SĐT
         String sql = "SELECT * FROM dbo.Customer WHERE customerId LIKE ? OR firstName LIKE ? OR lastName LIKE ? OR phoneNumber LIKE ? ORDER BY customerId";
 
-        try (Connection con = XJdbc.getConnection()) {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, phoneNumber);
+        String searchPattern = "%" + keyword + "%";
+
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, searchPattern);
+            ps.setString(2, searchPattern);
+            ps.setString(3, searchPattern);
+            ps.setString(4, searchPattern);
 
             try (ResultSet rs = ps.executeQuery()) {
-
+                while (rs.next()) {
+                    customers.add(mapResultSetToCustomer(rs));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -151,19 +160,12 @@ public class DAO_Customer {
 
             ps.setString(1, phoneNumber);
 
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                customer = new Customer(
-                        rs.getString("customerId"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getString("phoneNumber"),
-                        rs.getString("email"),
-                        rs.getBoolean("sex"),
-                        rs.getDate("customerCreatedDate").toLocalDate().atStartOfDay()
-                );
-            }
 
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    customer = mapResultSetToCustomer(rs);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Lỗi khi tìm kiếm khách hàng: " + e.getMessage());

@@ -66,7 +66,9 @@ public class BillDetailPage extends JDialog {
 
         // Nhân viên phụ trách
         String employeeName;
-        if (bill.getEmployee().getFirstName() == null && bill.getEmployee().getLastName() == null) {
+        if (bill.getEmployee() == null) {
+            employeeName = "N/A (Chưa xác định)";
+        } else if (bill.getEmployee().getFirstName() == null && bill.getEmployee().getLastName() == null) {
             employeeName = "NV Lẻ (ID: " + bill.getEmployee().getId()  + ")";
         } else {
             employeeName = bill.getEmployee().getFirstName() + " " + bill.getEmployee().getLastName();
@@ -105,18 +107,28 @@ public class BillDetailPage extends JDialog {
         addRow(summaryPanel, gbc, row++, "Thời Gian:", hourInStr + " - " + hourOutStr, labelFont, valueFont);
 
 
-        String customerName = bill.getCustomer().getFullName() != null ? bill.getCustomer().getFullName() : "Khách lẻ (ID: " + bill.getCustomer().getCustomerId() + ")";
+        String customerName;
+        if (bill.getCustomer() == null) {
+            customerName = "Khách lẻ";
+        } else {
+            customerName = bill.getCustomer().getFullName() != null
+                    ? bill.getCustomer().getFullName()
+                    : "Khách lẻ (ID: " + bill.getCustomer().getCustomerId() + ")";
+        }
         addRow(summaryPanel, gbc, row++, "Tên Khách Hàng:", customerName, labelFont, valueFont);
 
 
         addRow(summaryPanel, gbc, row++, "Số Điện Thoại:", bill.getPhoneNumber() != null ? bill.getPhoneNumber() : "N/A", labelFont, valueFont);
 
-        String totalStr = String.format("%,.0f VNĐ", bill.getTotal());
-        addRow(summaryPanel, gbc, row++, "TỔNG CỘNG:", totalStr, labelFont.deriveFont(Font.BOLD, 17), valueFont.deriveFont(Font.BOLD, 17));
-        addRow(summaryPanel, gbc, row++, "Trạng Thái:", bill.getStatus(), labelFont, valueFont);
-
         String paymentStr = String.format("%,.0f VNĐ", bill.getCustPayment());
         addRow(summaryPanel, gbc, row++, "Số Tiền Khách Trả:", paymentStr, labelFont, valueFont);
+
+
+        addRow(summaryPanel, gbc, row++, "Trạng Thái:", bill.getStatus(), labelFont, valueFont);
+        String totalStr = String.format("%,.0f VNĐ", bill.calculateTotal());
+        addRow(summaryPanel, gbc, row++, "TỔNG CỘNG:", totalStr, labelFont.deriveFont(Font.BOLD, 17), valueFont.deriveFont(Font.BOLD, 17));
+
+
 
         return summaryPanel;
     }
@@ -126,12 +138,12 @@ public class BillDetailPage extends JDialog {
 
         JLabel label = new JLabel(labelText);
         label.setFont(labelFont);
-        label.setForeground(PRIMARY_COLOR.darker()); // Màu đậm hơn một chút
+        label.setForeground(PRIMARY_COLOR.darker());
         gbc.gridx = 0;
         gbc.weightx = 0.3;
         panel.add(label, gbc);
 
-        JLabel value = new JLabel("<html><b>" + valueText + "</b></html>"); // Giữ in đậm cho giá trị
+        JLabel value = new JLabel("<html><b>" + valueText + "</b></html>");
         value.setFont(valueFont);
         value.setForeground(Color.BLACK);
         gbc.gridx = 1;
@@ -146,7 +158,7 @@ public class BillDetailPage extends JDialog {
         container.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
 
         JLabel productHeader = new JLabel("DANH SÁCH SẢN PHẨM");
-        productHeader.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.BOLD, 18)); // Cỡ chữ lớn hơn
+        productHeader.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.BOLD, 18));
         productHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
         productHeader.setForeground(PRIMARY_COLOR.darker());
         container.add(productHeader);
@@ -194,12 +206,12 @@ public class BillDetailPage extends JDialog {
     }
 
     private JPanel createProductRow(String name, String quantity, String category, String amount, String totalPrice, boolean isHeader) {
-        JPanel rowPanel = new JPanel(new GridLayout(1, 5, 8, 0)); // Tăng khoảng cách giữa các cột
-        rowPanel.setBackground(isHeader ? SECONDARY_COLOR.darker().darker() : Color.WHITE); // Header đậm hơn
-        rowPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8)); // Tăng padding
+        JPanel rowPanel = new JPanel(new GridLayout(1, 5, 8, 0));
+        rowPanel.setBackground(isHeader ? SECONDARY_COLOR.darker().darker() : Color.WHITE);
+        rowPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
         Font font = isHeader ? customFont.getRobotoFonts().get(0).deriveFont(Font.BOLD, 13) : customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 13); // Cỡ chữ lớn hơn
-        Color textColor = isHeader ? Color.WHITE : Color.BLACK; // Chữ trắng trên header đậm, chữ đen trên nền trắng
+        Color textColor = isHeader ? Color.WHITE : Color.BLACK;
 
         JLabel nameLabel = new JLabel(name, SwingConstants.LEFT);
         nameLabel.setFont(font);
@@ -218,7 +230,7 @@ public class BillDetailPage extends JDialog {
         amountLabel.setForeground(textColor);
 
         JLabel totalLabel = new JLabel(totalPrice + (isHeader ? "" : " VNĐ"), SwingConstants.RIGHT);
-        totalLabel.setFont(font.deriveFont(isHeader ? Font.BOLD : Font.BOLD)); // Tổng cộng luôn in đậm
+        totalLabel.setFont(font.deriveFont(isHeader ? Font.BOLD : Font.BOLD));
         totalLabel.setForeground(textColor);
 
         rowPanel.add(nameLabel);
@@ -253,7 +265,7 @@ public class BillDetailPage extends JDialog {
         footerPanel.setBackground(PRIMARY_COLOR);
         footerPanel.setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25)); // Tăng padding
 
-        JLabel totalLabel = new JLabel("<html><b style='color: white;'>TỔNG CỘNG (VNĐ): " + String.format("%,.0f</b></html>", bill.getTotal()));
+        JLabel totalLabel = new JLabel("<html><b style='color: white;'>TỔNG CỘNG (VNĐ): " + String.format("%,.0f</b></html>", bill.calculateTotal()));
         totalLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.BOLD, 20)); // Cỡ chữ lớn hơn
         totalLabel.setForeground(Color.WHITE);
 

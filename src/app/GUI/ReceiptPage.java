@@ -395,12 +395,20 @@ public class ReceiptPage extends JPanel {
             String hourInStr = bill.getHourIn() != null ? timeFormatter.format(bill.getHourIn()) : "";
             String hourOutStr = bill.getHourOut() != null ? timeFormatter.format(bill.getHourOut()) : "";
 
-            String totalStr = String.format("%,.0f", bill.getTotal());
-            String name;
-            if (bill.getEmployee().getFirstName() == null && bill.getEmployee().getLastName() == null) {
-                name = bill.getEmployee().getId();
+            String totalStr = String.format("%,.0f", bill.calculateTotal());
+
+            String employeeName;
+            app.Object.Employee employee = bill.getEmployee();
+
+            if (employee == null) {
+
+                employeeName = "Không xác định";
+            } else if (employee.getFirstName() == null && employee.getLastName() == null) {
+                // Trường hợp không có tên, sử dụng ID
+                employeeName = employee.getId();
             } else {
-                name = bill.getEmployee().getFirstName() + " " + bill.getEmployee().getLastName();
+
+                employeeName = employee.getFirstName() + " " + employee.getLastName();
             }
 
             Object[] row = new Object[] {
@@ -412,7 +420,7 @@ public class ReceiptPage extends JPanel {
                     bill.getPhoneNumber(),
                     totalStr,
                     bill.getStatus(),
-                    name
+                    employeeName
             };
             productTableModel.addRow(row);
         }
