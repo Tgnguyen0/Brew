@@ -157,4 +157,30 @@ public class Bill implements Serializable{
 		}
 		return totalQuantity;
 	}
+
+	public double calculateTotal() {
+		if (this.details != null && !this.details.isEmpty()) {
+			double sum = 0.0;
+			for (BillDetail detail : this.details) {
+				sum += detail.getTotal_price();
+			}
+			return sum;
+		}
+		return this.total;
+	}
+
+	@Override
+	public String toString() {
+		return "Bill{" +
+				"billId='" + billId + '\'' +
+				", dateCreated=" + dateCreated +
+				", hourIn=" + hourIn +
+				", hourOut=" + hourOut +
+				", phoneNumber='" + phoneNumber + '\'' +
+				", total=" + total +
+				", custPayment=" + custPayment +
+				", status='" + status + '\'' +
+				", details=" + details +
+				'}';
+	}
 }

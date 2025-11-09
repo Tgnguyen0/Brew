@@ -1,7 +1,9 @@
+
 package app.DAO;
 
 import app.Connection.XJdbc;
 import app.Object.Bill;
+import app.Object.BillDetail;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -20,6 +22,7 @@ public class DAO_Bill {
         """;
 
         List<Bill> list = new ArrayList<>();
+        DAO_BillDetail detailDAO = new DAO_BillDetail();
 
         try (Connection con = XJdbc.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -40,10 +43,13 @@ public class DAO_Bill {
                 bill.setStatus(rs.getString("status"));
 
                 // ✅ Lấy ID thực từ ResultSet
+
                 bill.setCustomer(DAO_Customer.getCustomerById(rs.getString("customerId")));
                 bill.setEmployee(DAO_Employee.getEmployeeById(rs.getString("employeeId")));
                 bill.setTable(DAO_Table.findTable(rs.getString("tableId")));
-
+                String billId = bill.getBillId();
+                List<BillDetail> details = detailDAO.selectByBillId(billId);
+                bill.setDetails(details);
                 list.add(bill);
             }
 
@@ -68,7 +74,7 @@ public class DAO_Bill {
     }
 
     public static Bill getLatestBill() {
-        String sql = "SELECT TOP 1 billId, dateCreated, hourIn FROM BILL ORDER BY billId DESC"; 
+        String sql = "SELECT TOP 1 billId, dateCreated, hourIn FROM BILL ORDER BY billId DESC";
 
         try (Connection con = XJdbc.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -147,8 +153,29 @@ public class DAO_Bill {
             ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Bill bill = mapResultSetToBill(rs);
+                    // THAY THẾ LOGIC BỊ LỖI BẰNG LOGIC MAPPING ĐẦY ĐỦ VÀ ROBUST
+                    Bill bill = new Bill();
+                    bill.setBillId(rs.getString("billId"));
+
+                    java.sql.Date sqlDateCreated = rs.getDate("dateCreated");
+                    bill.setDateCreated(sqlDateCreated != null ? sqlDateCreated.toLocalDate() : null);
+
+                    bill.setHourIn(rs.getTimestamp("hourIn"));
+                    bill.setHourOut(rs.getTimestamp("hourOut"));
+                    bill.setPhoneNumber(rs.getString("phoneNumber"));
+                    bill.setTotal(rs.getDouble("total"));
+                    bill.setCustPayment(rs.getDouble("custPayment"));
+                    bill.setStatus(rs.getString("status"));
+
+                    // ✅ Lấy đối tượng Customer, Employee, Table đầy đủ qua ID
+                    // (Giả định DAO_Customer, DAO_Employee, DAO_Table đã được import)
+                    bill.setCustomer(DAO_Customer.getCustomerById(rs.getString("customerId")));
+                    bill.setEmployee(DAO_Employee.getEmployeeById(rs.getString("employeeId")));
+                    bill.setTable(DAO_Table.findTable(rs.getString("tableId")));
+
+                    // Lấy chi tiết hóa đơn
                     bill.setDetails(new DAO_BillDetail().selectByBillId(bill.getBillId()));
+
                     list.add(bill);
                 }
             }
@@ -160,31 +187,6 @@ public class DAO_Bill {
         return list;
     }
 
-
-    private Bill mapResultSetToBill(ResultSet rs) throws SQLException {
-        Bill bill = new Bill();
-        bill.setBillId(rs.getString("billId"));
-
-        Date sqlDateCreated = rs.getDate("dateCreated");
-        bill.setDateCreated(sqlDateCreated != null ? sqlDateCreated.toLocalDate() : null);
-
-        bill.setHourIn(rs.getTimestamp("hourIn"));
-        bill.setHourOut(rs.getTimestamp("hourOut"));
-        bill.setPhoneNumber(rs.getString("phoneNumber"));
-        bill.setTotal(rs.getDouble("total"));
-        bill.setCustPayment(rs.getDouble("custPayment"));
-        bill.setStatus(rs.getString("status"));
-        bill.getCustomer().setCustomerId(rs.getString("customerId"));
-        bill.getEmployee().setId(rs.getString("employeeId"));
-        bill.getTable().setTableId(rs.getString("tableId"));
-
-        bill.getCustomer().setFullName(rs.getString("customerFullName"));
-
-        bill.getEmployee().setFirstName(rs.getString("employeeFullName"));
-        bill.getEmployee().setLastName(rs.getString("employeeFullName"));
-
-        return bill;
-    }
 
     public static boolean updateBill(Bill bill) {
         String sql = """
