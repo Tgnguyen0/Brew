@@ -124,6 +124,7 @@ public class ProductPage extends JPanel {
         descriptionArea.setForeground(Color.BLACK);
         descriptionArea.setBackground(new Color(241, 211, 178));
         descriptionArea.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
+        descriptionArea.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         JScrollPane descScroll = new JScrollPane(descriptionArea);
         descScroll.setPreferredSize(new Dimension(220, 60));
         grid.add(descScroll, gbc);
@@ -191,8 +192,8 @@ public class ProductPage extends JPanel {
         right.setPreferredSize(new Dimension(600, 35));
 
         JButton addBtn = makeButton("Thêm");
-        JButton saveBtn = makeButton("Xóa");
-        JButton deleteBtn = makeButton("Sửa");
+        JButton saveBtn = makeButton("Lưu");
+        JButton deleteBtn = makeButton("Xóa");
         JButton clearBtn = makeButton("Hủy");
 
         addBtn.addActionListener(e -> onAdd());
