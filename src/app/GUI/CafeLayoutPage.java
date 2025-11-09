@@ -46,6 +46,8 @@ public class CafeLayoutPage extends JFrame {
         INSTANCE = this;
 
         //setSize(new Dimension(800, 600));
+        ImageIcon icon = new ImageIcon("asset/icon.png");
+        setIconImage(icon.getImage());
         setTitle("Sơ đồ chỗ ngồi");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

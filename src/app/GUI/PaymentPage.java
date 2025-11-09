@@ -42,6 +42,8 @@ public class PaymentPage extends JFrame {
         this.employee = employee;
         action = new ActionListener_PaymentPage(this);
 
+        ImageIcon icon = new ImageIcon("asset/icon.png");
+        setIconImage(icon.getImage());
         setTitle("Thanh Toán");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(new Dimension(800, 620));
@@ -210,7 +212,7 @@ public class PaymentPage extends JFrame {
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        label.setPreferredSize(new Dimension(100, 25));
+        label.setPreferredSize(new Dimension(120, 25));
         label.setForeground(Color.black);
         return label;
     }
@@ -247,8 +249,8 @@ public class PaymentPage extends JFrame {
         return btn;
     }
 
-    public void showPaySuccessfullyOptionPane() {
-        JOptionPane.showMessageDialog(this, "Thanh toán thành công!", "Thanh toán thành công", JOptionPane.INFORMATION_MESSAGE);
+    public void showPaySuccessfullyOptionPane(float change) {
+        JOptionPane.showMessageDialog(this, "Thanh toán thành công!\nTiền thối: " + change, "Thanh toán thành công", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void showPayUnsuccessfullyOptionPane() {

@@ -94,7 +94,7 @@ public class ActionListener_PaymentPage implements ActionListener {
                     }
 
                     DAO_Bill.updateBill(bill);
-                    paymentPage.showPaySuccessfullyOptionPane();
+                    paymentPage.showPaySuccessfullyOptionPane(paymentPage.change);
 //                    CardLayout cardLayout = (CardLayout) BrewGUI.pageContainer.getLayout();
 //                    cardLayout.show(BrewGUI.pageContainer, "Receipt Page");
                 }
