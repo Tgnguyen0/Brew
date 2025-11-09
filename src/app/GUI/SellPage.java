@@ -409,26 +409,81 @@ public class SellPage extends JPanel {
         loadingDialog.setVisible(true);
     }
 
+//    public void loadFirst18MenuItem(GridBagConstraints gbc) {
+//        List<MenuItem> menu = DAO_MenuItem.get18MenuItems(0, 18);
+//        int columns = 3;
+//        for (int i = 0; i < 18; i++) {
+//            ImagePanelButton productButton = new ImagePanelButton(menu.get(i),
+//                    collectionBillDetails,
+//                    "asset/placeholder.png", 200,
+//                    200,
+//                    0.8);
+//            productButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+//            productButton.setPreferredSize(new Dimension(250, 250)); // không bị co giãn
+//            productButton.setMaximumSize(new Dimension(250, 250));
+//
+//            gbc.gridx = i % columns;
+//            gbc.gridy = i / columns;
+//            productPanel.add(productButton, gbc);
+//            allProductButtons.add(productButton);
+//        }
+//
+//        currentOffset = 18;
+//    }
+
     public void loadFirst18MenuItem(GridBagConstraints gbc) {
-        List<MenuItem> menu = DAO_MenuItem.get18MenuItems(0, 18);
-        int columns = 3;
-        for (int i = 0; i < 18; i++) {
-            ImagePanelButton productButton = new ImagePanelButton(menu.get(i),
-                    collectionBillDetails,
-                    "asset/placeholder.png", 200,
-                    200,
-                    0.8);
-            productButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-            productButton.setPreferredSize(new Dimension(250, 250)); // không bị co giãn
-            productButton.setMaximumSize(new Dimension(250, 250));
+        SwingWorker<List<ImagePanelButton>, Void> worker = new SwingWorker<>() {
 
-            gbc.gridx = i % columns;
-            gbc.gridy = i / columns;
-            productPanel.add(productButton, gbc);
-            allProductButtons.add(productButton);
-        }
+            @Override
+            protected List<ImagePanelButton> doInBackground() throws Exception {
+                List<MenuItem> menu = DAO_MenuItem.get18MenuItems(0, 18);
+                List<ImagePanelButton> buttons = new ArrayList<>();
 
-        currentOffset = 18;
+                int columns = 3;
+                for (int i = 0; i < menu.size(); i++) {
+                    ImagePanelButton productButton = new ImagePanelButton(
+                            menu.get(i),
+                            collectionBillDetails,
+                            "asset/placeholder.png",
+                            200, 200, 0.8
+                    );
+                    productButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+                    productButton.setPreferredSize(new Dimension(250, 250));
+                    productButton.setMaximumSize(new Dimension(250, 250));
+
+                    buttons.add(productButton);
+                }
+
+                return buttons;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    List<ImagePanelButton> buttons = get();
+                    productPanel.removeAll();
+                    int columns = 3;
+
+                    GridBagConstraints localGbc = (GridBagConstraints) gbc.clone();
+
+                    for (int i = 0; i < buttons.size(); i++) {
+                        localGbc.gridx = i % columns;
+                        localGbc.gridy = i / columns;
+                        productPanel.add(buttons.get(i), localGbc);
+                        allProductButtons.add(buttons.get(i));
+                    }
+
+                    productPanel.revalidate();
+                    productPanel.repaint();
+                    currentOffset = 18;
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
+        worker.execute();
     }
 
     public void showLoadingSuccessfullyOptionPane() {
