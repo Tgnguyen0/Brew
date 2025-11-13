@@ -26,11 +26,59 @@
     <orderEntry type="library" name="io-9.3.0" level="project" />
     <orderEntry type="library" name="slf4j-api-2.0.17" level="project" />
     <orderEntry type="library" name="commons-9.3.0" level="project" />
-    <orderEntry type="library" name="poi-5.2.3" level="project" />
-    <orderEntry type="library" name="poi-examples-5.2.3" level="project" />
-    <orderEntry type="library" name="poi-ooxml-5.2.3" level="project" />
-    <orderEntry type="library" name="xmlbeans-5.1.1" level="project" />
-    <orderEntry type="library" name="commons-collections4-4.4" level="project" />
-    <orderEntry type="library" name="commons-compress-1.26.1" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/Excel/Exel1/poi-3.17.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/Excel/Exel1/poi-ooxml-3.17.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/Excel/Exel1/poi-ooxml-schemas-3.17.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/Excel/Exel1/xmlbeans-2.6.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/Excel/Exel1/commons-collections4-4.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-9.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
