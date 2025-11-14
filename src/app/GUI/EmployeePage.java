@@ -25,12 +25,12 @@ public class EmployeePage extends JPanel {
     private JComboBox<String> roleCombo;  // ví dụ: Nhân viên / Quản lý / Quản trị viên
     private JTextField addressInput;
 
-    // Các trường tìm kiếm và ID (có trong phần Stashed changes)
+    
     private JTextField searchBar;
-    private JTextField idInput; // Thêm lại trường idInput nếu cần cho tìm kiếm/hiển thị
-    private JTextField nameInput; // Thêm lại trường nameInput nếu cần
-    private JTextField dbInput; // Thêm lại trường dbInput nếu cần
-    private JComboBox<String> responsibilityCategory; // Thêm lại nếu cần (dường như bị dư/xung đột với roleCombo)
+    private JTextField idInput; // 
+    private JTextField nameInput; // 
+    private JTextField dbInput; // 
+    private JComboBox<String> responsibilityCategory; // 
 
     // Bảng
     private DefaultTableModel tableModel;
@@ -142,7 +142,7 @@ public class EmployeePage extends JPanel {
         tool.setOpaque(false);
         tool.setBorder(BorderFactory.createEmptyBorder(10, 0, 6, 0));
 
-        // Left: search (phần này chứa các trường nhập liệu dư thừa từ Updated upstream)
+        // Left: search 
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         left.setOpaque(false);
 
@@ -151,11 +151,19 @@ public class EmployeePage extends JPanel {
         searchBar = makeTextField(240);
         JButton searchBtn = iconButton(Feather.SEARCH);
         searchBtn.addActionListener(e -> search());
-        
-        // Giữ lại phần search cơ bản
+
+        //  NÚT REFRESH (LOAD LẠI TRANG)
+        JButton refreshBtn = iconButton(Feather.ROTATE_CW);
+        refreshBtn.setToolTipText("Làm mới danh sách");
+        refreshBtn.addActionListener(e -> {
+            clearForm();
+            loadTable();
+        });
+
         left.add(searchLabel);
         left.add(searchBar);
         left.add(searchBtn);
+        left.add(refreshBtn);  
 
         // Right: actions
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
@@ -185,7 +193,7 @@ public class EmployeePage extends JPanel {
         tablePanel.setBorder(BorderFactory.createEmptyBorder(0, 12, 12, 12));
 
         tableModel = new DefaultTableModel(
-                new Object[]{"_ID", "Họ", "Tên", "Số điện thoại", "Email", "Giới tính", "Chức vụ", "Địa chỉ"}, 0) {
+                new Object[]{"_ID", "Tên", "Họ", "Số điện thoại", "Email", "Giới tính", "Chức vụ", "Địa chỉ"}, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
 
@@ -271,8 +279,8 @@ public class EmployeePage extends JPanel {
 
     private void onAdd() {
         try {
-        	String firstName = lastNameInput.getText().trim();
-        	String lastName  = firstNameInput.getText().trim();
+        	String firstName = firstNameInput.getText().trim();
+        	String lastName  = lastNameInput.getText().trim();
         	String phone     = phoneInput.getText().trim();
         	String email     = emailInput.getText().trim();
 
@@ -323,8 +331,8 @@ public class EmployeePage extends JPanel {
         try {
             Employee e = new Employee(
                     id,
-                    lastNameInput.getText().trim(),    // firstName (dựa theo logic mapping của bạn)
-                    firstNameInput.getText().trim(),   // lastName (dựa theo logic mapping của bạn)
+                    lastNameInput.getText().trim(),    
+                    firstNameInput.getText().trim(),   
                     "Nam".equals(sexCombo.getSelectedItem()),
                     phoneInput.getText().trim(),
                     emailInput.getText().trim(),
@@ -367,9 +375,8 @@ public class EmployeePage extends JPanel {
         Employee e = DAO_Employee.getEmployeeById(id);
         if (e == null) return;
 
-        // GIỮ NGUYÊN mapping bạn đang dùng
-        firstNameInput.setText(nz(e.getLastName()));     // Họ
-        lastNameInput.setText(nz(e.getFirstName()));     // Tên
+        firstNameInput.setText(nz(e.getFirstName()));     // Họ
+        lastNameInput.setText(nz(e.getLastName()));     // Tên
         phoneInput.setText(nz(e.getPhoneNumber()));
         emailInput.setText(nz(e.getEmail()));
         sexCombo.setSelectedItem(e.isSex() ? "Nam" : "Nữ");
