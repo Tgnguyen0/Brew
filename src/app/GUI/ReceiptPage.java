@@ -49,7 +49,8 @@ public class ReceiptPage extends JPanel {
     private JTextField fromDateInput;
     private JTextField toDateInput;
     private TableRowSorter<DefaultTableModel> sorter;
-    private DAO_Bill billDAO = new DAO_Bill();
+    // Khởi tạo DAO_Bill (Giả định phương thức selectAll() đã được tối ưu)
+    private DAO_Bill billDAO = new DAO_Bill(); 
 
     private static final int DATE_COLUMN_INDEX = 1;
     private static final int DATE_TIME_COLUMN_INDEX = 1;
@@ -132,27 +133,36 @@ public class ReceiptPage extends JPanel {
     }
 
     private void setupDateSorter() {
+        // Bộ so sánh cho cột Ngày khởi tạo (index 1)
         sorter.setComparator(DATE_TIME_COLUMN_INDEX, new Comparator<String>() {
             private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
             @Override
             public int compare(String dateStr1, String dateStr2) {
                 try {
+                    // Xử lý tốt hơn cho trường hợp chuỗi rỗng
+                    if (dateStr1.isEmpty() && dateStr2.isEmpty()) return 0;
+                    if (dateStr1.isEmpty()) return -1; 
+                    if (dateStr2.isEmpty()) return 1;
+
                     Date date1 = formatter.parse(dateStr1);
                     Date date2 = formatter.parse(dateStr2);
                     return date1.compareTo(date2);
                 } catch (ParseException e) {
+                    // Nếu lỗi parse, quay lại so sánh chuỗi
                     return dateStr1.compareTo(dateStr2);
                 }
             }
         });
 
+        // Bộ so sánh cho cột Tổng cộng (index 6)
         sorter.setComparator(SOTIEN_COLUMN_INDEX, new Comparator<String>() {
             @Override
             public int compare(String moneyStr1, String moneyStr2) {
                 try {
-                    double val1 = Double.parseDouble(moneyStr1.replaceAll("[^\\d.]", ""));
-                    double val2 = Double.parseDouble(moneyStr2.replaceAll("[^\\d.]", ""));
+                    // Loại bỏ ký tự không phải số và dấu chấm thập phân, sau đó parse Double
+                    double val1 = Double.parseDouble(moneyStr1.replaceAll("[^\\d\\.,]", "").replace(",", ""));
+                    double val2 = Double.parseDouble(moneyStr2.replaceAll("[^\\d\\.,]", "").replace(",", ""));
                     return Double.compare(val1, val2);
                 } catch (NumberFormatException e) {
                     return moneyStr1.compareTo(moneyStr2);
@@ -178,6 +188,7 @@ public class ReceiptPage extends JPanel {
                 if (columnIndex == SOTIEN_COLUMN_INDEX) {
                     return String.class;
                 }
+                // Giữ nguyên loại String cho cột Ngày khởi tạo để RowFilter có thể hoạt động dễ dàng
                 return super.getColumnClass(columnIndex);
             }
         };
@@ -385,7 +396,8 @@ public class ReceiptPage extends JPanel {
 
     private void loadInitialData() {
         productTableModel.setRowCount(0);
-        List<Bill> billList = billDAO.selectAll();
+        // Tên phương thức đã được sửa lại cho đúng với DAO_Bill.selectAll() đã tối ưu.
+        List<Bill> billList = billDAO.selectTop35(); 
 
         SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -395,27 +407,63 @@ public class ReceiptPage extends JPanel {
             String hourInStr = bill.getHourIn() != null ? timeFormatter.format(bill.getHourIn()) : "";
             String hourOutStr = bill.getHourOut() != null ? timeFormatter.format(bill.getHourOut()) : "";
 
-            String totalStr = String.format("%,.0f", bill.getTotal());
-            String name;
-            if (bill.getEmployee().getFirstName() == null && bill.getEmployee().getLastName() == null) {
-                name = bill.getEmployee().getId();
-            } else {
-                name = bill.getEmployee().getFirstName() + " " + bill.getEmployee().getLastName();
-            }
+            // Định dạng tiền tệ có dấu phẩy ngăn cách hàng ngàn.
+            String totalStr = String.format("%,.0f", bill.calculateTotal()); 
 
+            String customerName;
+            // Đảm bảo SĐT không phải NULL
+            String phoneNumber = bill.getPhoneNumber() != null ? bill.getPhoneNumber() : ""; 
+
+            // LOGIC XỬ LÝ TÊN KHÁCH HÀNG
+            if (bill.getCustomer() != null && bill.getCustomer().getFullName() != null && !bill.getCustomer().getFullName().trim().isEmpty()) {
+                // Trường hợp 1: Có đối tượng Customer và có tên
+                customerName = bill.getCustomer().getFullName();
+            } else if (!phoneNumber.isEmpty()) {
+                // Trường hợp 2: Không có tên KH liên kết nhưng có SĐT trong hóa đơn
+                // Coi đây là Khách Vãng Lai có nhập SĐT
+                customerName = "Khách hàng"; 
+            } else {
+                // Trường hợp 3: Không có tên KH và không có SĐT
+                customerName = "Khách lẻ";
+            }
+            
+            String employeeName;
+            app.Object.Employee employee = bill.getEmployee();
+
+            if (employee == null) {
+                employeeName = "Không xác định";
+            } else if (employee.getFirstName() == null && employee.getLastName() == null) {
+                // Trường hợp không có tên, sử dụng ID
+                employeeName = employee.getId();
+            } else {
+                employeeName = (employee.getFirstName() != null ? employee.getFirstName() : "") 
+                             + " " + 
+                             (employee.getLastName() != null ? employee.getLastName() : "");
+            }
+            
+            // Xử lý trường hợp chuỗi rỗng sau khi ghép
+            employeeName = employeeName.trim().isEmpty() ? employee.getId() : employeeName.trim();
 
             Object[] row = new Object[] {
                     bill.getBillId(),
                     dateStr,
                     hourInStr,
                     hourOutStr,
-                    bill.getCustomer().getFullName() != null ? bill.getCustomer().getFullName() : "Khách lẻ",
-                    bill.getPhoneNumber(),
+                    customerName,
+                    phoneNumber, // Sử dụng phoneNumber đã được chuẩn hóa (không null)
                     totalStr,
                     bill.getStatus(),
-                    name
+                    employeeName
             };
             productTableModel.addRow(row);
+        }
+        productTableModel.fireTableDataChanged();
+    }
+
+    // Phương thức trợ giúp để thông báo khi không có kết quả
+    private void showNoResultsMessage() {
+        if (productTable.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy hóa đơn nào phù hợp với điều kiện tìm kiếm/lọc.", "Không Có Kết Quả", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -429,6 +477,15 @@ public class ReceiptPage extends JPanel {
         final boolean isKeywordActive = !(keyword.equals(keywordPlaceholder) || keyword.isEmpty());
         final boolean isFromDateActive = !(fromDateStr.contains("Từ Ngày") || fromDateStr.isEmpty());
         final boolean isToDateActive = !(toDateStr.contains("Đến Ngày") || toDateStr.isEmpty());
+        
+        // Kiểm tra nếu chỉ nhập một trong hai ngày
+        if ((isFromDateActive && !isToDateActive) || (!isFromDateActive && isToDateActive)) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập cả Ngày Bắt Đầu và Ngày Kết Thúc để lọc theo khoảng ngày.", "Lỗi Lọc Dữ Liệu", JOptionPane.ERROR_MESSAGE);
+            sorter.setRowFilter(null);
+            showNoResultsMessage();
+            return;
+        }
+
         final boolean isDateFilterActive = isFromDateActive && isToDateActive;
 
         if (!isKeywordActive && !isDateFilterActive) {
@@ -436,15 +493,11 @@ public class ReceiptPage extends JPanel {
             return;
         }
 
-        if ((isFromDateActive && !isToDateActive) || (!isFromDateActive && isToDateActive)) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập cả Ngày Bắt Đầu và Ngày Kết Thúc để lọc.", "Lỗi Lọc Dữ Liệu", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
         Date filterFromDate = null;
         Date filterToDate = null;
+        boolean dateParseError = false;
 
         if (isDateFilterActive) {
             try {
@@ -452,57 +505,73 @@ public class ReceiptPage extends JPanel {
                 filterFromDate = startDay;
 
                 Date endDay = dateFormatter.parse(toDateStr);
+                
+                if (filterFromDate.after(endDay)) {
+                    JOptionPane.showMessageDialog(this, "Ngày Bắt Đầu không được sau Ngày Kết Thúc.", "Lỗi Lọc Dữ Liệu", JOptionPane.ERROR_MESSAGE);
+                    sorter.setRowFilter(null);
+                    showNoResultsMessage();
+                    return;
+                }
+                
+                // Thêm 1 ngày để đảm bảo bao gồm toàn bộ ngày kết thúc (endDay 23:59:59)
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(endDay);
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 filterToDate = calendar.getTime();
 
-                if (filterFromDate.after(endDay)) {
-                    JOptionPane.showMessageDialog(this, "Ngày Bắt Đầu không được sau Ngày Kết Thúc.", "Lỗi Lọc Dữ Liệu", JOptionPane.ERROR_MESSAGE);
-                    sorter.setRowFilter(null);
-                    return;
-                }
-
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày. Vui lòng sử dụng dd/MM/yyyy (ví dụ: 25/10/2025).", "Lỗi Lọc Dữ Liệu", JOptionPane.ERROR_MESSAGE);
-                sorter.setRowFilter(null);
-                return;
+                // Đặt cờ lỗi và vẫn áp dụng keyword filter (nếu có)
+                dateParseError = true; 
             }
         }
-
+        
+        // Nếu có lỗi parse ngày VÀ không có keyword, thì dừng và xóa filter
+        if (dateParseError && !isKeywordActive) {
+            sorter.setRowFilter(null);
+            showNoResultsMessage();
+            return;
+        }
+        
+        // --- Áp dụng Bộ Lọc ---
         final Date finalFilterFromDate = filterFromDate;
         final Date finalFilterToDate = filterToDate;
+        final boolean finalIsDateFilterActive = isDateFilterActive && !dateParseError; 
 
         RowFilter<Object, Object> combinedFilter = new RowFilter<Object, Object>() {
             public boolean include(Entry<?, ?> entry) {
 
+                // 1. Lọc theo từ khóa (Keyword Filter)
                 if (isKeywordActive) {
                     String maHD = entry.getStringValue(0).toLowerCase();
                     String sdt = entry.getStringValue(5).toLowerCase();
                     String customerName = entry.getStringValue(4).toLowerCase();
                     String employeeName = entry.getStringValue(8).toLowerCase();
                     String k = keyword.toLowerCase();
+                    
                     if (!(maHD.contains(k) || sdt.contains(k) || customerName.contains(k) || employeeName.contains(k))) {
                         return false;
                     }
                 }
 
-                if (isDateFilterActive) {
+                // 2. Lọc theo ngày (Date Filter)
+                if (finalIsDateFilterActive) {
                     String dateStr = entry.getStringValue(DATE_TIME_COLUMN_INDEX);
                     try {
                         Date entryDate = dateFormatter.parse(dateStr);
 
                         boolean isAfterOrEqualFrom = !entryDate.before(finalFilterFromDate);
 
-                        boolean isBeforeTo = entryDate.before(finalFilterToDate);
+                        // Sử dụng finalFilterToDate (đã +1 ngày)
+                        boolean isBeforeTo = entryDate.before(finalFilterToDate); 
 
                         if (!(isAfterOrEqualFrom && isBeforeTo)) {
                             return false;
                         }
 
                     } catch (ParseException e) {
-                        System.err.println("Error parsing date in table row: " + dateStr);
-                        return false;
+                        // Nếu không parse được ngày, loại bỏ hàng đó khỏi bộ lọc ngày (vì ta cần kiểm tra ngày hợp lệ)
+                        return false; 
                     }
                 }
 
@@ -511,32 +580,52 @@ public class ReceiptPage extends JPanel {
         };
 
         sorter.setRowFilter(combinedFilter);
+        
+        // THÔNG BÁO: Kiểm tra sau khi áp dụng filter
+        showNoResultsMessage(); 
+        
         requestFocusInWindow();
     }
 
-    private void refreshData() {
-        sorter.setRowFilter(null);
+    /**
+     * Tải lại dữ liệu (refresh) mà không hiển thị JOptionPane.
+     * Đã được tối ưu hóa bằng cách gọi loadInitialData() (giả định dùng truy vấn LIMIT).
+     */
+    public void silentRefreshData() {
+        sorter.setRowFilter(null); // Luôn xóa filter để load toàn bộ dữ liệu mặc định
 
         sorter.setSortKeys(null);
         setupDefaultSort();
 
-        searchInput.setText("Mã HĐ hoặc SĐT Khách");
-        searchInput.setForeground(Color.GRAY);
+        // Thiết lập lại ô tìm kiếm
+        if (!searchInput.getText().equals("Mã HĐ hoặc SĐT Khách")) {
+            searchInput.setText("Mã HĐ hoặc SĐT Khách");
+            searchInput.setForeground(Color.GRAY);
+        }
 
-        fromDateInput.setText("Từ Ngày (dd/MM/yyyy)");
-        fromDateInput.setForeground(Color.GRAY);
-        toDateInput.setText("Đến Ngày (dd/MM/yyyy)");
-        toDateInput.setForeground(Color.GRAY);
+        // Thiết lập lại ô lọc ngày
+        if (!fromDateInput.getText().contains("Từ Ngày")) {
+            fromDateInput.setText("Từ Ngày (dd/MM/yyyy)");
+            fromDateInput.setForeground(Color.GRAY);
+        }
+        if (!toDateInput.getText().contains("Đến Ngày")) {
+            toDateInput.setText("Đến Ngày (dd/MM/yyyy)");
+            toDateInput.setForeground(Color.GRAY);
+        }
 
         productTable.clearSelection();
 
-        loadInitialData();
+        loadInitialData(); // Tải lại 25/100 hóa đơn gần nhất (Giả định DAO đã tối ưu)
 
         requestFocusInWindow();
-
-        JOptionPane.showMessageDialog(this, "Dữ liệu đã được làm mới thành công. (Phím tắt F5)", "Làm Mới Thành Công", JOptionPane.INFORMATION_MESSAGE);
     }
 
+
+    public void refreshData() {
+        silentRefreshData(); // Dùng hàm silentRefreshData để thực hiện logic làm mới
+        JOptionPane.showMessageDialog(this, "Dữ liệu đã được làm mới thành công. (Phím tắt F5)", "Làm Mới Thành Công", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
     private void showBillDetail() {
         int selectedRow = productTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -547,7 +636,6 @@ public class ReceiptPage extends JPanel {
         int modelRow = productTable.convertRowIndexToModel(selectedRow);
         String billId = productTableModel.getValueAt(modelRow, 0).toString();
 
-        // Gọi phương thức DAO mới
         Bill selectedBill = billDAO.getBillById(billId);
 
         if (selectedBill != null) {
@@ -617,7 +705,7 @@ public class ReceiptPage extends JPanel {
     private void showInfoMessage() {
         String info = "<html>"
                 + "<h3>Tổng Quan: Quản Lý Hóa Đơn</h3>"
-                + "<p>Trang này hiển thị <b>25 Hóa Đơn Gần Nhất</b> để tối ưu hiệu suất.</p>"
+                + "<p>Trang này hiển thị <b>35 Hóa Đơn Gần Nhất</b> để tối ưu hiệu suất.</p>"
                 + "<hr>"
                 + "<h4>Các Tính Năng Chính:</h4>"
                 + "<ul>"

@@ -3,6 +3,7 @@ package app.DAO;
 
 import app.Connection.XJdbc;
 import app.Object.Bill;
+import app.Object.BillDetail;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -10,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DAO_Bill {
-    public List<Bill> selectAll() {
+	public List<Bill> selectTop35() {
+        // Cú pháp SQL Server: TOP 35 (hoặc 100 tùy theo nhu cầu)
         String sql = """
             SELECT TOP 35 
                 billId, dateCreated, hourIn, hourOut, 
@@ -39,12 +41,11 @@ public class DAO_Bill {
                 bill.setTotal(rs.getDouble("total"));
                 bill.setCustPayment(rs.getDouble("custPayment"));
                 bill.setStatus(rs.getString("status"));
-
-                // ✅ Lấy ID thực từ ResultSet
+                
                 bill.setCustomer(DAO_Customer.getCustomerById(rs.getString("customerId")));
                 bill.setEmployee(DAO_Employee.getEmployeeById(rs.getString("employeeId")));
                 bill.setTable(DAO_Table.findTable(rs.getString("tableId")));
-
+                
                 list.add(bill);
             }
 
@@ -69,7 +70,7 @@ public class DAO_Bill {
     }
 
     public static Bill getLatestBill() {
-        String sql = "SELECT TOP 1 billId, dateCreated, hourIn FROM BILL ORDER BY billId DESC"; 
+        String sql = "SELECT TOP 1 billId, dateCreated, hourIn FROM BILL ORDER BY billId DESC";
 
         try (Connection con = XJdbc.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -182,4 +183,52 @@ public class DAO_Bill {
         return list;
     }
 
+
+    public static boolean updateBill(Bill bill) {
+        String sql = """
+        UPDATE BILL
+        SET 
+            dateCreated = ?, 
+            hourIn = ?, 
+            hourOut = ?, 
+            phoneNumber = ?, 
+            total = ?, 
+            custPayment = ?, 
+            status = ?, 
+            customerId = ?, 
+            employeeId = ?, 
+            tableId = ?
+        WHERE billId = ?
+    """;
+
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            // 1️⃣ Gán giá trị cho từng tham số
+            ps.setDate(1, bill.getDateCreated() != null ? Date.valueOf(bill.getDateCreated()) : null);
+            ps.setTimestamp(2, bill.getHourIn());
+            ps.setTimestamp(3, bill.getHourOut());
+            ps.setString(4, bill.getPhoneNumber());
+            ps.setDouble(5, bill.getTotal());
+            ps.setDouble(6, bill.getCustPayment());
+            ps.setString(7, bill.getStatus());
+
+            // ⚠️ Nếu customer/employee/table có thể null thì cần kiểm tra
+            ps.setString(8, bill.getCustomer() != null ? bill.getCustomer().getCustomerId() : null);
+            ps.setString(9, bill.getEmployee() != null ? bill.getEmployee().getId() : null);
+            ps.setString(10, bill.getTable() != null ? bill.getTable().getTableId() : null);
+
+            ps.setString(11, bill.getBillId());
+
+            // 2️⃣ Thực thi câu lệnh
+            int rows = ps.executeUpdate();
+            return rows > 0; // Trả về true nếu có dòng bị ảnh hưởng
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi truy vấn SQL trong DAO_Bill.updateBill(): " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }

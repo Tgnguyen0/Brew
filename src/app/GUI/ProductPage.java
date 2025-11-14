@@ -1,423 +1,433 @@
 package app.GUI;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.Vector;
-
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+import app.DAO.DAO_MenuItem;
+import app.InitFont.CustomFont;
+import app.Object.MenuItem;
+import app.Components.CustomTableCellRenderer;
+import app.Components.CustomTableHeaderRenderer;
 
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.swing.FontIcon;
 
-import app.Collections.Collection_MenuItem;
-import app.Components.CustomTableCellRenderer;
-import app.Components.CustomTableHeaderRenderer;
-import app.InitFont.CustomFont;
-import app.Object.*;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.List;
 
 public class ProductPage extends JPanel {
+
+
+    private JTextField idInput;               // read-only 
+    private JTextField nameInput;             // item_name
+    private JTextField priceInput;            // price
+    private JComboBox<String> categoryComboBox; // category
+    private JTextArea descriptionArea;        // description
+
+    // ====== Tìm kiếm ======
+    private JTextField searchBar;
+
+    // ====== Bảng ======
     private DefaultTableModel tableModel;
-    private JTextField nameInput;
-    private JTextField idInput;
-    private JRadioButton servedHotRadio;
-    private JTextField priceInput;
-    private JComboBox<String> categoryComboBox;
-    private JRadioButton statusRadioButton;
-    private JTextField sizeInput;
-    private String id;
-    private String name;
-    private Boolean servedHot;
-    private double price;
-    Collection_MenuItem menu = new Collection_MenuItem();
-    CustomFont customFont = new CustomFont();
+    private JTable table;
+    private static final int COL_HIDDEN_ID = 0;
+
+    private final CustomFont customFont = new CustomFont();
+    private final DecimalFormat money = new DecimalFormat("#,##0");
 
     public ProductPage() {
         setPreferredSize(new Dimension(1100, 500));
         setLayout(new BorderLayout());
         setBackground(Color.white);
+        setOpaque(true);
 
-        JPanel empty = new JPanel();
-        empty.setPreferredSize(new Dimension(1100, 140));
-        empty.setOpaque(false);
-        add(empty, BorderLayout.NORTH);
+        add(buildCompactHeader(), BorderLayout.NORTH);
+        add(buildTablePanel(), BorderLayout.CENTER);
 
-        createEmpTextBox();
-        createEmpTablePanel();
+        loadTable();
     }
 
-    private void createEmpTextBox() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setPreferredSize(new Dimension(1100, 200));
-        panel.setOpaque(false);
-        // panel.setBackground(new Color(225, 203, 177));
+    // ---------------------------------------------------------------------
+    // Header compact (GridBagLayout) 
+    // ---------------------------------------------------------------------
+    private JPanel buildCompactHeader() {
+        JPanel header = new JPanel(new BorderLayout());
+        header.setOpaque(false);
+        header.setPreferredSize(new Dimension(1100, 160)); // gọn, thấp
 
-        JPanel emptyN = new JPanel();
-        emptyN.setPreferredSize(new Dimension(1100, 20));
-        emptyN.setOpaque(false);
-        panel.add(emptyN, BorderLayout.NORTH);
+        // Lưới 2 cột
+        JPanel grid = new JPanel(new GridBagLayout());
+        grid.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 10, 4, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
 
-        JPanel tbiPanel = new JPanel();
-        tbiPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        tbiPanel.setPreferredSize(new Dimension(1100, 300));
-        tbiPanel.setOpaque(false);
+        // ===== Cột trái =====
+        int row = 0;
 
-        JPanel tbPanel = new JPanel();
-        tbPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        tbPanel.setPreferredSize(new Dimension(1100, 300));
-        tbPanel.setOpaque(false);
+        // Id (read-only)
+        gbc.gridx = 0; gbc.gridy = row;
+        grid.add(makeLabel("Id:"), gbc);
+        gbc.gridx = 1;
+        idInput = makeTextField(180);
+        idInput.setEditable(false);
+        idInput.setFocusable(false);
+        idInput.setToolTipText("ID được hệ thống sinh tự động");
+        idInput.setBackground(new Color(235, 225, 210)); // gợi ý read-only
+        grid.add(idInput, gbc);
 
-        JPanel left = new JPanel();
-        left.setLayout(new FlowLayout(FlowLayout.LEFT));
-        left.setOpaque(false);
-        left.setPreferredSize(new Dimension(330, 300));
+        // Name
+        row++;
+        gbc.gridx = 0; gbc.gridy = row;
+        grid.add(makeLabel("Tên:"), gbc);
+        gbc.gridx = 1;
+        nameInput = makeTextField(180);
+        grid.add(nameInput, gbc);
 
-        JLabel idLabel = new JLabel("Id: ");
-        idLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        idLabel.setForeground(Color.black);
-        idLabel.setPreferredSize(new Dimension(120, 25));
-        left.add(idLabel);
+        // Price
+        row++;
+        gbc.gridx = 0; gbc.gridy = row;
+        grid.add(makeLabel("Giá:"), gbc);
+        gbc.gridx = 1;
+        priceInput = makeTextField(180);
+        grid.add(priceInput, gbc);
 
-        idInput = new JTextField();
-        idInput.setPreferredSize(new Dimension(140, 25));
-        idInput.setBackground(new Color(241, 211, 178));
-        idInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        idInput.setForeground(Color.black);
-        idInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        left.add(idInput);
-
-        JLabel nameLabel = new JLabel("Name: ");
-        nameLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        nameLabel.setForeground(Color.black);
-        nameLabel.setPreferredSize(new Dimension(120, 25));
-        left.add(nameLabel);
-
-        nameInput = new JTextField();
-        nameInput.setPreferredSize(new Dimension(140, 25));
-        nameInput.setBackground(new Color(241, 211, 178));
-        nameInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        nameInput.setForeground(Color.black);
-        nameInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        left.add(nameInput);
-
-        JLabel sizeLabel = new JLabel("Size: ");
-        sizeLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        sizeLabel.setForeground(Color.black);
-        sizeLabel.setPreferredSize(new Dimension(120, 25));
-        left.add(sizeLabel);
-
-        sizeInput = new JTextField();
-        sizeInput.setPreferredSize(new Dimension(140, 25));
-        sizeInput.setBackground(new Color(241, 211, 178));
-        sizeInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        sizeInput.setForeground(Color.black);
-        sizeInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        left.add(sizeInput);
-
-        tbPanel.add(left);
-
-        JPanel right = new JPanel();
-        right.setLayout(new FlowLayout(FlowLayout.LEFT));
-        right.setOpaque(false);
-        right.setPreferredSize(new Dimension(330, 300));
-
-        JLabel priceLabel = new JLabel("Price: ");
-        priceLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        priceLabel.setForeground(Color.black);
-        priceLabel.setPreferredSize(new Dimension(120, 25));
-        right.add(priceLabel);
-
-        priceInput = new JTextField();
-        priceInput.setPreferredSize(new Dimension(140, 25));
-        priceInput.setBackground(new Color(241, 211, 178));
-        priceInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        priceInput.setForeground(Color.black);
-        priceInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        right.add(priceInput);
-
-        JLabel categoryLabel = new JLabel("Category: ");
-        categoryLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        categoryLabel.setForeground(Color.black);
-        categoryLabel.setPreferredSize(new Dimension(120, 25));
-        right.add(categoryLabel);
-
-        categoryComboBox = new JComboBox<String>();
-        categoryComboBox.setPreferredSize(new Dimension(140, 25));
-        categoryComboBox.setBackground(new Color(241, 211, 178));
+        // ===== Cột phải =====
+        row = 0;
+        gbc.gridx = 2; gbc.gridy = row;
+        grid.add(makeLabel("Loại:"), gbc);
+        gbc.gridx = 3;
+        categoryComboBox = new JComboBox<>(new String[]{"Cà phê", "Trà", "Nước ép", "Bánh ngọt", "Khác"});
+        categoryComboBox.setPreferredSize(new Dimension(180, 25));
         categoryComboBox.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        categoryComboBox.setForeground(Color.black);
+        categoryComboBox.setForeground(Color.BLACK);
+        categoryComboBox.setBackground(new Color(241, 211, 178));
         categoryComboBox.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        categoryComboBox.addItem("Coffee");
-        categoryComboBox.addItem("Juice");
-        categoryComboBox.addItem("Cocoa");
-        categoryComboBox.addItem("Tea");
-        right.add(categoryComboBox);
+        grid.add(categoryComboBox, gbc);
 
-        JLabel statusLabel = new JLabel("Status: ");
-        statusLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        statusLabel.setForeground(Color.black);
-        statusLabel.setPreferredSize(new Dimension(120, 25));
-        right.add(statusLabel);
+        // Description 
+        row++;
+        gbc.gridx = 2; gbc.gridy = row;
+        grid.add(makeLabel("Mô tả:"), gbc);
+        gbc.gridx = 3;
+        descriptionArea = new JTextArea(3, 22);
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
+        descriptionArea.setForeground(Color.BLACK);
+        descriptionArea.setBackground(new Color(241, 211, 178));
+        descriptionArea.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
+        JScrollPane descScroll = new JScrollPane(descriptionArea);
+        descScroll.setPreferredSize(new Dimension(220, 60));
+        grid.add(descScroll, gbc);
 
-        statusRadioButton = new JRadioButton("In stock");
-        statusRadioButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        statusRadioButton.setForeground(Color.black);
-        right.add(statusRadioButton);
+        header.add(grid, BorderLayout.CENTER);
 
-        tbPanel.add(right);
-
-        tbiPanel.add(tbPanel);
-
-        JPanel imgPanel = new JPanel();
-        imgPanel.setLayout(new BorderLayout());
-        imgPanel.setPreferredSize(new Dimension(250, 300));
-        // Border lineBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, new
-        // Color(241, 211, 178));
-        // imgPanel.setBorder(lineBorder);
+        // ===== Ảnh  =====
+        JPanel imgPanel = new JPanel(new BorderLayout());
+        imgPanel.setPreferredSize(new Dimension(230, 150)); 
         imgPanel.setOpaque(false);
 
         String imagePath = "asset/placeholder.png";
-        Image scaledImage;
-
         try {
-            // Read the image from the file
             Image image = ImageIO.read(new File(imagePath));
-
-            // Scale the image
-            int newWidth = (int) (200 * 0.8f); // Desired width
-            int newHeight = (int) (200 * 0.8f); // Desired height
-            scaledImage = image.getScaledInstance(newWidth, newHeight,
-                    Image.SCALE_SMOOTH);
-
-            // Create an ImageIcon from the scaled image
+            int newWidth = (int) (200 * 0.8f);
+            int newHeight = (int) (200 * 0.8f);
+            Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
             ImageIcon imageIcon = new ImageIcon(scaledImage);
-
-            // Create a JLabel and set the icon
             JLabel imgLabel = new JLabel(imageIcon);
-            imgLabel.setPreferredSize(new Dimension(250, 300));
             imgLabel.setHorizontalAlignment(JLabel.CENTER);
-            imgLabel.setVerticalAlignment(JLabel.NORTH);
-            imgLabel.setBackground(Color.CYAN);
+            imgLabel.setVerticalAlignment(JLabel.CENTER);
             imgPanel.add(imgLabel, BorderLayout.CENTER);
         } catch (IOException e) {
-            e.printStackTrace();
+            // Hiển thị icon mặc định nếu không load được ảnh
+            JLabel imgLabel = new JLabel(FontIcon.of(Feather.IMAGE, 100, Color.BLACK));
+            imgLabel.setHorizontalAlignment(JLabel.CENTER);
+            imgLabel.setVerticalAlignment(JLabel.CENTER);
+            imgPanel.add(imgLabel, BorderLayout.CENTER);
         }
 
-        tbPanel.add(imgPanel);
-
-        // tbiPanel.add(imgPanel, BorderLayout.SOUTH);
-        panel.add(tbiPanel, BorderLayout.CENTER);
-
-        add(panel, BorderLayout.NORTH);
+        header.add(imgPanel, BorderLayout.EAST);
+        return header;
     }
 
-    private void createEmpTablePanel() {
-        JPanel tablePanel = new JPanel();
-        tablePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        tablePanel.setPreferredSize(new Dimension(1100, 500));
-        tablePanel.setLayout(new BorderLayout());
+    // ---------------------------------------------------------------------
+    // Bảng + Toolbar
+    // ---------------------------------------------------------------------
+    private JPanel buildTablePanel() {
+        JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.setOpaque(false);
 
-        JPanel emptyW = new JPanel();
-        emptyW.setPreferredSize(new Dimension(20, 500));
-        emptyW.setOpaque(false);
-        tablePanel.add(emptyW, BorderLayout.WEST);
+        // Toolbar
+        JPanel tool = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        tool.setOpaque(false);
 
-        JPanel emptyE = new JPanel();
-        emptyE.setPreferredSize(new Dimension(20, 500));
-        emptyE.setOpaque(false);
-        tablePanel.add(emptyE, BorderLayout.EAST);
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        panel.setPreferredSize(new Dimension(800, 50));
-        panel.setOpaque(false);
-
-        JPanel left = new JPanel();
-        left.setLayout(new FlowLayout(FlowLayout.LEFT));
-        left.setPreferredSize(new Dimension(360, 35));
-        Border lineBorder = BorderFactory.createMatteBorder(0, 0, 0, 1, Color.black);
-        left.setBorder(lineBorder);
+        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        left.setPreferredSize(new Dimension(420, 35));
         left.setOpaque(false);
+        Border lineBorder = BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(255, 213, 146));
+        left.setBorder(lineBorder);
 
-        JLabel searchLabel = new JLabel("Search Products:");
-        searchLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        searchLabel.setForeground(Color.black);
-        searchLabel.setPreferredSize(new Dimension(120, 25)); // Thay đổi kích thước cho phù hợp
+        JLabel searchLabel = makeLabel("Tìm sản phẩm:");
+        searchLabel.setPreferredSize(new Dimension(120, 25));
+        searchBar = makeTextField(200);
+        JButton searchBtn = new JButton(FontIcon.of(Feather.SEARCH, 20, Color.BLACK));
+        searchBtn.setBackground(new Color(241, 211, 178));
+        searchBtn.addActionListener(e -> search());
+
         left.add(searchLabel);
-
-        JTextField searchBar = new JTextField();
-        searchBar.setForeground(Color.black);
-        searchBar.setBackground(new Color(241, 211, 178));
-        searchBar.setBorder(null);
-        searchBar.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        searchBar.setPreferredSize(new Dimension(170, 25)); // Thay đổi kích thước cho phù hợp và vị trí
         left.add(searchBar);
+        left.add(searchBtn);
 
-        FontIcon lookingGlassIcon = FontIcon.of(Feather.SEARCH, 24, Color.BLACK);
-        JButton findProduct = new JButton(lookingGlassIcon);
-        findProduct.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        findProduct.setForeground(Color.black);
-        findProduct.setBackground(new Color(241, 211, 178));
-        findProduct.setPreferredSize(new Dimension(30, 30));
-        findProduct.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        left.add(findProduct);
-
-        panel.add(left);
-
-        JPanel right = new JPanel();
-        right.setLayout(new FlowLayout(FlowLayout.LEFT));
-        right.setPreferredSize(new Dimension(490, 35));
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.LEFT));
         right.setOpaque(false);
+        right.setPreferredSize(new Dimension(600, 35));
 
-        JButton addButton = new JButton("Add");
-        addButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        addButton.setPreferredSize(new Dimension(100, 25));
-        addButton.setForeground(Color.black);
-        addButton.setBackground(new Color(241, 211, 178));
-        right.add(addButton);
+        JButton addBtn = makeButton("Thêm");
+        JButton saveBtn = makeButton("Xóa");
+        JButton deleteBtn = makeButton("Sửa");
+        JButton clearBtn = makeButton("Hủy");
 
-        JButton deleteButton = new JButton("Delete");
-        deleteButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        deleteButton.setPreferredSize(new Dimension(100, 25));
-        deleteButton.setForeground(Color.black);
-        deleteButton.setBackground(new Color(241, 211, 178));
-        right.add(deleteButton);
+        addBtn.addActionListener(e -> onAdd());
+        saveBtn.addActionListener(e -> onUpdate());
+        deleteBtn.addActionListener(e -> onDelete());       
+        clearBtn.addActionListener(e -> clearForm());
 
-        JButton cancelChangeButton = new JButton("Cancel Change");
-        cancelChangeButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        cancelChangeButton.setPreferredSize(new Dimension(140, 25));
-        cancelChangeButton.setForeground(Color.black);
-        cancelChangeButton.setBackground(new Color(241, 211, 178));
-        right.add(cancelChangeButton);
+        right.add(addBtn);
+        right.add(deleteBtn);
+        right.add(clearBtn);
+        right.add(saveBtn);
 
-        JButton saveButton = new JButton("Save");
-        saveButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        saveButton.setPreferredSize(new Dimension(100, 25));
-        saveButton.setForeground(Color.black);
-        saveButton.setBackground(new Color(241, 211, 178));
-        right.add(saveButton);
+        tool.add(left);
+        tool.add(right);
+        tablePanel.add(tool, BorderLayout.NORTH);
 
-        panel.add(right);
+        // Table model
+        tableModel = new DefaultTableModel(
+                new Object[]{"_ID", "Tên", "Giá", "Loại", "Mô tả"}, 0) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+        };
 
-        tablePanel.add(panel, BorderLayout.NORTH);
-
-        // panel.setBackground(new Color(225, 203, 177));
-
-        this.tableModel = new DefaultTableModel();
-        tableModel.addColumn("N0");
-        tableModel.addColumn("Name");
-        tableModel.addColumn("Size");
-        tableModel.addColumn("Price");
-        tableModel.addColumn("Category");
-        tableModel.addColumn("Status");
-
-        JTable table = new JTable(tableModel);
+        table = new JTable(tableModel);
+        table.setRowHeight(24);
         table.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        table.setForeground(Color.black);
-        table.setBackground(Color.white);
+        table.setForeground(Color.BLACK);
+        table.setBackground(new Color(252, 244, 233)); 
+
+        // Ẩn cột ID
+        table.getColumnModel().getColumn(COL_HIDDEN_ID).setMinWidth(0);
+        table.getColumnModel().getColumn(COL_HIDDEN_ID).setMaxWidth(0);
+        table.getColumnModel().getColumn(COL_HIDDEN_ID).setPreferredWidth(0);
 
         JTableHeader tableHeader = table.getTableHeader();
-        tableHeader.setForeground(Color.black);
+        tableHeader.setForeground(Color.BLACK);
         tableHeader.setBackground(new Color(241, 211, 178));
         tableHeader.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         tableHeader.setDefaultRenderer(new CustomTableHeaderRenderer());
 
-        // Apply the custom renderer to each column
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
         }
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        // scrollPane.setPreferredSize(new Dimension(800, 300));
-        scrollPane.setForeground(Color.black);
-        scrollPane.getViewport().setBackground(new Color(241, 211, 178));
+        // Độ rộng cột
+        TableColumn nameCol = table.getColumnModel().getColumn(1);
+        nameCol.setPreferredWidth(160);
 
+        TableColumn priceCol = table.getColumnModel().getColumn(2);
+        priceCol.setPreferredWidth(80);
+
+        TableColumn cateCol = table.getColumnModel().getColumn(3);
+        cateCol.setPreferredWidth(90);
+
+        TableColumn descCol = table.getColumnModel().getColumn(4);
+        descCol.setPreferredWidth(350);
+
+        table.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            if (!e.getValueIsAdjusting()) fillFormFromSelectedRow();
+        });
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(new Color(241, 211, 178));
         tablePanel.add(scrollPane, BorderLayout.CENTER);
 
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                id = idInput.getText();
-                name = nameInput.getText();
-                servedHot = servedHotRadio.isSelected();
-                price = Double.parseDouble(priceInput.getText());
+        return tablePanel;
+    }
 
-                MenuItem item = new MenuItem();
-                menu.addItem(item);
+    // ---------------------------------------------------------------------
+    // Actions
+    // ---------------------------------------------------------------------
+    private void loadTable() {
+        tableModel.setRowCount(0);
+        List<MenuItem> list = DAO_MenuItem.getAllMenuItem();
+        for (MenuItem mi : list) {
+            tableModel.addRow(new Object[]{
+                    mi.getItemId(),
+                    nz(mi.getName()),
+                    money.format(mi.getPrice()),
+                    nz(mi.getCategory()),
+                    nz(mi.getDescription())
+            });
+        }
+        table.clearSelection();
+    }
 
-                idInput.setText("");
-                nameInput.setText("");
-                servedHotRadio.setSelected(false);
-                priceInput.setText("");
+    private void search() {
+        String key = searchBar.getText().trim();
+        tableModel.setRowCount(0);
+        List<MenuItem> list = key.isEmpty()
+                ? DAO_MenuItem.getAllMenuItem()
+                : DAO_MenuItem.findMultipleMenuItem(key);
 
-                Vector<String> rowData = new Vector<>();
-                rowData.add(id);
-                rowData.add(name);
-                rowData.add(String.valueOf(price));
-                tableModel.addRow(rowData);
+        for (MenuItem mi : list) {
+            tableModel.addRow(new Object[]{
+                    mi.getItemId(),
+                    nz(mi.getName()),
+                    money.format(mi.getPrice()),
+                    nz(mi.getCategory()),
+                    nz(mi.getDescription())
+            });
+        }
+        table.clearSelection();
+    }
+
+    private void onAdd() {
+        try {
+            // ID bỏ qua 
+            String name = nameInput.getText().trim();
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập Name!");
+                return;
             }
-        });
 
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow != -1) {
-                    idInput.setText((String) tableModel.getValueAt(selectedRow, 0));
-                    nameInput.setText((String) tableModel.getValueAt(selectedRow, 1));
-                    priceInput.setText((String) tableModel.getValueAt(selectedRow, 2));
+            float price = parsePrice(priceInput.getText().trim());
+            String cate = String.valueOf(categoryComboBox.getSelectedItem());
+            String desc = descriptionArea.getText().trim();
 
-                    // Delete employee
-                    menu.deleteItem((String) tableModel.getValueAt(selectedRow, 0));
+            MenuItem mi = new MenuItem(name, price, cate, desc);
+            DAO_MenuItem.insert(mi);
 
-                    // Delete the selected row
-                    tableModel.removeRow(selectedRow);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Please select a row to delete", "Delete Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+            JOptionPane.showMessageDialog(this, "Đã thêm sản phẩm!");
+            clearForm();
+            loadTable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi thêm: " + ex.getMessage());
+        }
+    }
+
+    private void onUpdate() {
+        int row = table.getSelectedRow();
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng để lưu/cập nhật!"); return; }
+
+        try {
+            String id = String.valueOf(tableModel.getValueAt(row, COL_HIDDEN_ID));
+            String name = nameInput.getText().trim();
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập Name!");
+                return;
             }
-        });
 
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    int selectedRow = table.getSelectedRow();
-                    if (selectedRow != -1) {
-                        idInput.setText((String) tableModel.getValueAt(selectedRow, 0));
-                        nameInput.setText((String) tableModel.getValueAt(selectedRow, 1));
-                        priceInput.setText((String) tableModel.getValueAt(selectedRow, 2));
-                    }
-                }
-            }
-        });
+            float price = parsePrice(priceInput.getText().trim());
+            String cate = String.valueOf(categoryComboBox.getSelectedItem());
+            String desc = descriptionArea.getText().trim();
 
-        add(tablePanel, BorderLayout.CENTER);
+            MenuItem mi = new MenuItem(id, name, price, cate, desc);
+            DAO_MenuItem.update(mi);
+
+            JOptionPane.showMessageDialog(this, "Đã cập nhật sản phẩm!");
+            loadTable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi cập nhật: " + ex.getMessage());
+        }
+    }
+
+    private void onDelete() {
+        int row = table.getSelectedRow();
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 dòng để xoá!"); return; }
+
+        String id = String.valueOf(tableModel.getValueAt(row, COL_HIDDEN_ID));
+        int confirm = JOptionPane.showConfirmDialog(
+                this, "Xoá sản phẩm " + id + "?", "Xác nhận", JOptionPane.YES_NO_OPTION
+        );
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        try {
+            DAO_MenuItem.delete(id);
+            JOptionPane.showMessageDialog(this, "Đã xoá!");
+            clearForm();
+            loadTable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi xoá: " + ex.getMessage());
+        }
+    }
+
+    private void fillFormFromSelectedRow() {
+        int row = table.getSelectedRow();
+        if (row < 0) return;
+
+        idInput.setText(nz(tableModel.getValueAt(row, 0)));
+        nameInput.setText(nz(tableModel.getValueAt(row, 1)));
+        priceInput.setText(stripMoney(nz(tableModel.getValueAt(row, 2))));
+        categoryComboBox.setSelectedItem(nz(tableModel.getValueAt(row, 3)));
+        descriptionArea.setText(nz(tableModel.getValueAt(row, 4)));
+    }
+
+    private void clearForm() {
+        idInput.setText("");
+        nameInput.setText("");
+        priceInput.setText("");
+        categoryComboBox.setSelectedIndex(0);
+        descriptionArea.setText("");
+        table.clearSelection();
+    }
+
+    // ---------------------------------------------------------------------
+    // Helpers
+    // ---------------------------------------------------------------------
+    private JLabel makeLabel(String text) {
+        JLabel lb = new JLabel(text);
+        lb.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        lb.setForeground(Color.black);
+        return lb;
+    }
+
+    private JTextField makeTextField(int w) {
+        JTextField tf = new JTextField();
+        tf.setPreferredSize(new Dimension(w, 25));
+        tf.setBackground(new Color(241, 211, 178));
+        tf.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
+        tf.setForeground(Color.black);
+        tf.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        return tf;
+    }
+
+    private JButton makeButton(String text) {
+        JButton b = new JButton(text);
+        b.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        b.setPreferredSize(new Dimension(120, 25));
+        b.setForeground(Color.black);
+        b.setBackground(new Color(241, 211, 178));
+        return b;
+    }
+
+    private String nz(Object o) { return (o == null) ? "" : String.valueOf(o); }
+
+    private float parsePrice(String s) {
+        if (s == null || s.isEmpty()) return 0f;
+        s = s.replace(",", "").trim(); 
+        return Float.parseFloat(s);
+    }
+
+    private String stripMoney(String s) {
+        return s == null ? "" : s.replace(",", "");
     }
 }

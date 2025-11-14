@@ -28,7 +28,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 // old OnClick Color: 196, 125, 44
 
 public class BrewGUI extends JFrame implements MouseListener {
-    private Account acc;
+    public static Account acc;
     private MigLayout layout;
     private JPanel right;
     public static JPanel pageContainer;
@@ -46,6 +46,7 @@ public class BrewGUI extends JFrame implements MouseListener {
     private boolean isOptionBarVisible = false;
     private JPanel infoBar;
     private Animator animator;
+    public static String BREW_HOTLINE = "1234567898";
 
     // Function tạo GUI chính
     public BrewGUI(Account acc) {
@@ -135,7 +136,7 @@ public class BrewGUI extends JFrame implements MouseListener {
         slidePanel.setLocation(-220, 0);
         slidePanel.setBackground(new Color(164, 56, 32));
 
-        optionBar = new NavbarPanel();
+        optionBar = new NavbarPanel(acc);
         optionBar.setBackground(new Color(164, 56, 32));
         optionBar.setBounds(0, 0, slidePanel.getWidth(), slidePanel.getHeight());
         optionBar.setBorder(BorderFactory.createLineBorder(new Color(164, 56, 32)));
@@ -332,11 +333,11 @@ public class BrewGUI extends JFrame implements MouseListener {
 //        exitedButton.setBorder(BorderFactory.createLineBorder(Color.white));
     }
 
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> {
-//            // Mongo.getConnection();
-//            BrewGUI devCafeGUI = new BrewGUI(new Account());
-//            devCafeGUI.setVisible(true);
-//        });
-//    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            // Mongo.getConnection();
+            BrewGUI devCafeGUI = new BrewGUI(new Account());
+            devCafeGUI.setVisible(true);
+        });
+    }
 }

@@ -1,426 +1,480 @@
 package app.GUI;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Vector;
-
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-
+import app.DAO.DAO_Employee;
+import app.InitFont.CustomFont;
+import app.Object.Employee;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.swing.FontIcon;
 
-import app.Collections.Collection_Employee;
-import app.Components.CustomTableCellRenderer;
-import app.Components.CustomTableHeaderRenderer;
-import app.InitFont.CustomFont;
-import app.Object.*;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.util.List;
 
 public class EmployeePage extends JPanel {
-    private DefaultTableModel tableModel;
-    private JTextField nameInput;
-    private JTextField idInput;
-    private JTextField dbInput;
+
+    private JTextField firstNameInput;
+    private JTextField lastNameInput;
     private JTextField phoneInput;
-    private JComboBox<String> responsibilityCategory;
-    private String id;
-    private String name;
-    private LocalDate dob;
-    private String phone;
-    private String responsibility;
-    Collection_Employee employeeList = new Collection_Employee();
+    private JTextField emailInput;
+    private JComboBox<String> sexCombo;   // "Nam"=true, "Nữ"=false
+    private JComboBox<String> roleCombo;  // ví dụ: Nhân viên / Quản lý / Quản trị viên
+    private JTextField addressInput;
+
+    // Các trường tìm kiếm và ID (có trong phần Stashed changes)
+    private JTextField searchBar;
+    private JTextField idInput; // Thêm lại trường idInput nếu cần cho tìm kiếm/hiển thị
+    private JTextField nameInput; // Thêm lại trường nameInput nếu cần
+    private JTextField dbInput; // Thêm lại trường dbInput nếu cần
+    private JComboBox<String> responsibilityCategory; // Thêm lại nếu cần (dường như bị dư/xung đột với roleCombo)
+
+    // Bảng
+    private DefaultTableModel tableModel;
+    private JTable table;
+
+    // Giữ employeeId (ẩn trong bảng)
+    private static final int COL_HIDDEN_ID = 0;
+
+    private final Color ACCENT = new Color(241, 211, 178);
+    private final Color TABLE_BG = new Color(250, 245, 237);
+    private final Color HEADER_BG = new Color(233, 203, 168);
+    private final Color HEADER_FG = Color.BLACK;
+    private final Color BORDER_COLOR = new Color(79, 92, 133);
+
     CustomFont customFont = new CustomFont();
 
     public EmployeePage() {
         setPreferredSize(new Dimension(1100, 500));
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(12, 12));
         setBackground(Color.white);
         setOpaque(true);
 
-        JPanel empty = new JPanel();
-        empty.setPreferredSize(new Dimension(1100, 140));
-        empty.setOpaque(false);
-        add(empty, BorderLayout.NORTH);
+        add(buildFormPanel(), BorderLayout.NORTH);
+        add(buildTablePanel(), BorderLayout.CENTER);
 
-        createEmpTextBox();
-        createEmpTablePanel();
+        loadTable();
     }
 
-    private void createEmpTextBox() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setPreferredSize(new Dimension(1100, 200));
-        panel.setOpaque(false);
-        // panel.setBackground(new Color(225, 203, 177));
+    // ====== UI Builders =======================================================
 
-        JPanel emptyW = new JPanel();
-        emptyW.setPreferredSize(new Dimension(15, 300));
-        emptyW.setOpaque(false);
-        panel.add(emptyW, BorderLayout.WEST);
+    private JPanel buildFormPanel() {
+        JPanel wrapper = new JPanel(new GridBagLayout());
+        wrapper.setOpaque(true);
+        wrapper.setBackground(Color.white);
+        wrapper.setBorder(BorderFactory.createEmptyBorder(12, 12, 0, 12));
 
-        JPanel emptyN = new JPanel();
-        emptyN.setPreferredSize(new Dimension(1100, 20));
-        emptyN.setOpaque(false);
-        panel.add(emptyN, BorderLayout.NORTH);
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.insets = new Insets(6, 6, 6, 6);
+        gc.fill = GridBagConstraints.HORIZONTAL;
 
-        JPanel emptyE = new JPanel();
-        emptyE.setPreferredSize(new Dimension(15, 300));
-        emptyE.setOpaque(false);
-        panel.add(emptyE, BorderLayout.EAST);
+        int colLabelW = 110;
+        int colFieldW = 220;
 
-        JPanel emptyS = new JPanel();
-        emptyS.setPreferredSize(new Dimension(1100, 15));
-        emptyS.setOpaque(false);
-        panel.add(emptyS, BorderLayout.SOUTH);
+        // Họ
+        gc.gridx = 0; gc.gridy = 0; gc.weightx = 0;
+        wrapper.add(makeRightLabel("Họ:", colLabelW), gc);
+        gc.gridx = 1; gc.gridy = 0; gc.weightx = 1;
+        firstNameInput = makeTextField(colFieldW);
+        wrapper.add(firstNameInput, gc);
 
-        JPanel tbiPanel = new JPanel();
-        tbiPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        tbiPanel.setPreferredSize(new Dimension(1100, 300));
-        tbiPanel.setOpaque(false);
+        // Tên
+        gc.gridx = 2; gc.gridy = 0; gc.weightx = 0;
+        wrapper.add(makeRightLabel("Tên:", colLabelW), gc);
+        gc.gridx = 3; gc.gridy = 0; gc.weightx = 1;
+        lastNameInput = makeTextField(colFieldW);
+        wrapper.add(lastNameInput, gc);
 
-        JPanel tbPanel = new JPanel();
-        tbPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        tbPanel.setPreferredSize(new Dimension(1100, 300));
-        tbPanel.setOpaque(false);
+        // SĐT
+        gc.gridx = 4; gc.gridy = 0; gc.weightx = 0;
+        wrapper.add(makeRightLabel("Số điện thoại:", colLabelW), gc);
+        gc.gridx = 5; gc.gridy = 0; gc.weightx = 1;
+        phoneInput = makeTextField(colFieldW);
+        wrapper.add(phoneInput, gc);
 
-        JPanel left = new JPanel();
-        left.setLayout(new FlowLayout(FlowLayout.LEFT));
+        // Email
+        gc.gridx = 0; gc.gridy = 1; gc.weightx = 0;
+        wrapper.add(makeRightLabel("Email:", colLabelW), gc);
+        gc.gridx = 1; gc.gridy = 1; gc.gridwidth = 3; gc.weightx = 1;
+        emailInput = makeTextField(colFieldW * 2 + 20);
+        wrapper.add(emailInput, gc);
+        gc.gridwidth = 1;
+
+        // Giới tính
+        gc.gridx = 4; gc.gridy = 1; gc.weightx = 0;
+        wrapper.add(makeRightLabel("Giới tính:", colLabelW), gc);
+        gc.gridx = 5; gc.gridy = 1; gc.weightx = 1;
+        sexCombo = new JComboBox<>(new String[]{"Nữ", "Nam"}); // Nữ=false, Nam=true
+        styleCombo(sexCombo);
+        wrapper.add(sexCombo, gc);
+
+        // Chức vụ
+        gc.gridx = 0; gc.gridy = 2; gc.weightx = 0;
+        wrapper.add(makeRightLabel("Chức vụ:", colLabelW), gc);
+        gc.gridx = 1; gc.gridy = 2; gc.weightx = 1;
+        roleCombo = new JComboBox<>(new String[]{"Nhân viên", "Quản lý", "Quản trị viên"});
+        styleCombo(roleCombo);
+        wrapper.add(roleCombo, gc);
+
+        // Địa chỉ
+        gc.gridx = 2; gc.gridy = 2; gc.weightx = 0;
+        wrapper.add(makeRightLabel("Địa chỉ:", colLabelW), gc);
+        gc.gridx = 3; gc.gridy = 2; gc.gridwidth = 3; gc.weightx = 1;
+        addressInput = makeTextField(colFieldW * 3 + 60);
+        wrapper.add(addressInput, gc);
+        gc.gridwidth = 1;
+
+        // Thanh công cụ (tìm kiếm + nút)
+        JPanel toolbar = buildToolbar();
+        gc.gridx = 0; gc.gridy = 3; gc.gridwidth = 6; gc.weightx = 1;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        wrapper.add(toolbar, gc);
+        gc.gridwidth = 1;
+
+        return wrapper;
+    }
+
+    private JPanel buildToolbar() {
+        JPanel tool = new JPanel(new BorderLayout());
+        tool.setOpaque(false);
+        tool.setBorder(BorderFactory.createEmptyBorder(10, 0, 6, 0));
+
+        // Left: search (phần này chứa các trường nhập liệu dư thừa từ Updated upstream)
+        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         left.setOpaque(false);
-        left.setPreferredSize(new Dimension(330, 300));
 
-        JLabel idLabel = new JLabel("Id: ");
-        idLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        idLabel.setForeground(Color.black);
-        idLabel.setPreferredSize(new Dimension(120, 25));
-        left.add(idLabel);
+        JLabel searchLabel = makeLabel("Tìm nhân viên:");
+        searchLabel.setPreferredSize(new Dimension(110, 25));
+        searchBar = makeTextField(240);
+        JButton searchBtn = iconButton(Feather.SEARCH);
+        searchBtn.addActionListener(e -> search());
+        
+        // Giữ lại phần search cơ bản
+        left.add(searchLabel);
+        left.add(searchBar);
+        left.add(searchBtn);
 
-        idInput = new JTextField();
-        idInput.setPreferredSize(new Dimension(140, 25));
-        idInput.setBackground(new Color(241, 211, 178));
-        idInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        idInput.setForeground(Color.black);
-        idInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        left.add(idInput);
-
-        JLabel nameLabel = new JLabel("Name: ");
-        nameLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        nameLabel.setForeground(Color.black);
-        nameLabel.setPreferredSize(new Dimension(120, 25));
-        left.add(nameLabel);
-
-        nameInput = new JTextField();
-        nameInput.setPreferredSize(new Dimension(140, 25));
-        nameInput.setBackground(new Color(241, 211, 178));
-        nameInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        nameInput.setForeground(Color.black);
-        nameInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        left.add(nameInput);
-
-        JLabel dbLabel = new JLabel("Birth Day: ");
-        dbLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        dbLabel.setForeground(Color.black);
-        dbLabel.setPreferredSize(new Dimension(120, 25));
-        left.add(dbLabel);
-
-        dbInput = new JTextField();
-        dbInput.setPreferredSize(new Dimension(140, 25));
-        dbInput.setBackground(new Color(241, 211, 178));
-        dbInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        dbInput.setForeground(Color.black);
-        dbInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        left.add(dbInput);
-
-        tbPanel.add(left);
-
-        JPanel right = new JPanel();
-        right.setLayout(new FlowLayout(FlowLayout.LEFT));
+        // Right: actions
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         right.setOpaque(false);
-        right.setPreferredSize(new Dimension(330, 300));
+        
+        JButton addBtn   = makeButton("Thêm");
+        JButton saveBtn  = makeButton("Lưu");
+        JButton deleteBtn= makeButton("Xóa");
+        JButton clearBtn = makeButton("Hủy thay đổi");
 
-        JLabel phoneLabel = new JLabel("Phone: ");
-        phoneLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        phoneLabel.setForeground(Color.black);
-        phoneLabel.setPreferredSize(new Dimension(120, 25));
-        right.add(phoneLabel);
+        addBtn.addActionListener(e -> onAdd());
+        saveBtn.addActionListener(e -> onUpdate());
+        deleteBtn.addActionListener(e -> onDelete());
+        clearBtn.addActionListener(e -> clearForm());
 
-        phoneInput = new JTextField();
-        phoneInput.setPreferredSize(new Dimension(140, 25));
-        phoneInput.setBackground(new Color(241, 211, 178));
-        phoneInput.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
-        phoneInput.setForeground(Color.black);
-        phoneInput.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        right.add(phoneInput);
+        right.add(addBtn); right.add(saveBtn); right.add(deleteBtn); right.add(clearBtn);
 
-        JLabel responsibilityLabel = new JLabel("Responsibility: ");
-        responsibilityLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        responsibilityLabel.setForeground(Color.black);
-        responsibilityLabel.setPreferredSize(new Dimension(120, 25));
-        right.add(responsibilityLabel);
+        tool.add(left, BorderLayout.WEST);
+        tool.add(right, BorderLayout.EAST);
+        return tool;
+    }
 
-        responsibilityCategory = new JComboBox<>();
-        responsibilityCategory.setPreferredSize(new Dimension(140, 25));
-        responsibilityCategory.setForeground(Color.black);
-        responsibilityCategory.setBackground(new Color(241, 211, 178));
-        responsibilityCategory.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        responsibilityCategory.addItem("Admin");
-        responsibilityCategory.addItem("Cashier");
-        responsibilityCategory.addItem("Barista");
-        responsibilityCategory.addItem("Waiter");
-        right.add(responsibilityCategory);
+    private JPanel buildTablePanel() {
+        JPanel tablePanel = new JPanel(new BorderLayout());
+        tablePanel.setOpaque(true);
+        tablePanel.setBackground(Color.white);
+        tablePanel.setBorder(BorderFactory.createEmptyBorder(0, 12, 12, 12));
 
-        tbPanel.add(right);
+        tableModel = new DefaultTableModel(
+                new Object[]{"_ID", "Họ", "Tên", "Số điện thoại", "Email", "Giới tính", "Chức vụ", "Địa chỉ"}, 0) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+        };
 
-        tbiPanel.add(tbPanel);
+        table = new JTable(tableModel);
+        table.setRowHeight(26);
+        table.setShowGrid(false);
+        table.setFillsViewportHeight(true);
+        table.setBackground(TABLE_BG);
+        table.setSelectionBackground(new Color(214, 224, 235));
+        table.setSelectionForeground(Color.BLACK);
+        table.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
 
-        JPanel imgPanel = new JPanel();
-        imgPanel.setLayout(new BorderLayout());
-        imgPanel.setPreferredSize(new Dimension(250, 300));
-        // Border lineBorder = BorderFactory.createMatteBorder(1, 1, 1, 1, new
-        // Color(255, 213, 146));
-        // imgPanel.setBorder(lineBorder);
-        imgPanel.setOpaque(false);
+        // Ẩn cột ID
+        TableColumnModel cm = table.getColumnModel();
+        cm.getColumn(COL_HIDDEN_ID).setMinWidth(0);
+        cm.getColumn(COL_HIDDEN_ID).setMaxWidth(0);
+        cm.getColumn(COL_HIDDEN_ID).setPreferredWidth(0);
 
-        String imagePath = "asset/user.png";
-        Image scaledImage;
+        // Header
+        JTableHeader th = table.getTableHeader();
+        th.setOpaque(true);
+        th.setBackground(HEADER_BG);
+        th.setForeground(HEADER_FG);
+        th.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        th.setBorder(BorderFactory.createLineBorder(BORDER_COLOR));
+
+        // Zebra rows
+        table.setDefaultRenderer(Object.class, new ZebraRenderer());
+
+        JScrollPane sp = new JScrollPane(table);
+        sp.getViewport().setBackground(TABLE_BG);
+        sp.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER_COLOR),
+                BorderFactory.createEmptyBorder(4, 4, 4, 4)
+        ));
+
+        tablePanel.add(sp, BorderLayout.CENTER);
+        return tablePanel;
+    }
+
+    // ====== Actions=========================
+
+    private void loadTable() {
+        tableModel.setRowCount(0);
+        List<Employee> list = DAO_Employee.findAll();
+        for (Employee emp : list) {
+            tableModel.addRow(new Object[]{
+                    emp.getEmployeeId(),                                 // hidden
+                    emp.getLastName(),                                    // Họ
+                    emp.getFirstName(),                                   // Tên
+                    nz(emp.getPhoneNumber()),
+                    nz(emp.getEmail()),
+                    emp.isSex() ? "Nam" : "Nữ",
+                    nz(emp.getRole()),
+                    nz(emp.getAddress())
+            });
+        }
+        table.clearSelection();
+
+        // chọn dòng -> fill form
+        table.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            if (!e.getValueIsAdjusting()) fillFormFromSelectedRow();
+        });
+    }
+
+    private void search() {
+        tableModel.setRowCount(0);
+        List<Employee> list = DAO_Employee.search(searchBar.getText());
+        for (Employee emp : list) {
+            tableModel.addRow(new Object[]{
+                    emp.getEmployeeId(),                                 // hidden
+                    emp.getLastName(),
+                    emp.getFirstName(),
+                    nz(emp.getPhoneNumber()),
+                    nz(emp.getEmail()),
+                    emp.isSex() ? "Nam" : "Nữ",
+                    nz(emp.getRole()),
+                    nz(emp.getAddress())
+            });
+        }
+        table.clearSelection();
+    }
+
+    private void onAdd() {
+        try {
+        	String firstName = lastNameInput.getText().trim();
+        	String lastName  = firstNameInput.getText().trim();
+        	String phone     = phoneInput.getText().trim();
+        	String email     = emailInput.getText().trim();
+
+        	// ===== Regex =====
+        	if (!firstName.matches("^[\\p{L} ]{1,50}$")) {
+        	    JOptionPane.showMessageDialog(this, "Họ không hợp lệ (chỉ chứa chữ và khoảng trắng).");
+        	    return;
+        	}
+        	if (!lastName.matches("^[\\p{L} ]{1,50}$")) {
+        	    JOptionPane.showMessageDialog(this, "Tên không hợp lệ (chỉ chứa chữ và khoảng trắng).");
+        	    return;
+        	}
+        	if (!phone.matches("^\\d{8,11}$")) {
+        	    JOptionPane.showMessageDialog(this, "Số điện thoại phải gồm 8–11 chữ số.");
+        	    return;
+        	}
+        	if (!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+        	    JOptionPane.showMessageDialog(this, "Email không hợp lệ.");
+        	    return;
+        	}
+
+            Employee e = new Employee(
+                    null,
+                    firstName,                         // firstName
+                    lastName,                          // lastName
+                    "Nam".equals(sexCombo.getSelectedItem()),
+                    phoneInput.getText().trim(),
+                    emailInput.getText().trim(),
+                    String.valueOf(roleCombo.getSelectedItem()),
+                    addressInput.getText().trim()
+            );
+
+            DAO_Employee.insert(e);
+            JOptionPane.showMessageDialog(this, "Đã thêm nhân viên!");
+            clearForm();
+            loadTable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi thêm: " + ex.getMessage());
+        }
+    }
+
+    private void onUpdate() {
+        int row = table.getSelectedRow();
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng để lưu/cập nhật!"); return; }
+
+        String id = String.valueOf(tableModel.getValueAt(row, COL_HIDDEN_ID));
+        try {
+            Employee e = new Employee(
+                    id,
+                    lastNameInput.getText().trim(),    // firstName (dựa theo logic mapping của bạn)
+                    firstNameInput.getText().trim(),   // lastName (dựa theo logic mapping của bạn)
+                    "Nam".equals(sexCombo.getSelectedItem()),
+                    phoneInput.getText().trim(),
+                    emailInput.getText().trim(),
+                    String.valueOf(roleCombo.getSelectedItem()),
+                    addressInput.getText().trim()
+            );
+            DAO_Employee.update(e);
+            JOptionPane.showMessageDialog(this, "Đã cập nhật!");
+            loadTable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi cập nhật: " + ex.getMessage());
+        }
+    }
+
+    private void onDelete() {
+        int row = table.getSelectedRow();
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 dòng để xóa!"); return; }
+
+        String id = String.valueOf(tableModel.getValueAt(row, COL_HIDDEN_ID));
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Xóa nhân viên " + id + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
 
         try {
-            // Read the image from the file
-            Image image = ImageIO.read(new File(imagePath));
-
-            // Scale the image
-            int newWidth = (int) (200 * 0.8); // Desired width
-            int newHeight = (int) (200 * 0.8); // Desired height
-            scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-
-            // Create an ImageIcon from the scaled image
-            ImageIcon imageIcon = new ImageIcon(scaledImage);
-
-            // Create a JLabel and set the icon
-            JLabel imgLabel = new JLabel(FontIcon.of(Feather.USER, (int) (200 * 0.8), Color.black));
-            imgLabel.setPreferredSize(new Dimension(250, 300));
-            imgLabel.setHorizontalAlignment(JLabel.CENTER);
-            imgLabel.setVerticalAlignment(JLabel.NORTH);
-            imgLabel.setBackground(Color.CYAN);
-            imgPanel.add(imgLabel, BorderLayout.CENTER);
-        } catch (IOException e) {
-            e.printStackTrace();
+            DAO_Employee.delete(id);
+            JOptionPane.showMessageDialog(this, "Đã xóa!");
+            clearForm();
+            loadTable();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi xóa: " + ex.getMessage());
         }
-
-        tbPanel.add(imgPanel);
-
-        // tbiPanel.add(imgPanel, BorderLayout.SOUTH);
-        panel.add(tbiPanel, BorderLayout.CENTER);
-
-        add(panel, BorderLayout.NORTH);
     }
 
-    private void createEmpTablePanel() {
-        JPanel tablePanel = new JPanel();
-        tablePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        tablePanel.setPreferredSize(new Dimension(1100, 500));
-        tablePanel.setLayout(new BorderLayout());
-        tablePanel.setOpaque(false);
+    private void fillFormFromSelectedRow() {
+        int row = table.getSelectedRow();
+        if (row < 0) return;
+        String id = String.valueOf(tableModel.getValueAt(row, COL_HIDDEN_ID));
+        Employee e = DAO_Employee.getEmployeeById(id);
+        if (e == null) return;
 
-        JPanel emptyW = new JPanel();
-        emptyW.setPreferredSize(new Dimension(20, 500));
-        emptyW.setOpaque(false);
-        tablePanel.add(emptyW, BorderLayout.WEST);
+        // GIỮ NGUYÊN mapping bạn đang dùng
+        firstNameInput.setText(nz(e.getLastName()));     // Họ
+        lastNameInput.setText(nz(e.getFirstName()));     // Tên
+        phoneInput.setText(nz(e.getPhoneNumber()));
+        emailInput.setText(nz(e.getEmail()));
+        sexCombo.setSelectedItem(e.isSex() ? "Nam" : "Nữ");
+        roleCombo.setSelectedItem(mapRoleToCombo(e.getRole()));
+        addressInput.setText(nz(e.getAddress()));
+    }
 
-        JPanel emptyE = new JPanel();
-        emptyE.setPreferredSize(new Dimension(20, 500));
-        emptyE.setOpaque(false);
-        tablePanel.add(emptyE, BorderLayout.EAST);
+    private void clearForm() {
+        firstNameInput.setText("");
+        lastNameInput.setText("");
+        phoneInput.setText("");
+        emailInput.setText("");
+        sexCombo.setSelectedIndex(0);
+        roleCombo.setSelectedIndex(0);
+        addressInput.setText("");
+        table.clearSelection();
+    }
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        panel.setPreferredSize(new Dimension(800, 50));
-        panel.setOpaque(false);
+    // ====== Helpers ===========================================================
 
-        JPanel left = new JPanel();
-        left.setLayout(new FlowLayout(FlowLayout.LEFT));
-        left.setPreferredSize(new Dimension(360, 35));
-        Border lineBorder = BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(255, 213, 146));
-        left.setBorder(lineBorder);
-        left.setOpaque(false);
+    private JLabel makeLabel(String text) {
+        JLabel lb = new JLabel(text);
+        lb.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        lb.setForeground(Color.black);
+        return lb;
+    }
 
-        JLabel searchLabel = new JLabel("Search Employees:");
-        searchLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        searchLabel.setForeground(Color.black);
-        searchLabel.setPreferredSize(new Dimension(130, 25)); // Thay đổi kích thước cho phù hợp
-        left.add(searchLabel);
+    private JLabel makeRightLabel(String text, int width) {
+        JLabel lb = makeLabel(text);
+        lb.setHorizontalAlignment(SwingConstants.RIGHT);
+        lb.setPreferredSize(new Dimension(width, 25));
+        return lb;
+    }
 
-        JTextField searchBar = new JTextField();
-        searchBar.setForeground(Color.black);
-        searchBar.setBackground(new Color(241, 211, 178));
-        searchBar.setBorder(null);
-        searchBar.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        searchBar.setPreferredSize(new Dimension(170, 25)); // Thay đổi kích thước cho phù hợp và vị trí
-        left.add(searchBar);
+    private JTextField makeTextField(int w) {
+        JTextField tf = new JTextField();
+        tf.setPreferredSize(new Dimension(w, 28));
+        tf.setBackground(ACCENT);
+        tf.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(21, 24, 48)),
+                BorderFactory.createEmptyBorder(2, 6, 2, 6)
+        ));
+        tf.setForeground(Color.black);
+        tf.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        return tf;
+    }
 
-        FontIcon lookingGlassIcon = FontIcon.of(Feather.SEARCH, 24, Color.BLACK);
-        JButton findProduct = new JButton(lookingGlassIcon);
-        findProduct.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        findProduct.setForeground(Color.black);
-        findProduct.setBackground(new Color(241, 211, 178));
-        findProduct.setPreferredSize(new Dimension(30, 30));
-        findProduct.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        left.add(findProduct);
+    private void styleCombo(JComboBox<?> cb) {
+        cb.setPreferredSize(new Dimension(160, 28));
+        cb.setBackground(ACCENT);
+        cb.setForeground(Color.BLACK);
+        cb.setBorder(BorderFactory.createLineBorder(new Color(21, 24, 48)));
+        cb.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+    }
 
-        panel.add(left);
+    private JButton makeButton(String text) {
+        JButton b = new JButton(text);
+        b.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
+        b.setPreferredSize(new Dimension(120, 28));
+        b.setForeground(Color.black);
+        b.setBackground(ACCENT);
+        b.setFocusPainted(false);
+        b.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER_COLOR),
+                BorderFactory.createEmptyBorder(2, 10, 2, 10)
+        ));
+        return b;
+    }
 
-        JPanel right = new JPanel();
-        right.setLayout(new FlowLayout(FlowLayout.LEFT));
-        right.setPreferredSize(new Dimension(490, 35));
-        right.setOpaque(false);
+    private JButton iconButton(Feather icon) {
+        JButton b = new JButton(FontIcon.of(icon, 18, Color.BLACK));
+        b.setPreferredSize(new Dimension(36, 28));
+        b.setBackground(ACCENT);
+        b.setBorder(BorderFactory.createLineBorder(BORDER_COLOR));
+        b.setFocusPainted(false);
+        return b;
+    }
 
-        JButton addButton = new JButton("Add");
-        addButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        addButton.setPreferredSize(new Dimension(100, 25));
-        addButton.setForeground(Color.black);
-        addButton.setBackground(new Color(241, 211, 178));
-        right.add(addButton);
+    private String nz(String s) { return s == null ? "" : s; }
 
-        JButton deleteButton = new JButton("Delete");
-        deleteButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        deleteButton.setPreferredSize(new Dimension(100, 25));
-        deleteButton.setForeground(Color.black);
-        deleteButton.setBackground(new Color(241, 211, 178));
-        right.add(deleteButton);
+    private String mapRoleToCombo(String role) {
+        if (role == null) return "Nhân viên";
+        String r = role.toLowerCase();
+        if (r.contains("trị")) return "Quản trị viên";
+        if (r.contains("lý"))  return "Quản lý";
+        return "Nhân viên";
+    }
 
-        JButton cancelChangeButton = new JButton("Cancel changes");
-        cancelChangeButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        cancelChangeButton.setPreferredSize(new Dimension(140, 25));
-        cancelChangeButton.setForeground(Color.black);
-        cancelChangeButton.setBackground(new Color(241, 211, 178));
-        right.add(cancelChangeButton);
+    /** Zebra row renderer (nền sáng hơn, chọn vẫn rõ) */
+    private static class ZebraRenderer extends DefaultTableCellRenderer {
+        private final Color even = new Color(255, 252, 247);
+        private final Color odd  = new Color(248, 243, 236);
 
-        JButton saveButton = new JButton("Save");
-        saveButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        saveButton.setPreferredSize(new Dimension(100, 25));
-        saveButton.setForeground(Color.black);
-        saveButton.setBackground(new Color(241, 211, 178));
-        right.add(saveButton);
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
-        panel.add(right);
-        tablePanel.add(panel, BorderLayout.NORTH);
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-        // panel.setBackground(new Color(225, 203, 177));
-
-        this.tableModel = new DefaultTableModel();
-        tableModel.addColumn("N0");
-        tableModel.addColumn("Name");
-        tableModel.addColumn("Day of Birth");
-        tableModel.addColumn("Phone Number");
-        tableModel.addColumn("Reposibility");
-
-        JTable table = new JTable(tableModel);
-        table.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        table.setForeground(Color.black);
-        table.setBackground(Color.white);
-
-        JTableHeader tableHeader = table.getTableHeader();
-        tableHeader.setForeground(Color.black);
-        tableHeader.setBackground(Color.white);
-        tableHeader.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        tableHeader.setDefaultRenderer(new CustomTableHeaderRenderer());
-
-        // Apply the custom renderer to each column
-        for (int i = 0; i < table.getColumnCount(); i++) {
-            table.getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
+            if (!isSelected) {
+                c.setBackground((row % 2 == 0) ? even : odd);
+                c.setForeground(Color.BLACK);
+            }
+            setBorder(noFocusBorder);
+            return c;
         }
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setPreferredSize(new Dimension(800, 500));
-        scrollPane.setForeground(Color.black);
-        scrollPane.getViewport().setBackground(Color.white);
-
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
-
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                id = idInput.getText();
-                name = nameInput.getText();
-                dob = LocalDate.parse(dbInput.getText(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                phone = phoneInput.getText();
-                responsibility = (String) responsibilityCategory.getSelectedItem();
-
-                Employee employee = new Employee();
-                employeeList.addEmployee(employee);
-
-                idInput.setText("");
-                nameInput.setText("");
-                dbInput.setText("");
-                phoneInput.setText("");
-                responsibilityCategory.setSelectedItem("Admin");
-
-                Vector<String> rowData = new Vector<>();
-                rowData.add(id);
-                rowData.add(name);
-                rowData.add(dob.toString());
-                rowData.add(phone);
-                rowData.add(responsibility);
-                tableModel.addRow(rowData);
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow != -1) {
-                    // Delete employee
-                    employeeList.deleteEmployee((String) tableModel.getValueAt(selectedRow, 0));
-
-                    // Delete the selected row
-                    tableModel.removeRow(selectedRow);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Please select a row to delete", "Delete Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent event) {
-                if (!event.getValueIsAdjusting()) {
-                    int selectedRow = table.getSelectedRow();
-                    if (selectedRow != -1) {
-                        idInput.setText((String) tableModel.getValueAt(selectedRow, 0));
-                        nameInput.setText((String) tableModel.getValueAt(selectedRow, 1));
-                        dbInput.setText((String) tableModel.getValueAt(selectedRow, 2));
-                        phoneInput.setText((String) tableModel.getValueAt(selectedRow, 3));
-                        responsibilityCategory.setSelectedItem((String) tableModel.getValueAt(selectedRow, 4));
-                    }
-                }
-            }
-        });
-
-        add(tablePanel, BorderLayout.CENTER);
     }
 }

@@ -2,6 +2,8 @@ package app.DAO;
 
 import app.Connection.XJdbc;
 import app.Object.Customer;
+import app.Object.Employee;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class DAO_Customer {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     customer = mapResultSetToCustomer(rs);
+
                 }
             }
         } catch (SQLException e) {
@@ -129,14 +132,14 @@ public class DAO_Customer {
         String searchPattern = "%" + keyword + "%";
 
         try (Connection con = XJdbc.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            pstmt.setString(1, searchPattern);
-            pstmt.setString(2, searchPattern);
-            pstmt.setString(3, searchPattern);
-            pstmt.setString(4, searchPattern);
+            ps.setString(1, searchPattern);
+            ps.setString(2, searchPattern);
+            ps.setString(3, searchPattern);
+            ps.setString(4, searchPattern);
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     customers.add(mapResultSetToCustomer(rs));
                 }
@@ -146,5 +149,28 @@ public class DAO_Customer {
             System.err.println("Lỗi khi tìm kiếm khách hàng: " + e.getMessage());
         }
         return customers;
+    }
+
+    public static Customer searchCustomerByPhoneNumber(String phoneNumber) {
+        Customer customer = null;
+        String sql = "SELECT * FROM dbo.Customer WHERE phoneNumber = ?";
+
+        try (Connection con = XJdbc.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, phoneNumber);
+
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    customer = mapResultSetToCustomer(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Lỗi khi tìm kiếm khách hàng: " + e.getMessage());
+        }
+
+        return customer;
     }
 }

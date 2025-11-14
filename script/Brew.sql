@@ -144,13 +144,13 @@ CREATE TABLE Bill (
     dateCreated DATE,
     hourIn DATETIME,
     hourOut DATETIME,
-    phoneNumber VARCHAR(20),
+    phoneNumber VARCHAR(20) NULL,
     total FLOAT,
     custPayment FLOAT,
     status VARCHAR(50),
-    customerId NVARCHAR(10),
+    customerId NVARCHAR(10) NULL,
     employeeId NVARCHAR(10),
-    tableId NVARCHAR(10),
+    tableId NVARCHAR(10) NULL,
     FOREIGN KEY (customerId) REFERENCES Customer(customerId),
     FOREIGN KEY (employeeId) REFERENCES Employee(employeeId),
     FOREIGN KEY (tableId) REFERENCES CafeTable(tableId)
@@ -332,7 +332,6 @@ VALUES
 USE Brew;
 INSERT INTO CafeTable (floor, current_occupancy, capacity, status)
 VALUES
-('Tầng trệt', 0, 3, 'AVAILABLE'),
 ('Tầng trệt', 0, 3, 'AVAILABLE'),
 ('Tầng trệt', 0, 3, 'AVAILABLE'),
 ('Tầng trệt', 0, 3, 'AVAILABLE'),
@@ -688,3 +687,7 @@ VALUES
 ('AdminThanh', '123', 'Admin', 'NV00013'),
 ('AdminKhanh', '123', 'Admin', 'NV00014'),
 ('AdminPhong', '123', 'Admin', 'NV00015');
+
+/*UPDATE CafeTable
+SET status = 'AVAILABLE'
+WHERE tableId = (SELECT MAX(tableId) FROM CafeTable);*/

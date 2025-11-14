@@ -62,7 +62,7 @@ public class DAO_BillDetail {
         }
         return list;
     }
-  
+
     public static void saveAllBD(List<BillDetail> list) {
         String sql = "INSERT INTO BillDetail (billId, menuId, amount, org_price, totalPrice) VALUES (?, ?, ?, ?, ?)";
 

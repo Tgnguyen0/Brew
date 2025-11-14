@@ -82,4 +82,15 @@ public class Table {
     public int hashCode() {
         return Objects.hashCode(tableId);
     }
+
+    @Override
+    public String toString() {
+        return "Table{" +
+                "tableId='" + tableId + '\'' +
+                ", floor='" + floor + '\'' +
+                ", status=" + status +
+                ", currentOccupancy=" + currentOccupancy +
+                ", capacity=" + capacity +
+                '}';
+    }
 }

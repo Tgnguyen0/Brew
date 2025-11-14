@@ -51,7 +51,7 @@ public class LoginDAO {
                     return new Account(
                             rs.getString("accountId"),
                             rs.getString("username"),
-                            rs.getString("accountId"),
+                            rs.getString("password"),
                             rs.getString("role"),
                             DAO_Employee.getEmployeeById(rs.getString("employeeId"))
                     );

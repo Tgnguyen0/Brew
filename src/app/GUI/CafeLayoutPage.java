@@ -5,6 +5,7 @@ import app.Components.TableButton;
 import app.DAO.DAO_Table;
 import app.InitFont.CustomFont;
 import app.Listener.ActionListener_CafeLayoutPage;
+import app.Object.Status;
 import app.Object.Table;
 import com.formdev.flatlaf.FlatDarkLaf;
 import org.kordamp.ikonli.feather.Feather;
@@ -13,6 +14,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
@@ -24,6 +26,7 @@ import java.util.Map;
 
 public class CafeLayoutPage extends JFrame {
     private CustomFont customFont = new CustomFont();
+    private static CafeLayoutPage INSTANCE;
     public ActionListener_CafeLayoutPage action;
     public Collection_Table collectionTable;
     public TableButton table1;
@@ -39,8 +42,12 @@ public class CafeLayoutPage extends JFrame {
     public JButton decreaseButton;
     private Map<String, Integer> tableMap;
 
-    public CafeLayoutPage(List<Table> choosenTableList) {
+    public CafeLayoutPage(Collection_Table collectionTable) {
+        INSTANCE = this;
+
         //setSize(new Dimension(800, 600));
+        ImageIcon icon = new ImageIcon("asset/icon.png");
+        setIconImage(icon.getImage());
         setTitle("Sơ đồ chỗ ngồi");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -56,8 +63,7 @@ public class CafeLayoutPage extends JFrame {
         }
 
         action = new ActionListener_CafeLayoutPage(this);
-        collectionTable = new Collection_Table();
-        collectionTable.addAll(choosenTableList);
+        this.collectionTable = collectionTable;
 
         JPanel labelPanel = new JPanel();
         labelPanel.setPreferredSize(new Dimension(400, 50));
@@ -109,16 +115,16 @@ public class CafeLayoutPage extends JFrame {
         tableLabel = new JLabel("Table: ");
         tableLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
         tableLabel.setForeground(Color.BLACK);
-        editTablePanel.add(tableLabel);
-        editTablePanel.add(Box.createHorizontalStrut(10));
+//        editTablePanel.add(tableLabel);
+//        editTablePanel.add(Box.createHorizontalStrut(10));
 
         increaseButton = new JButton("+");
         increaseButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
         increaseButton.setBackground(Color.white);
         increaseButton.setForeground(Color.black);
         increaseButton.addActionListener(action);
-        editTablePanel.add(increaseButton);
-        editTablePanel.add(Box.createHorizontalStrut(10));
+//        editTablePanel.add(increaseButton);
+//        editTablePanel.add(Box.createHorizontalStrut(10));
 
         sizeField = new JTextField("0");
         sizeField.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
@@ -128,15 +134,15 @@ public class CafeLayoutPage extends JFrame {
         sizeField.setHorizontalAlignment(JTextField.CENTER);
         sizeField.setBackground(Color.white);
         sizeField.setForeground(Color.black);
-        editTablePanel.add(sizeField);
-        editTablePanel.add(Box.createHorizontalStrut(10));
+//        editTablePanel.add(sizeField);
+//        editTablePanel.add(Box.createHorizontalStrut(10));
 
         decreaseButton = new JButton("-");
         decreaseButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
         decreaseButton.setBackground(Color.white);
         decreaseButton.setForeground(Color.black);
         decreaseButton.addActionListener(action);
-        editTablePanel.add(decreaseButton);
+//        editTablePanel.add(decreaseButton);
 
         inforPanel.add(editTablePanel);
         inforPanel.add(Box.createVerticalStrut(20));
@@ -214,47 +220,117 @@ public class CafeLayoutPage extends JFrame {
                 Color.white,
                 Color.BLACK
         );
-        table1.addActionListener(action);
+        if (tables.get(0).getStatus().equals(Status.INAVAILABLE)) {
+            table1.setBackground(Color.red);
+            table1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    CafeLayoutPage.showFailedInSelect();
+                }
+            });
+        } else {
+            if (collectionTable.getAllTables().contains(tables.get(0))) {
+                table1.setBackground(Color.ORANGE);
+                table1.setChoosen(true);
+            }
+            table1.addActionListener(action);
+        }
         groundFloor.add(table1);
 
         table2 = new TableButton(
                 tables.get(1).getTableId(),
-                811, 314, 118, 118,
-                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
-                Color.white,
-                Color.BLACK
-        );
-        table2.addActionListener(action);
-        groundFloor.add(table2);
-
-        table3 = new TableButton(
-                tables.get(2).getTableId(),
-                811, 588, 118, 118,
-                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
-                Color.white,
-                Color.BLACK
-        );
-        table3.addActionListener(action);
-        groundFloor.add(table3);
-
-        table4 = new TableButton(
-                tables.get(3).getTableId(),
-                564, 586, 118, 118,
-                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
-                Color.white,
-                Color.BLACK
-        );
-        table4.addActionListener(action);
-        groundFloor.add(table4);
-
-        table5 = new TableButton(
-                tables.get(4).getTableId(),
                 316, 586, 118, 118,
                 customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
                 Color.white,
                 Color.BLACK
         );
-        table5.addActionListener(action);
+        if (tables.get(1).getStatus().equals(Status.INAVAILABLE)) {
+            table2.setBackground(Color.red);
+            table2.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    CafeLayoutPage.showFailedInSelect();
+                }
+            });
+        } else {
+            if (collectionTable.getAllTables().contains(tables.get(1))) {
+                table2.setBackground(Color.ORANGE);
+                table2.setChoosen(true);
+            }
+            table2.addActionListener(action);
+        }
+        groundFloor.add(table2);
+
+        table3 = new TableButton(
+                tables.get(2).getTableId(),
+                564, 586, 118, 118,
+                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
+                Color.white,
+                Color.BLACK
+        );
+        if (tables.get(2).getStatus().equals(Status.INAVAILABLE)) {
+            table3.setBackground(Color.red);
+            table3.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    CafeLayoutPage.showFailedInSelect();
+                }
+            });
+        } else {
+            if (collectionTable.getAllTables().contains(tables.get(2))) {
+                table3.setBackground(Color.ORANGE);
+                table3.setChoosen(true);
+            }
+            table3.addActionListener(action);
+        }
+        groundFloor.add(table3);
+
+        table4 = new TableButton(
+                tables.get(3).getTableId(),
+                811, 588, 118, 118,
+                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
+                Color.white,
+                Color.BLACK
+        );
+        if (tables.get(3).getStatus().equals(Status.INAVAILABLE)) {
+            table4.setBackground(Color.red);
+            table4.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    CafeLayoutPage.showFailedInSelect();
+                }
+            });
+        } else {
+            if (collectionTable.getAllTables().contains(tables.get(3))) {
+                table4.setBackground(Color.ORANGE);
+                table4.setChoosen(true);
+            }
+            table4.addActionListener(action);
+        }
+        groundFloor.add(table4);
+
+        table5 = new TableButton(
+                tables.get(4).getTableId(),
+                811, 314, 118, 118,
+                customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 15),
+                Color.white,
+                Color.BLACK
+        );
+        if (tables.get(4).getStatus().equals(Status.INAVAILABLE)) {
+            table5.setBackground(Color.red);
+            table5.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    CafeLayoutPage.showFailedInSelect();
+                }
+            });
+        } else {
+            if (collectionTable.getAllTables().contains(tables.get(4))) {
+                table5.setBackground(Color.ORANGE);
+                table5.setChoosen(true);
+            }
+            table5.addActionListener(action);
+        }
         groundFloor.add(table5);
 
         return holdPanel;
@@ -281,10 +357,14 @@ public class CafeLayoutPage extends JFrame {
         this.dispose();
     }
 
+    public static void showFailedInSelect() {
+        JOptionPane.showMessageDialog(CafeLayoutPage.INSTANCE, "Bàn đã được đặt", "Chọn bàn thất bại", JOptionPane.ERROR_MESSAGE);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // Mongo.getConnection();
-            CafeLayoutPage layout = new CafeLayoutPage(new ArrayList<Table>());
+            CafeLayoutPage layout = new CafeLayoutPage(new Collection_Table());
             layout.setVisible(true);
         });
     }

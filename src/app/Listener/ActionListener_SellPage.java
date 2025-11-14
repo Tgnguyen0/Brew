@@ -6,6 +6,7 @@ import app.DAO.DAO_BillDetail;
 import app.DAO.DAO_MenuItem;
 import app.GUI.BrewGUI;
 import app.GUI.CafeLayoutPage;
+import app.GUI.PaymentPage;
 import app.GUI.SellPage;
 import app.Object.Bill;
 import app.Object.MenuItem;
@@ -33,7 +34,12 @@ public class ActionListener_SellPage implements ActionListener {
         Object o = e.getSource();
 
         if (o == sellPage.findProduct) {
-            loadMBaseOnMode(sellPage.gbc, sellPage.searchBar.getText(), MODE.SEARCH);
+            if (sellPage.searchBar.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(sellPage, "Chưa nhập từ khóa tìm kiếm!", "Tìm kiếm thất bại", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            loadBaseOnMode(sellPage.gbc, sellPage.searchBar.getText(), MODE.SEARCH);
         }
 
         if (o == sellPage.takeAwayRadioButton) {
@@ -42,13 +48,13 @@ public class ActionListener_SellPage implements ActionListener {
 
         if (o == sellPage.seatingButton) {
             SwingUtilities.invokeLater(() -> {
-                CafeLayoutPage layoutPage = new CafeLayoutPage(sellPage.choosenTableList);
+                CafeLayoutPage layoutPage = new CafeLayoutPage(sellPage.collectionTable);
                 layoutPage.setVisible(true);
             });
         }
 
         if (o == sellPage.loadProductButton) {
-            loadMBaseOnMode(sellPage.gbc, null, MODE.LOAD);
+            loadBaseOnMode(sellPage.gbc, null, MODE.LOAD);
         }
 
         if (o == sellPage.clearSearchButton) {
@@ -61,7 +67,7 @@ public class ActionListener_SellPage implements ActionListener {
             if (selectedItem.equals("Tất cả")) {
                 reloadAllProducts();
             } else {
-                loadMBaseOnMode(sellPage.gbc, (String) sellPage.productCategory.getSelectedItem(), MODE.CATEGORY);
+                loadBaseOnMode(sellPage.gbc, (String) sellPage.productCategory.getSelectedItem(), MODE.CATEGORY);
             }
         }
 
@@ -93,10 +99,16 @@ public class ActionListener_SellPage implements ActionListener {
                     price = 0f;
 
                 sellPage.collectionBillDetails.updateBDOnOrder(row, amount, price);
+                sellPage.showUpdateSuccessfullyOptionPane();
             }
         }
 
         if (o == sellPage.deleteButton) {
+            if (sellPage.collectionBillDetails.getList().isEmpty()) {
+                JOptionPane.showMessageDialog(sellPage, "Không có món để xóa!", "Thanh toán thất bại", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
             for (int i = SellPage.productTableModel.getRowCount() - 1; i >= 0; i--) {
                 SellPage.productTableModel.removeRow(i);
             }
@@ -104,17 +116,15 @@ public class ActionListener_SellPage implements ActionListener {
         }
 
         if (o == sellPage.toInvoiceButton) {
-            DAO_Bill.createBill();
-            Bill bill = DAO_Bill.getLatestBill();
-            System.out.println(bill.toString());
+            if (sellPage.collectionBillDetails.getList().isEmpty()) {
+                JOptionPane.showMessageDialog(sellPage, "Chưa chọn món!", "Thanh toán thất bại", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
 
-            sellPage.collectionBillDetails.updateAllBillDetail(bill.getBillId());
-            DAO_BillDetail.saveAllBD(sellPage.collectionBillDetails.getList());
-
-            CardLayout cardLayout = (CardLayout) BrewGUI.pageContainer.getLayout();
-            cardLayout.show(BrewGUI.pageContainer, "Receipt Page");
-
-            //DAO_Bill.
+            new PaymentPage(sellPage.collectionBillDetails, sellPage.collectionTable, BrewGUI.acc.getEmployee()).setVisible(true);
+            for (int i = SellPage.productTableModel.getRowCount() - 1; i >= 0; i--) {
+                SellPage.productTableModel.removeRow(i);
+            }
         }
     }
 
@@ -136,7 +146,7 @@ public class ActionListener_SellPage implements ActionListener {
         sellPage.productPanel.repaint();
     }
 
-    private void loadMBaseOnMode(GridBagConstraints gbc, String keyword, MODE mode) {
+    private void loadBaseOnMode(GridBagConstraints gbc, String keyword, MODE mode) {
         if (sellPage.isLoading) return;
         sellPage.isLoading = true;
 
