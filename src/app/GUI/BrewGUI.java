@@ -1,5 +1,6 @@
 package app.GUI;
 
+import app.Components.NavbarButton;
 import app.Components.NavbarPanel;
 import app.InitFont.CustomFont;
 import app.Object.Account;
@@ -158,26 +159,23 @@ public class BrewGUI extends JFrame implements MouseListener {
         infoBar.setBackground(new Color(164, 56, 32));
         infoBar.setLayout(new BorderLayout());
 
+        JPanel navBtnPanel = new JPanel();
+        navBtnPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        navBtnPanel.setOpaque(false);
+
         // --- Nút mũi tên ---
-        navbarButton = new JButton(">");
+        FontIcon icon = FontIcon.of(Feather.MENU, 20, Color.WHITE);
+        navbarButton = new JButton(icon);
         navbarButton.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
-        navbarButton.setForeground(Color.BLACK);
-        navbarButton.setBackground(Color.WHITE);
+        navbarButton.setForeground(Color.WHITE);
+        navbarButton.setBackground(new Color(164, 56, 32));
         navbarButton.setFocusPainted(false);
-        navbarButton.setPreferredSize(new Dimension(100, 25));
-        navbarButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (isOptionBarVisible) {
-                    navbarButton.setText("<");
-                } else {
-                    navbarButton.setText(">");
-                }
-            }
-        });
+        navbarButton.setBorderPainted(false);
+        navbarButton.setPreferredSize(new Dimension(50, 25));
+        navBtnPanel.add(navbarButton);
 
         infoBar.add(Box.createVerticalStrut(10));
-        infoBar.add(navbarButton, BorderLayout.WEST); // căn trái
+        infoBar.add(navBtnPanel, BorderLayout.WEST); // căn trái
         infoBar.add(Box.createVerticalStrut(10));
 
         // Panel bên phải (thông tin nhân viên)
