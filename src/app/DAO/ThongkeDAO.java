@@ -215,10 +215,11 @@ public class ThongkeDAO {
             stmt.setInt(1, year);
             ResultSet rs = stmt.executeQuery();
 
+            // Tạo workbook
             Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Doanh thu năm " + year);
+            Sheet sheet = workbook.createSheet("Doanh thu " + year);
 
-            // ===== Header =====
+            // ===== HEADER =====
             Row header = sheet.createRow(0);
             CellStyle headerStyle = workbook.createCellStyle();
             Font headerFont = workbook.createFont();
@@ -232,9 +233,10 @@ public class ThongkeDAO {
                 cell.setCellStyle(headerStyle);
             }
 
-            // ===== Ghi dữ liệu =====
+            // ===== DATA =====
             int rowIndex = 1;
             double tongNam = 0;
+
             while (rs.next()) {
                 int monthValue = rs.getInt("month");
                 double total = rs.getDouble("total");
@@ -246,24 +248,27 @@ public class ThongkeDAO {
                 tongNam += total;
             }
 
-            // ===== Tổng cộng =====
+            // ===== TOTAL =====
             Row totalRow = sheet.createRow(rowIndex + 1);
             totalRow.createCell(0).setCellValue("TỔNG CỘNG");
             totalRow.createCell(1).setCellValue(tongNam);
 
+            // Auto size column
             sheet.autoSizeColumn(0);
             sheet.autoSizeColumn(1);
 
-            // ===== Xuất file Excel tại đường dẫn người dùng chọn =====
+            // ===== GHI FILE =====
             try (FileOutputStream fos = new FileOutputStream(savePath)) {
                 workbook.write(fos);
             }
+
             workbook.close();
 
-            System.out.println("✅ Xuất file Excel thành công tại: " + savePath);
+            System.out.println("✅ Xuất file Excel thành công: " + savePath);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

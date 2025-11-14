@@ -23,7 +23,6 @@ import app.DAO.ThongkeDAO;
 
 public class StatisticPage extends JPanel {
 
-
     private ThongkeDAO thongkeDAO = new ThongkeDAO();
 
     private JComboBox<String> comboMonth;
@@ -80,7 +79,7 @@ public class StatisticPage extends JPanel {
         btnExportExcel.setPreferredSize(new Dimension(140, 35));
         btnExportExcel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-// Hover
+        // Hover
         btnExportExcel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -93,13 +92,12 @@ public class StatisticPage extends JPanel {
             }
         });
 
-// === Hành động khi nhấn nút ===
+        // === Hành động khi nhấn nút ===
         btnExportExcel.addActionListener(e -> {
             int year = Integer.parseInt(comboYear.getSelectedItem().toString());
             File defaultDir = new File(System.getProperty("user.dir") + "/excel");
             if (!defaultDir.exists()) defaultDir.mkdirs();
 
-            // Hộp thoại chọn nơi lưu file
             JFileChooser fileChooser = new JFileChooser(defaultDir);
             fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
             fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files (*.xlsx)", "xlsx"));
@@ -110,12 +108,10 @@ public class StatisticPage extends JPanel {
                 File fileToSave = fileChooser.getSelectedFile();
                 String filePath = fileToSave.getAbsolutePath();
 
-                // Nếu người dùng không nhập đuôi .xlsx thì thêm vào
                 if (!filePath.toLowerCase().endsWith(".xlsx")) {
                     filePath += ".xlsx";
                 }
 
-                // Gọi DAO như cũ, chỉ cần sửa hàm DAO nhận thêm tham số path
                 ThongkeDAO.exportRevenueByYearToExcel(year, filePath);
 
                 JOptionPane.showMessageDialog(this,
@@ -126,8 +122,6 @@ public class StatisticPage extends JPanel {
 
         filterPanel.add(btnExportExcel);
 
-
-
         centerPanel.add(filterPanel, BorderLayout.NORTH);
 
         // Biểu đồ nằm chung 1 hàng
@@ -135,8 +129,8 @@ public class StatisticPage extends JPanel {
         chartContainer.setBackground(Color.white);
         chartContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        piePanel = createPieChartPanel(1, 2025);  // Mặc định Tháng 1, 2025
-        linePanel = createLineChartPanel( 2025);
+        piePanel = createPieChartPanel(1, 2025);
+        linePanel = createLineChartPanel(2025);
 
         chartContainer.add(piePanel);
         chartContainer.add(linePanel);
@@ -195,7 +189,7 @@ public class StatisticPage extends JPanel {
         });
     }
 
-    // ================= TẠO BIỂU ĐỒ TRÒN: DOANH THU THEO LOẠI MÓN =================
+    // ================= TẠO BIỂU ĐỒ TRÒN =================
     private ChartPanel createPieChartPanel(int month, int year) {
         DefaultPieDataset dataset = thongkeDAO.getRevenueByCategory(month, year);
 
@@ -214,9 +208,8 @@ public class StatisticPage extends JPanel {
         plot.setLabelBackgroundPaint(Color.white);
         plot.setCircular(true);
 
-        // Tùy chỉnh màu theo category thực tế, nếu chưa có thì để mặc định
         for (Object keyObj : dataset.getKeys()) {
-            String key = keyObj.toString(); // ép kiểu sang String
+            String key = keyObj.toString();
             switch (key) {
                 case "Cà phê" -> plot.setSectionPaint(key, new Color(121, 85, 72));
                 case "Trà" -> plot.setSectionPaint(key, new Color(76, 175, 80));
@@ -230,7 +223,7 @@ public class StatisticPage extends JPanel {
         return panel;
     }
 
-    // ================= BIỂU ĐỒ LINE: DOANH THU THEO LOẠI SẢN PHẨM TRONG NĂM =================
+    // ================= BIỂU ĐỒ LINE =================
     private ChartPanel createLineChartPanel(int year) {
         DefaultCategoryDataset dataset = thongkeDAO.getRevenueByMonthAndCategory(year);
 
@@ -246,7 +239,6 @@ public class StatisticPage extends JPanel {
         plot.setBackgroundPaint(Color.white);
         plot.setRangeGridlinePaint(Color.lightGray);
 
-        // Renderer chung (shapes + tooltip)
         LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
         renderer.setDefaultToolTipGenerator((dataset1, row, column) -> {
             Number value = dataset1.getValue(row, column);
@@ -255,23 +247,18 @@ public class StatisticPage extends JPanel {
             return series + " - " + month + ": " + String.format("%,.0f VNĐ", value.doubleValue());
         });
 
-        // Gán màu theo tên series (an toàn khi thứ tự row thay đổi)
-        // Định nghĩa map tên series -> màu
         Map<String, Paint> colorMap = new HashMap<>();
         colorMap.put("Bánh ngọt", new Color(255, 99, 132));
         colorMap.put("Cà phê", new Color(54, 162, 235));
         colorMap.put("Trà", new Color(75, 192, 192));
         colorMap.put("Khác", new Color(255, 206, 86));
-        colorMap.put("Tổng doanh thu", new Color(33, 33, 33)); // tổng = màu tối (đen xám)
+        colorMap.put("Tổng doanh thu", new Color(33, 33, 33));
 
-        // Áp color cho mỗi row hiện có trong dataset
         for (int r = 0; r < dataset.getRowCount(); r++) {
             String rowName = dataset.getRowKey(r).toString();
             Paint p = colorMap.getOrDefault(rowName, null);
             if (p != null) {
                 renderer.setSeriesPaint(r, p);
-            } else {
-                // Nếu không có map, để JFreeChart tự pick màu (hoặc có thể đặt màu mặc định)
             }
             renderer.setSeriesStroke(r, new BasicStroke(2.0f));
         }
@@ -280,13 +267,11 @@ public class StatisticPage extends JPanel {
         renderer.setDefaultShapesFilled(true);
         plot.setRenderer(renderer);
 
-        // Trục X giữ thứ tự tháng - vì dataset đã có cột Tháng 1..12 đúng thứ tự nên domain sẽ đúng
         CategoryAxis domainAxis = plot.getDomainAxis();
         domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         domainAxis.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 11));
         domainAxis.setCategoryMargin(0.05);
 
-        // Trục Y
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setNumberFormatOverride(NumberFormat.getInstance());
         rangeAxis.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -308,10 +293,11 @@ public class StatisticPage extends JPanel {
             return;
         }
 
-        // Pie
+        // Pie Chart update
         piePanel.getChart().getTitle().setText("Tỷ lệ doanh thu theo loại món (" + month + "/" + year + ")");
         PiePlot piePlot = (PiePlot) piePanel.getChart().getPlot();
         piePlot.setDataset(pieData);
+
         for (Object keyObj : pieData.getKeys()) {
             String key = keyObj.toString();
             switch (key) {
@@ -322,14 +308,14 @@ public class StatisticPage extends JPanel {
             }
         }
 
-        // Line: set dataset mới
+        // Line Chart update
         linePanel.getChart().getTitle().setText("Doanh thu theo tháng trong năm " + year);
+
         CategoryPlot linePlot = linePanel.getChart().getCategoryPlot();
         LineAndShapeRenderer renderer = (LineAndShapeRenderer) linePlot.getRenderer();
 
         linePlot.setDataset(lineData);
 
-        // Re-apply colors theo tên series (dataset mới có thể khác)
         Map<String, Paint> colorMap = new HashMap<>();
         colorMap.put("Bánh ngọt", new Color(255, 99, 132));
         colorMap.put("Cà phê", new Color(54, 162, 235));
@@ -343,5 +329,27 @@ public class StatisticPage extends JPanel {
             if (p != null) renderer.setSeriesPaint(r, p);
             renderer.setSeriesStroke(r, new BasicStroke(2.0f));
         }
+    }
+
+    // ================= REFRESH TOÀN TRANG =================
+    public void reloadData() {
+
+        // ====== CẬP NHẬT SUMMARY ======
+        JPanel summaryPanel = (JPanel) getComponent(0);
+        summaryPanel.removeAll();
+
+        summaryPanel.add(createSummaryCard("Doanh thu hôm nay", thongkeDAO.getTodayRevenue(), new Color(121, 85, 72)));
+        summaryPanel.add(createSummaryCard("Số đơn hàng", thongkeDAO.getTodayOrderCount(), new Color(33, 150, 243)));
+        summaryPanel.add(createSummaryCard("Khách hàng mới", thongkeDAO.getNewCustomersToday(), new Color(76, 175, 80)));
+
+        summaryPanel.revalidate();
+        summaryPanel.repaint();
+
+        // ====== LẤY THÁNG + NĂM HIỆN TẠI ======
+        int month = comboMonth.getSelectedIndex() + 1;
+        int year = Integer.parseInt(comboYear.getSelectedItem().toString());
+
+        // ====== CẬP NHẬT BIỂU ĐỒ ======
+        updateCharts(month, year);
     }
 }

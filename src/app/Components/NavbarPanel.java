@@ -20,10 +20,10 @@ public class NavbarPanel extends JPanel {
     public NavbarButton sellButton;
     public NavbarButton receiptButton;
     public NavbarButton productButton;
-    
+
     // ĐÃ ĐỔI TÊN: promotionRateButton -> customerButton
-    public NavbarButton customerButton; 
-    
+    public NavbarButton customerButton;
+
     public NavbarButton statisticsButton;
     public NavbarButton employeeButton;
     // private final Animator animator;
@@ -44,10 +44,10 @@ public class NavbarPanel extends JPanel {
         this.sellButton.setShowMenu(showMenu);
         this.receiptButton.setShowMenu(showMenu);
         this.productButton.setShowMenu(showMenu);
-        
+
         // ĐÃ CẬP NHẬT: promotionRateButton -> customerButton
-        this.customerButton.setShowMenu(showMenu); 
-        
+        this.customerButton.setShowMenu(showMenu);
+
         this.statisticsButton.setShowMenu(showMenu);
         this.employeeButton.setShowMenu(showMenu);
     }
@@ -89,10 +89,12 @@ public class NavbarPanel extends JPanel {
         productButton = new NavbarButton("Sản Phẩm", Feather.BOX,
                 24, 200, 35, Font.PLAIN, 12, 10);
         productButton.addActionListener(action);
+        productButton.setEnabled(acc.getRole().equals("Admin") || acc.getRole().equals("QuanLy"));
+
         this.add(productButton);
 
         // ĐÃ ĐỔI: "Khuyến Mại" -> "Khách Hàng", Feather.DISC -> Feather.USERS, promotionRateButton -> customerButton
-        customerButton = new NavbarButton("Khách Hàng", Feather.USERS, 
+        customerButton = new NavbarButton("Khách Hàng", Feather.USERS,
                 24, 200, 35, Font.PLAIN, 12, 10);
         customerButton.addActionListener(action);
         this.add(customerButton);
@@ -100,17 +102,18 @@ public class NavbarPanel extends JPanel {
         statisticsButton = new NavbarButton("Thống Kê", Feather.BAR_CHART,
                 24, 200, 35, Font.PLAIN, 12, 10);
         statisticsButton.addActionListener(action);
-        statisticsButton.setEnabled(acc.getRole().equals("Admin"));
+        statisticsButton.setEnabled(acc.getRole().equals("Admin") || acc.getRole().equals("QuanLy"));
         this.add(statisticsButton);
 
         employeeButton = new NavbarButton("Nhân Viên", Feather.USER,
                 24, 200, 35, Font.PLAIN, 12, 10);
         employeeButton.addActionListener(action);
+        employeeButton.setEnabled(acc.getRole().equals("Admin") || acc.getRole().equals("QuanLy"));
         this.add(employeeButton);
     }
 
     public void timingEventCloseButton(NavbarButton button, double iconWidth, double iconTextGap,
-                                     double borderRightWidth, double fraction) {
+                                       double borderRightWidth, double fraction) {
         FontIcon icon = FontIcon.of(button.getIkon(), (int) (iconWidth * (fraction)),
                 Color.WHITE);
         button.setIcon(icon);
