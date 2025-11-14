@@ -183,9 +183,20 @@ public class ProductPage extends JPanel {
         searchBtn.setBackground(new Color(241, 211, 178));
         searchBtn.addActionListener(e -> search());
 
+        // === Nút REFRESH (Load lại trang) ===
+        JButton refreshBtn = new JButton(FontIcon.of(Feather.ROTATE_CW, 20, Color.BLACK));
+        refreshBtn.setBackground(new Color(241, 211, 178));
+        refreshBtn.setToolTipText("Làm mới danh sách");
+        refreshBtn.setPreferredSize(new Dimension(36, 28));
+        refreshBtn.addActionListener(e -> {
+            clearForm();
+            loadTable();
+        });
+
         left.add(searchLabel);
         left.add(searchBar);
         left.add(searchBtn);
+        left.add(refreshBtn); // <-- nút refresh được thêm vào đây
 
         JPanel right = new JPanel(new FlowLayout(FlowLayout.LEFT));
         right.setOpaque(false);

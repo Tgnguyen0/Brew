@@ -151,11 +151,19 @@ public class EmployeePage extends JPanel {
         searchBar = makeTextField(240);
         JButton searchBtn = iconButton(Feather.SEARCH);
         searchBtn.addActionListener(e -> search());
-        
-     
+
+        //  NÚT REFRESH (LOAD LẠI TRANG)
+        JButton refreshBtn = iconButton(Feather.ROTATE_CW);
+        refreshBtn.setToolTipText("Làm mới danh sách");
+        refreshBtn.addActionListener(e -> {
+            clearForm();
+            loadTable();
+        });
+
         left.add(searchLabel);
         left.add(searchBar);
         left.add(searchBtn);
+        left.add(refreshBtn);  
 
         // Right: actions
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
@@ -367,8 +375,8 @@ public class EmployeePage extends JPanel {
         Employee e = DAO_Employee.getEmployeeById(id);
         if (e == null) return;
 
-        firstNameInput.setText(nz(e.getLastName()));     // Họ
-        lastNameInput.setText(nz(e.getFirstName()));     // Tên
+        firstNameInput.setText(nz(e.getFirstName()));     // Họ
+        lastNameInput.setText(nz(e.getLastName()));     // Tên
         phoneInput.setText(nz(e.getPhoneNumber()));
         emailInput.setText(nz(e.getEmail()));
         sexCombo.setSelectedItem(e.isSex() ? "Nam" : "Nữ");
