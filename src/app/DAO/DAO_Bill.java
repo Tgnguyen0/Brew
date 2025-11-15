@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DAO_Bill {
-    public List<Bill> selectAll() {
+	public List<Bill> selectTop35() {
+        // Cú pháp SQL Server: TOP 35 (hoặc 100 tùy theo nhu cầu)
         String sql = """
             SELECT TOP 35 
                 billId, dateCreated, hourIn, hourOut, 
@@ -22,7 +23,6 @@ public class DAO_Bill {
         """;
 
         List<Bill> list = new ArrayList<>();
-        DAO_BillDetail detailDAO = new DAO_BillDetail();
 
         try (Connection con = XJdbc.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -41,8 +41,6 @@ public class DAO_Bill {
                 bill.setTotal(rs.getDouble("total"));
                 bill.setCustPayment(rs.getDouble("custPayment"));
                 bill.setStatus(rs.getString("status"));
-
-                // ✅ Lấy ID thực từ ResultSet
 
                 bill.setCustomer(DAO_Customer.getCustomerById(rs.getString("customerId")));
                 bill.setEmployee(DAO_Employee.getEmployeeById(rs.getString("employeeId")));

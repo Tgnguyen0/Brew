@@ -1,7 +1,6 @@
 package app.Collections;
 
 import app.Object.Customer;
-
 import java.util.ArrayList;
 
 public class Collection_Member {
@@ -16,22 +15,31 @@ public class Collection_Member {
     }
 
     public boolean addMember(Customer newMember) {
+
+        if (ml.stream().anyMatch(c -> c.getCustomerId().equals(newMember.getCustomerId()))) {
+            return false;
+        }
         return ml.add(newMember);
     }
-
-    public boolean addAllMember(ArrayList<Customer> newList) {
-        return ml.addAll(newList);
-    }
+    
+//    // Thêm phương thức để cập nhật
+//    public boolean updateMember(Customer updatedMember) {
+//        for (int i = 0 ; i < ml.size() ; i++) {
+//<<<<<<< HEAD
+//            if (ml.get(i).getCustomerId().equals(updatedMember.getCustomerId())) {
+//                ml.set(i, updatedMember);
+//=======
+//            if (ml.get(i).getCustomerId().equals(id)) {
+//                ml.remove(i);
+//>>>>>>> a401b2ce7accd4216e6d71484699c187012e86e3
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public boolean deleteMember(String id) {
-        for (int i = 0 ; i < ml.size() ; i++) {
-            if (ml.get(i).getCustomerId().equals(id)) {
-                ml.remove(i);
-                return true;
-            }
-        }
-
-        return false;
+        return ml.removeIf(c -> c.getCustomerId().equals(id));
     }
 
     public Customer searchMember(String phone) {
@@ -40,7 +48,16 @@ public class Collection_Member {
                 return ml.get(i);
             }
         }
-
+        return null;
+    }
+    
+    // Thêm phương thức search theo ID
+    public Customer searchMemberById(String id) {
+        for (int i = 0 ; i < ml.size() ; i++) {
+            if (ml.get(i).getCustomerId().equals(id)) {
+                return ml.get(i);
+            }
+        }
         return null;
     }
 }

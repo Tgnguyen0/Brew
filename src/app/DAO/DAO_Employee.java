@@ -148,6 +148,7 @@ public class DAO_Employee {
         return null;
     }
 
+
     // Tái sử dụng hàm dựng Employee từ ResultSet
     private static Employee extractEmployee(ResultSet rs) throws SQLException {
         return new Employee(
@@ -160,5 +161,6 @@ public class DAO_Employee {
                 rs.getString("role"),
                 rs.getString("address")
         );
-        }
+        
+}
 }

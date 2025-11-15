@@ -66,7 +66,7 @@ public class HistoryDialog extends JDialog {
         // Sử dụng Renderer đã điều chỉnh
         billList.setCellRenderer(new BillListRenderer());
         // Tăng chiều cao của mỗi item
-        billList.setFixedCellHeight(70);
+        billList.setFixedCellHeight(70); 
 
         JScrollPane scrollPane = new JScrollPane(billList);
         scrollPane.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR, 1));
@@ -80,7 +80,7 @@ public class HistoryDialog extends JDialog {
         add(listContainer, BorderLayout.CENTER);
 
         if (bills.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Khách hàng " + fullName + " chưa có hóa đơn nào.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+             JOptionPane.showMessageDialog(this, "Khách hàng " + fullName + " chưa có hóa đơn nào.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -91,34 +91,34 @@ public class HistoryDialog extends JDialog {
 
             if (value instanceof Bill) {
                 Bill bill = (Bill) value;
-
-                String billDateTime = (bill.getDateCreated() != null && bill.getHourIn() != null)
-                        ? bill.getHourIn().toLocalDateTime().format(DATE_TIME_FORMATTER)
-                        : "N/A";
-
-                String totalFormatted = CURRENCY_FORMAT.format(bill.calculateTotal());
-
+                
+                String billDateTime = (bill.getDateCreated() != null && bill.getHourIn() != null) 
+                                      ? bill.getHourIn().toLocalDateTime().format(DATE_TIME_FORMATTER) 
+                                      : "N/A";
+                
+                String totalFormatted = CURRENCY_FORMAT.format(bill.getTotal());
+                
                 // --- Bổ sung STT (index + 1) ---
                 int stt = index + 1;
 
                 // Sử dụng HTML và margin/padding để tạo khoảng cách giữa các dòng
                 String text = String.format("<html>" +
-                                "<div style='padding: 5px 0;'>" + // Thêm padding trên dưới
-                                "<b>%d. Mã HĐ: %s</b> | Thời gian: %s<br>" + // STT và dòng 1
-                                "&nbsp;&nbsp;&nbsp;&nbsp;Tổng tiền: <font color='#%06x'>%s</font> | SL Mặt hàng: %d | Trạng thái: %s" + // Dòng 2 (có thụt lề)
-                                "</div></html>",
-                        stt,
-                        bill.getBillId(),
-                        billDateTime,
-                        PRIMARY_COLOR.getRGB() & 0xFFFFFF,
-                        totalFormatted,
-                        bill.getQuantityOfItems(),
-                        bill.getStatus()
+                    "<div style='padding: 5px 0;'>" + // Thêm padding trên dưới
+                    "<b>%d. Mã HĐ: %s</b> | Thời gian: %s<br>" + // STT và dòng 1
+                    "&nbsp;&nbsp;&nbsp;&nbsp;Tổng tiền: <font color='#%06x'>%s</font> | SL Mặt hàng: %d | Trạng thái: %s" + // Dòng 2 (có thụt lề)
+                    "</div></html>",
+                    stt,
+                    bill.getBillId(),
+                    billDateTime,
+                    PRIMARY_COLOR.getRGB() & 0xFFFFFF,
+                    totalFormatted,
+                    bill.getQuantityOfItems(),
+                    bill.getStatus()
                 );
-
+                
                 label.setText(text);
                 label.setFont(ROBOTO_REGULAR_12);
-
+                
                 // Màu nền khi chọn
                 label.setBackground(isSelected ? SELECTION_COLOR : SECONDARY_COLOR);
                 label.setForeground(TEXT_COLOR);

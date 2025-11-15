@@ -93,17 +93,46 @@ public class PDF_Exporter {
     }
     
     private void addSummaryInfo(Document document, Bill bill) {
-        String customerName = "Khách lẻ"; //Ghép tên
-
-        if (bill.getCustomer() != null) {
-            customerName = bill.getCustomer().getFirstName() + " " + bill.getCustomer().getLastName();
+        String customerName; 
+        
+        // FIX LỖI: Kiểm tra bill.getCustomer() == null trước khi gọi getFirstName()
+        if (bill.getCustomer() == null) {
+            // Khách lẻ hoặc khách hàng vãng lai.
+            // Ưu tiên SĐT, nếu không có SĐT thì là "Khách lẻ"
+            if (bill.getPhoneNumber() != null && !bill.getPhoneNumber().trim().isEmpty()) {
+                customerName = "Khách hàng"; 
+            } else {
+                customerName = "Khách lẻ";
+            }
+        } else if (bill.getCustomer().getFirstName() == null && bill.getCustomer().getLastName() == null) {
+            customerName = "Khách lẻ";
+        } else {
+            customerName = (bill.getCustomer().getFirstName() != null ? bill.getCustomer().getFirstName() : "")
+                         + " " 
+                         + (bill.getCustomer().getLastName() != null ? bill.getCustomer().getLastName() : "");
+            customerName = customerName.trim();
         }
 
-        String employeeName = "N/A"; //Ghép tên
-
-        if (bill.getEmployee() != null) {
-            employeeName = bill.getEmployee().getFirstName() + " " + bill.getEmployee().getLastName();
+        String employeeName; 
+        
+        // FIX LỖI: Kiểm tra bill.getEmployee() == null trước khi gọi getFirstName()
+        if (bill.getEmployee() == null) {
+            employeeName = "N/A";
+        } else if (bill.getEmployee().getFirstName() == null && bill.getEmployee().getLastName() == null) {
+            // Giả định nếu không có tên thì dùng ID
+            employeeName = bill.getEmployee().getId() != null ? bill.getEmployee().getId() : "N/A";
+        } else {
+            employeeName = (bill.getEmployee().getFirstName() != null ? bill.getEmployee().getFirstName() : "") 
+                         + " " 
+                         + (bill.getEmployee().getLastName() != null ? bill.getEmployee().getLastName() : "");
+            employeeName = employeeName.trim();
         }
+        
+        // Nếu tên rỗng sau khi trim, kiểm tra lại ID cho nhân viên
+        if (employeeName.isEmpty() && bill.getEmployee() != null) {
+            employeeName = bill.getEmployee().getId() != null ? bill.getEmployee().getId() : "N/A";
+        }
+
 
         Table summaryTable = new Table(UnitValue.createPercentArray(new float[]{1, 1}));
         summaryTable.setWidth(UnitValue.createPercentValue(100));
