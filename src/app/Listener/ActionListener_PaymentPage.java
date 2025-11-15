@@ -97,6 +97,9 @@ public class ActionListener_PaymentPage implements ActionListener {
                     paymentPage.showPaySuccessfullyOptionPane(paymentPage.change);
 //                    CardLayout cardLayout = (CardLayout) BrewGUI.pageContainer.getLayout();
 //                    cardLayout.show(BrewGUI.pageContainer, "Receipt Page");
+
+//                    paymentPage.collectionBillDetails.removeAll();
+//                    paymentPage.collectionTable.removeAll();
                 }
             } catch (NumberFormatException ex) {
                 ex.printStackTrace();

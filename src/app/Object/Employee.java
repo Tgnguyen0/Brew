@@ -3,32 +3,32 @@ package app.Object;
 import java.io.Serializable;
 
 public class Employee implements Serializable {
-    private String id;
+    private String empId;
     private String firstName;
     private String lastName;
     private boolean gender; // true = Nam, false = Nữ
-    private String phone;
+    private String phoneNumber;
     private String email;
     private String role;
     private String address;
 
     public Employee() {}
 
-    public Employee(String id, String firstName, String lastName, boolean gender,
+    public Employee(String empId, String firstName, String lastName, boolean gender,
                     String phone, String email, String role, String address) {
-        this.id = id;
+        this.empId = empId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        this.phone = phone;
+        this.phoneNumber = phone;
         this.email = email;
         this.role = role;
         this.address = address; 
     }
 
     // ===== Canonical getters/setters =====
-    public String getId() { return this.id; }
-    public void setId(String id) { this.id = id; }
+    public String getId() { return this.empId; }
+    public void setId(String id) { this.empId = id; }
 
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
@@ -39,8 +39,8 @@ public class Employee implements Serializable {
     public boolean isGender() { return gender; }
     public void setGender(boolean gender) { this.gender = gender; }
 
-    public String getPhone() { return this.phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public String getPhone() { return this.phoneNumber; }
+    public void setPhone(String phone) { this.phoneNumber = phone; }
 
     public String getEmail() { return this.email; }
     public void setEmail(String email) { this.email = email; }
@@ -63,11 +63,11 @@ public class Employee implements Serializable {
     @Override
     public String toString() {
         return "Employee{" +
-                "id='" + id + '\'' +
+                "id='" + empId + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", gender=" + gender +
-                ", phone='" + phone + '\'' +
+                ", phone='" + phoneNumber + '\'' +
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
                 ", address='" + address + '\'' +

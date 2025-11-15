@@ -14,7 +14,6 @@ public class Bill implements Serializable{
 	private double total;
 	private double custPayment;
 	private String status;
-
 	private List<BillDetail> details;
 	private Customer customer;
 	private Employee employee;

@@ -37,6 +37,8 @@ public class Collection_Table {
         return tableList.remove(t);
     }
 
+    public boolean removeAll() { return tableList.removeAll(tableList); }
+
     public void updateStatus(String id, Status status) {
         Table t = getTableById(id);
         if (t != null) {

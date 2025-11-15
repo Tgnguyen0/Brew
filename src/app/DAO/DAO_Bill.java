@@ -47,9 +47,9 @@ public class DAO_Bill {
                 bill.setCustomer(DAO_Customer.getCustomerById(rs.getString("customerId")));
                 bill.setEmployee(DAO_Employee.getEmployeeById(rs.getString("employeeId")));
                 bill.setTable(DAO_Table.findTable(rs.getString("tableId")));
-                String billId = bill.getBillId();
-                List<BillDetail> details = detailDAO.selectByBillId(billId);
-                bill.setDetails(details);
+//                String billId = bill.getBillId();
+//                List<BillDetail> details = detailDAO.selectByBillId(billId);
+//                bill.setDetails(details);
                 list.add(bill);
             }
 

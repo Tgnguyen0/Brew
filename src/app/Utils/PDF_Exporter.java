@@ -93,17 +93,15 @@ public class PDF_Exporter {
     }
     
     private void addSummaryInfo(Document document, Bill bill) {
-        String customerName; //Ghép tên
-        if (bill.getCustomer().getFirstName() == null && bill.getCustomer().getLastName() == null) {
-            customerName = "Khách lẻ";
-        } else {
+        String customerName = "Khách lẻ"; //Ghép tên
+
+        if (bill.getCustomer() != null) {
             customerName = bill.getCustomer().getFirstName() + " " + bill.getCustomer().getLastName();
         }
 
-        String employeeName; //Ghép tên
-        if (bill.getEmployee().getFirstName() == null && bill.getEmployee().getLastName() == null) {
-            employeeName = "N/A";
-        } else {
+        String employeeName = "N/A"; //Ghép tên
+
+        if (bill.getEmployee() != null) {
             employeeName = bill.getEmployee().getFirstName() + " " + bill.getEmployee().getLastName();
         }
 
