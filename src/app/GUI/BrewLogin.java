@@ -29,7 +29,7 @@ public class BrewLogin extends JFrame {
             e.printStackTrace();
         }
 
-        setTitle("☕ Đăng Nhập - Brew");
+        setTitle("Đăng Nhập - Brew");
         ImageIcon icon = new ImageIcon("asset/icon.png");
         setIconImage(icon.getImage());
         setSize(950, 550);

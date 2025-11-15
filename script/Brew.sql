@@ -260,8 +260,7 @@ VALUES
 (N'Nguyễn', N'Minh Quân', '0988000002', N'quanly1.brew@gmail.com', 1, N'Quản lý', N'TP. Hồ Chí Minh'),
 (N'Trần', N'Thiên Phúc', '0988000003', N'quanly2.brew@gmail.com', 0, N'Quản lý', N'Hà Nội'),
 (N'Lê', N'Thị Mai', '0988000004', N'nv1.brew@gmail.com', 1, N'Nhân viên', N'Đà Nẵng'),
-(N'Phạm', N'Thi Hồng', '0988000005', N'nv2.brew@gmail.com', 0, N'Nhân viên', N'Cần Thơ'),
-(N'Nguyễn', N'Nhật Tấn', '07658885', N'quanly1.brew@gmail.com', 1, N'Quản lý', N'TP. Hồ Chí Minh');
+(N'Phạm', N'Thi Hồng', '0988000005', N'nv2.brew@gmail.com', 0, N'Nhân viên', N'Cần Thơ');
 
 INSERT INTO MenuItem (item_name, price, category, description) VALUES
 (N'Cà phê sữa đá', 25000, N'Cà phê', N'Cà phê pha phin với sữa đặc và đá.'),
@@ -274,9 +273,9 @@ INSERT INTO MenuItem (item_name, price, category, description) VALUES
 (N'Trà đào cam sả', 35000, N'Trà', N'Trà đào kết hợp cam tươi và sả thơm mát.'),
 (N'Trà chanh', 25000, N'Trà', N'Trà đen pha chanh tươi và đá.'),
 (N'Trà vải', 32000, N'Trà', N'Trà đen pha với vải, vị ngọt dịu.'),
-(N'Trá quất mật ong', 28000, N'Trà', N'Trà chanh kết hợp quất và mật ong nguyên chất.'),
-(N'Trá sữa trân châu', 35000, N'Trà', N'Trá sữa pha trân châu dai.'),
-(N'Trá sữa Matcha', 38000, N'Trà', N'Trá sữa vị matcha Nhật Bản.'),
+(N'Trà quất mật ong', 28000, N'Trà', N'Trà chanh kết hợp quất và mật ong nguyên chất.'),
+(N'Trà sữa trân châu', 35000, N'Trà', N'Trá sữa pha trân châu dai.'),
+(N'Trà sữa Matcha', 38000, N'Trà', N'Trá sữa vị matcha Nhật Bản.'),
 (N'Sữa tươi trân châu đường nâu', 42000, N'Khác', N'Sữa tươi lạnh pha trân châu đường nâu.'),
 (N'Soda chanh', 30000, N'Khác', N'Soda tươi pha chanh mát lạnh.'),
 (N'Soda việt quất', 32000, N'Khác', N'Soda pha vị việt quất chua ngọt.'),
@@ -298,10 +297,10 @@ INSERT INTO MenuItem (item_name, price, category, description) VALUES
 (N'Cà phê trứng', 40000, N'Cà phê', N'Cà phê đậm topping kem trứng.'),
 (N'Cold Brew', 45000, N'Cà phê', N'Cà phê ủ lạnh, mịn và ít axit.'),
 (N'Affogato', 48000, N'Cà phê', N'Espresso rót lên kem vani.'),
-(N'Trá cúc mật ong', 32000, N'Trà', N'Trá cúc pha mật ong.'),
-(N'Trá Oolong sữa', 38000, N'Trà', N'Trá Oolong pha sữa béo.'),
-(N'Trá nhài', 28000, N'Trà', N'Trá nhài thơm nhẹ.'),
-(N'Trá táo quế', 35000, N'Trà', N'Trá hoa quả ấm với táo và quế.'),
+(N'Trà cúc mật ong', 32000, N'Trà', N'Trá cúc pha mật ong.'),
+(N'Trà Oolong sữa', 38000, N'Trà', N'Trá Oolong pha sữa béo.'),
+(N'Trà nhài', 28000, N'Trà', N'Trá nhài thơm nhẹ.'),
+(N'Trà táo quế', 35000, N'Trà', N'Trá hoa quả ấm với táo và quế.'),
 (N'Sinh tố chuối', 35000, N'Khác', N'Sinh tố chuối mịn và ngọt tự nhiên.'),
 (N'Sinh tố cam xoài', 38000, N'Khác', N'Sinh tố cam và xoài kết hợp.'),
 (N'Soda dâu', 32000, N'Khác', N'Soda pha vị dâu tươi.'),
@@ -317,16 +316,14 @@ INSERT INTO MenuItem (item_name, price, category, description) VALUES
 (N'Nước suối', 15000, N'Khác', N'Nước khoáng thiên nhiên.');
 
 
-
-
 -- Thêm dữ liệu mẫu cho bảng Account với mật khẩu dễ nhớ
 INSERT INTO Account (username, password, role, employeeId)
 VALUES
-('admin', '123', 'Admin', 'NV00001'),
-('quanly1', '123', 'QuanLy', 'NV00002'),
-('quanly2', 'l123', 'QuanLy', 'NV00003'),
-('nv1', '123', 'NhanVien', 'NV00004'),
-('nv2', '123', 'NhanVien', 'NV00005')
+('admin', '123', N'Quản trị viên', 'NV00001'),
+('quanly1', '123', N'Quản lý', 'NV00002'),
+('quanly2', 'l123', N'Quản lý', 'NV00003'),
+('nv1', '123', N'Nhân viên', 'NV00004'),
+('nv2', '123', N'Nhân viên', 'NV00005')
 
 
 USE Brew;
@@ -419,9 +416,7 @@ VALUES
 ('2025-07-23', '2025-07-23 08:45', '2025-07-23 09:30', '0905000007', 195000, 195000, N'Đã thanh toán', 'KH00001', 'NV00001', '1'),
 ('2025-08-14', '2025-08-14 13:00', '2025-08-14 13:50', '0905000008', 180000, 180000, N'Đã thanh toán', 'KH00002', 'NV00002', '2'),
 ('2025-09-20', '2025-09-20 17:00', '2025-09-20 17:45', '0905000009', 220000, 220000, N'Đã thanh toán', 'KH00003', 'NV00003', '3'),
-('2025-10-29', '2025-10-29 07:45', '2025-10-29 08:35', '0905000010', 240000, 240000, N'Đã thanh toán', 'KH00004', 'NV00004', '4'),
-('2025-11-18', '2025-11-18 10:30', '2025-11-18 11:20', '0905000011', 210000, 210000, N'Đã thanh toán', 'KH00005', 'NV00005', '5'),
-('2025-12-31', '2025-12-31 18:00', '2025-12-31 18:50', '0905000012', 280000, 280000, N'Đã thanh toán', 'KH00006', 'NV00001', '1');
+('2025-10-29', '2025-10-29 07:45', '2025-10-29 08:35', '0905000010', 240000, 240000, N'Đã thanh toán', 'KH00004', 'NV00004', '4');
 
 
 INSERT INTO BillDetail (billId, menuId, amount, org_price, totalPrice)
@@ -674,19 +669,19 @@ VALUES
 USE Brew
 INSERT INTO Employee (firstName, lastName, phoneNumber, email, sex, role, address)
 VALUES
-(N'Nguyễn', N'Nhật Tấn', '07658885', N'nhattan.brew@gmail.com', 1, N'Quản lý', N'TP. Hồ Chí Minh'),
-(N'Phạm', N'Ngọc Thành', '07658885', N'ngocthanh.brew@gmail.com', 1, N'Quản lý', N'Gia Lai'),
-(N'Dương', N'Thế Khánh', '07658885', N'thekhanh.brew@gmail.com', 1, N'Quản lý', N'Đồng Nai'),
-(N'Nguyễn', N'Hoàng Phong', '07658885', N'hoangphong.brew@gmail.com', 1, N'Quản lý', N'TP. Hồ Chí Minh');
+(N'Nguyễn', N'Nhật Tấn', '07658885', N'nhattan.brew@gmail.com', 1, N'Quản trị viên', N'TP. Hồ Chí Minh'),
+(N'Phạm', N'Ngọc Thành', '07658885', N'ngocthanh.brew@gmail.com', 1, N'Quản trị viên', N'Gia Lai'),
+(N'Dương', N'Thế Khánh', '07658885', N'thekhanh.brew@gmail.com', 1, N'Quản trị viên', N'Đồng Nai'),
+(N'Nguyễn', N'Hoàng Phong', '07658885', N'hoangphong.brew@gmail.com', 1, N'Quản trị viên', N'TP. Hồ Chí Minh');
 
 -- Thêm dữ liệu mẫu cho bảng Account với mật khẩu dễ nhớ
 USE Brew
 INSERT INTO Account (username, password, role, employeeId)
 VALUES
-('AdminTan', '123', 'Admin', 'NV00012'),
-('AdminThanh', '123', 'Admin', 'NV00013'),
-('AdminKhanh', '123', 'Admin', 'NV00014'),
-('AdminPhong', '123', 'Admin', 'NV00015');
+('AdminTan', '123', N'Quản trị viên', 'NV00012'),
+('AdminThanh', '123', N'Quản trị viên', 'NV00013'),
+('AdminKhanh', '123', N'Quản trị viên', 'NV00014'),
+('AdminPhong', '123', N'Quản trị viên', 'NV00015');
 
 /*UPDATE CafeTable
 SET status = 'AVAILABLE'
