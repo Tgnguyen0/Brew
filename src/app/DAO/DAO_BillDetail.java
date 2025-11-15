@@ -14,7 +14,7 @@ public class DAO_BillDetail {
 
     public static List<BillDetail> selectByBillId(String billId) {
         String sql = "SELECT \n" +
-                "    BD.billDetailId, BD.billId, BD.menuId, BD.amount, BD.org_price, BD.totalPrice, \n" +
+                "    BD.billDetailId, BD.billId, BD.menuId, BD.quantity, BD.price, BD.totalPrice, \n" +
                 "    MI.item_name, MI.category \n" +
                 "FROM \n" +
                 "    BillDetail BD \n" +
@@ -40,9 +40,9 @@ public class DAO_BillDetail {
                     bd.setMenuId(rs.getString("menuId"));
 
                     //bd.setMenuId(rs.getString("menuId"));
-                    bd.setQuantity(rs.getInt("amount"));
+                    bd.setQuantity(rs.getInt("quantity"));
 
-                    bd.setPrice(rs.getFloat("org_price"));
+                    bd.setPrice(rs.getFloat("price"));
                     bd.Total_price();
 //                  bd.setTotalPrice(rs.getDouble("totalPrice")); ;
 
@@ -64,7 +64,7 @@ public class DAO_BillDetail {
     }
 
     public static void saveAllBD(List<BillDetail> list) {
-        String sql = "INSERT INTO BillDetail (billId, menuId, amount, org_price, totalPrice) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO BillDetail (billId, menuId, quantity, price, totalPrice) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = XJdbc.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
