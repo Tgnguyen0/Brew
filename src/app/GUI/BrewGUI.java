@@ -245,13 +245,28 @@ public class BrewGUI extends JFrame implements MouseListener {
         btnLogout.setContentAreaFilled(false); // để paintComponent tự vẽ
         btnLogout.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Optional: hover đổi gradient sang đỏ đậm hơn
-        btnLogout.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnLogout.setForeground(Color.WHITE); // giữ chữ trắng
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnLogout.setForeground(Color.WHITE);
+        // Sự kiện đăng xuất
+        btnLogout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(
+                        null,
+                        "Bạn có chắc muốn đăng xuất?",
+                        "Xác nhận",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    // ✧ Nếu bạn có lưu thông tin đăng nhập tạm -> reset ở đây
+                    // Session.currentUser = null;  (ví dụ)
+
+                    // ✧ Đóng giao diện hiện tại
+                    SwingUtilities.getWindowAncestor(btnLogout).dispose();
+
+                    // ✧ Mở lại giao diện Login
+                    new BrewLogin().setVisible(true);
+                }
             }
         });
 

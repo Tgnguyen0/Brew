@@ -3,6 +3,8 @@ package app.DAO;
 import app.Connection.XJdbc;
 
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
@@ -202,74 +204,204 @@ public class ThongkeDAO {
     }*/
 
     public static void exportRevenueByYearToExcel(int year, String savePath) {
-        String sql = """
-        SELECT MONTH(dateCreated) AS month, SUM(total) AS total
-        FROM Bill
-        WHERE YEAR(dateCreated) = ?
-        GROUP BY MONTH(dateCreated)
-        ORDER BY MONTH(dateCreated)
-    """;
 
-        try (Connection conn = XJdbc.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        ThongkeDAO dao = new ThongkeDAO();
+        DefaultCategoryDataset dataset = dao.getRevenueByMonthAndCategory(year);
 
-            stmt.setInt(1, year);
-            ResultSet rs = stmt.executeQuery();
+        try (Workbook wb = new XSSFWorkbook()) {
 
-            // Tạo workbook
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Doanh thu " + year);
+            Sheet sheet = wb.createSheet("BaoCao_" + year);
 
-            // ===== HEADER =====
-            Row header = sheet.createRow(0);
-            CellStyle headerStyle = workbook.createCellStyle();
-            Font headerFont = workbook.createFont();
-            headerFont.setBold(true);
-            headerStyle.setFont(headerFont);
+            // ==== FONT ====
+            Font fontNormal = wb.createFont();
+            fontNormal.setFontHeightInPoints((short) 11);
 
-            String[] headers = {"Tháng", "Tổng doanh thu (VNĐ)"};
+            Font fontBold = wb.createFont();
+            fontBold.setFontHeightInPoints((short) 12);
+            fontBold.setBold(true);
+
+            Font fontTitle = wb.createFont();
+            fontTitle.setFontHeightInPoints((short) 16);
+            fontTitle.setBold(true);
+
+            // ==== STYLE CHUNG ====
+            CellStyle styleTitle = wb.createCellStyle();
+            styleTitle.setFont(fontTitle);
+            styleTitle.setAlignment(HorizontalAlignment.CENTER);
+
+            CellStyle styleBoldLeft = wb.createCellStyle();
+            styleBoldLeft.setFont(fontBold);
+            styleBoldLeft.setAlignment(HorizontalAlignment.LEFT);
+
+            CellStyle styleHeader = wb.createCellStyle();
+            styleHeader.setFont(fontBold);
+            styleHeader.setAlignment(HorizontalAlignment.CENTER);
+            styleHeader.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+            styleHeader.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            styleHeader.setBorderTop(BorderStyle.THIN);
+            styleHeader.setBorderBottom(BorderStyle.THIN);
+            styleHeader.setBorderLeft(BorderStyle.THIN);
+            styleHeader.setBorderRight(BorderStyle.THIN);
+
+            CellStyle styleNormal = wb.createCellStyle();
+            styleNormal.setFont(fontNormal);
+            styleNormal.setAlignment(HorizontalAlignment.RIGHT);
+            styleNormal.setDataFormat(wb.createDataFormat().getFormat("#,##0"));
+            styleNormal.setBorderTop(BorderStyle.THIN);
+            styleNormal.setBorderBottom(BorderStyle.THIN);
+            styleNormal.setBorderLeft(BorderStyle.THIN);
+            styleNormal.setBorderRight(BorderStyle.THIN);
+
+            CellStyle styleBoldRight = wb.createCellStyle();
+            styleBoldRight.cloneStyleFrom(styleNormal);
+            styleBoldRight.setFont(fontBold);
+
+            // Dùng để tô vàng dòng "Tổng doanh thu" (từ dataset)
+            CellStyle styleTotalRow = wb.createCellStyle();
+            styleTotalRow.cloneStyleFrom(styleBoldRight);
+            styleTotalRow.setFillForegroundColor(IndexedColors.LEMON_CHIFFON.getIndex());
+            styleTotalRow.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            // ======================= HEADER BÁO CÁO =======================
+
+            // Tiêu đề chính
+            Row titleRow = sheet.createRow(0);
+            Cell titleCell = titleRow.createCell(0);
+            titleCell.setCellValue("BÁO CÁO DOANH THU NĂM " + year);
+            titleCell.setCellStyle(styleTitle);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 17));
+
+            // Thông tin phụ
+            Row r1 = sheet.createRow(2);
+            r1.createCell(0).setCellValue("BREW COFFEE");
+            r1.getCell(0).setCellStyle(styleBoldLeft);
+
+            Row r2 = sheet.createRow(3);
+            r2.createCell(0).setCellValue("Ngày tạo: " + java.time.LocalDate.now());
+            r2.getCell(0).setCellStyle(styleBoldLeft);
+
+            Row r3 = sheet.createRow(4);
+            r3.createCell(0).setCellValue("Người lập báo cáo: Admin");
+            r3.getCell(0).setCellStyle(styleBoldLeft);
+
+            // ======================= HEADER BẢNG =======================
+
+            String[] headers = {
+                    "Loại sản phẩm",
+                    "T1","T2","T3","Q1",
+                    "T4","T5","T6","Q2",
+                    "T7","T8","T9","Q3",
+                    "T10","T11","T12","Q4",
+                    "Tổng năm"
+            };
+
+            Row header = sheet.createRow(6);
             for (int i = 0; i < headers.length; i++) {
-                Cell cell = header.createCell(i);
-                cell.setCellValue(headers[i]);
-                cell.setCellStyle(headerStyle);
+                Cell h = header.createCell(i);
+                h.setCellValue(headers[i]);
+                h.setCellStyle(styleHeader);
             }
 
-            // ===== DATA =====
-            int rowIndex = 1;
-            double tongNam = 0;
+            // ======================= DỮ LIỆU =======================
 
-            while (rs.next()) {
-                int monthValue = rs.getInt("month");
-                double total = rs.getDouble("total");
+            int rowIndex = 7;
+
+            for (int r = 0; r < dataset.getRowCount(); r++) {
 
                 Row row = sheet.createRow(rowIndex++);
-                row.createCell(0).setCellValue("Tháng " + monthValue);
-                row.createCell(1).setCellValue(total);
+                String category = dataset.getRowKey(r).toString();
 
-                tongNam += total;
+                boolean isTotalRow = "Tổng doanh thu".equalsIgnoreCase(category.trim());
+
+                // cột "Loại sản phẩm"
+                Cell catCell = row.createCell(0);
+                catCell.setCellValue(category);
+                catCell.setCellStyle(isTotalRow ? styleTotalRow : styleBoldLeft);
+
+                double q1 = 0, q2 = 0, q3 = 0, q4 = 0, total = 0;
+
+                // mapping đúng vị trí của từng tháng
+                int[] monthCol = {
+                        1,  // T1
+                        2,  // T2
+                        3,  // T3
+                        5,  // T4
+                        6,  // T5
+                        7,  // T6
+                        9,  // T7
+                        10, // T8
+                        11, // T9
+                        13, // T10
+                        14, // T11
+                        15  // T12
+                };
+
+                for (int m = 0; m < 12; m++) {
+
+                    double value = dataset.getValue(r, m) != null ?
+                            dataset.getValue(r, m).doubleValue() : 0;
+
+                    int colIndex = monthCol[m];  // ⭐ lấy đúng cột
+                    Cell c = row.createCell(colIndex);
+                    c.setCellValue(value);
+                    c.setCellStyle(styleNormal);
+
+                    // TÍNH QUÝ
+                    if (m < 3) q1 += value;
+                    else if (m < 6) q2 += value;
+                    else if (m < 9) q3 += value;
+                    else q4 += value;
+
+                    total += value;
+                }
+
+                // ghi Q1–Q4 + Tổng năm
+                Cell cQ1 = row.createCell(4);
+                cQ1.setCellValue(q1);
+                cQ1.setCellStyle(isTotalRow ? styleTotalRow : styleBoldRight);
+
+                Cell cQ2 = row.createCell(8);
+                cQ2.setCellValue(q2);
+                cQ2.setCellStyle(isTotalRow ? styleTotalRow : styleBoldRight);
+
+                Cell cQ3 = row.createCell(12);
+                cQ3.setCellValue(q3);
+                cQ3.setCellStyle(isTotalRow ? styleTotalRow : styleBoldRight);
+
+                Cell cQ4 = row.createCell(16);
+                cQ4.setCellValue(q4);
+                cQ4.setCellStyle(isTotalRow ? styleTotalRow : styleBoldRight);
+
+                Cell cYear = row.createCell(17);
+                cYear.setCellValue(total);
+                cYear.setCellStyle(isTotalRow ? styleTotalRow : styleBoldRight);
             }
 
-            // ===== TOTAL =====
-            Row totalRow = sheet.createRow(rowIndex + 1);
-            totalRow.createCell(0).setCellValue("TỔNG CỘNG");
-            totalRow.createCell(1).setCellValue(tongNam);
+            // ❌ KHÔNG thêm dòng "Tổng doanh thu" thứ 2 nữa
+            // (vì dataset đã có 1 row "Tổng doanh thu" rồi)
 
-            // Auto size column
-            sheet.autoSizeColumn(0);
-            sheet.autoSizeColumn(1);
+            // ======================= FORMAT + FREEZE =======================
+            sheet.createFreezePane(1, 7); // khóa header + cột loại sản phẩm
 
-            // ===== GHI FILE =====
+            for (int i = 0; i <= 17; i++) {
+                sheet.autoSizeColumn(i);
+                // tránh cột quá hẹp → bị ####
+                if (sheet.getColumnWidth(i) < 3500) {
+                    sheet.setColumnWidth(i, 3500);
+                }
+            }
+
             try (FileOutputStream fos = new FileOutputStream(savePath)) {
-                workbook.write(fos);
+                wb.write(fos);
             }
 
-            workbook.close();
-
-            System.out.println("✅ Xuất file Excel thành công: " + savePath);
+            System.out.println("🎉 Xuất Excel đẹp & đúng dữ liệu thành công!");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 
 }
