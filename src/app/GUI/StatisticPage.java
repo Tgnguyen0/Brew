@@ -3,14 +3,18 @@ package app.GUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 
 import org.jfree.chart.*;
 import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.*;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -20,10 +24,12 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 
 import app.DAO.ThongkeDAO;
+import app.InitFont.CustomFont;
 
 public class StatisticPage extends JPanel {
 
     private ThongkeDAO thongkeDAO = new ThongkeDAO();
+    private final CustomFont customFont = new CustomFont();
 
     private JComboBox<String> comboMonth;
     private JComboBox<String> comboYear;
@@ -31,6 +37,7 @@ public class StatisticPage extends JPanel {
     private ChartPanel linePanel;
 
     public StatisticPage() {
+
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.white);
         setPreferredSize(new Dimension(1100, 600));
@@ -46,21 +53,26 @@ public class StatisticPage extends JPanel {
 
         add(summaryPanel, BorderLayout.NORTH);
 
-        // ========== CENTER (Filter + Charts) ==========
+        // ========== CENTER ==========
+
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
         centerPanel.setBackground(Color.white);
 
-        // Bộ lọc tháng & năm
+        // Bộ lọc tháng năm
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         filterPanel.setBackground(Color.white);
 
         JLabel lblMonth = new JLabel("Tháng:");
+        lblMonth.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
+
         JLabel lblYear = new JLabel("Năm:");
+        lblYear.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 14));
 
         comboMonth = new JComboBox<>(new String[]{
                 "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
                 "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
         });
+
         comboYear = new JComboBox<>(new String[]{"2023", "2024", "2025"});
 
         styleComboBox(comboMonth);
@@ -71,15 +83,15 @@ public class StatisticPage extends JPanel {
         filterPanel.add(lblYear);
         filterPanel.add(comboYear);
 
+        // Nút xuất Excel (Preview trước)
         JButton btnExportExcel = new JButton("Xuất Excel");
         btnExportExcel.setFocusPainted(false);
         btnExportExcel.setBackground(new Color(76, 175, 80));
         btnExportExcel.setForeground(Color.white);
-        btnExportExcel.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnExportExcel.setFont(customFont.getRobotoFonts().get(1).deriveFont(Font.BOLD, 14));
         btnExportExcel.setPreferredSize(new Dimension(140, 35));
         btnExportExcel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hover
         btnExportExcel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -92,39 +104,16 @@ public class StatisticPage extends JPanel {
             }
         });
 
-        // === Hành động khi nhấn nút ===
+        // → Chỉ mở preview, không xuất ngay
         btnExportExcel.addActionListener(e -> {
             int year = Integer.parseInt(comboYear.getSelectedItem().toString());
-            File defaultDir = new File(System.getProperty("user.dir") + "/excel");
-            if (!defaultDir.exists()) defaultDir.mkdirs();
-
-            JFileChooser fileChooser = new JFileChooser(defaultDir);
-            fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
-            fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files (*.xlsx)", "xlsx"));
-            fileChooser.setSelectedFile(new File("ThongKeDoanhThu_" + year + ".xlsx"));
-
-            int userSelection = fileChooser.showSaveDialog(this);
-            if (userSelection == JFileChooser.APPROVE_OPTION) {
-                File fileToSave = fileChooser.getSelectedFile();
-                String filePath = fileToSave.getAbsolutePath();
-
-                if (!filePath.toLowerCase().endsWith(".xlsx")) {
-                    filePath += ".xlsx";
-                }
-
-                ThongkeDAO.exportRevenueByYearToExcel(year, filePath);
-
-                JOptionPane.showMessageDialog(this,
-                        "✅ Đã xuất thống kê doanh thu năm " + year + " ra file Excel!\n" + filePath,
-                        "Xuất Excel", JOptionPane.INFORMATION_MESSAGE);
-            }
+            showExcelPreview(year);
         });
 
         filterPanel.add(btnExportExcel);
-
         centerPanel.add(filterPanel, BorderLayout.NORTH);
 
-        // Biểu đồ nằm chung 1 hàng
+        // Biểu đồ
         JPanel chartContainer = new JPanel(new GridLayout(1, 2, 10, 0));
         chartContainer.setBackground(Color.white);
         chartContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -138,75 +127,90 @@ public class StatisticPage extends JPanel {
         centerPanel.add(chartContainer, BorderLayout.CENTER);
         add(centerPanel, BorderLayout.CENTER);
 
-        // Xử lý sự kiện thay đổi tháng/năm
-        ItemListener filterListener = e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                int month = comboMonth.getSelectedIndex() + 1;
-                int year = Integer.parseInt(comboYear.getSelectedItem().toString());
-                updateCharts(month, year);
-            }
+        // Sự kiện thay đổi filter
+        ItemListener updateListener = e -> {
+            int month = comboMonth.getSelectedIndex() + 1;
+            int year = Integer.parseInt(comboYear.getSelectedItem().toString());
+            updateCharts(month, year);
         };
-        comboMonth.addItemListener(filterListener);
-        comboYear.addItemListener(filterListener);
+        comboMonth.addItemListener(updateListener);
+        comboYear.addItemListener(updateListener);
     }
 
     // ================= SUMMARY CARD =================
     private JPanel createSummaryCard(String title, String value, Color bgColor) {
+
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(bgColor);
         card.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        card.setPreferredSize(new Dimension(300, 100));
 
         JLabel lblTitle = new JLabel(title);
         lblTitle.setForeground(Color.white);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblTitle.setFont(customFont.getRobotoFonts().get(1).deriveFont(Font.BOLD, 15));
 
         JLabel lblValue = new JLabel(value);
         lblValue.setForeground(Color.white);
-        lblValue.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblValue.setFont(customFont.getRobotoFonts().get(1).deriveFont(Font.BOLD, 20));
 
         card.add(lblTitle, BorderLayout.NORTH);
         card.add(lblValue, BorderLayout.CENTER);
+
         return card;
     }
 
-    // ================= STYLE CHO COMBOBOX =================
-    private void styleComboBox(JComboBox<String> comboBox) {
-        comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        comboBox.setBackground(Color.white);
-        comboBox.setPreferredSize(new Dimension(100, 25));
+    // ================= STYLE COMBOBOX =================
+    private void styleComboBox(JComboBox<String> combo) {
+        combo.setFont(customFont.getRobotoFonts().get(0).deriveFont(14f));
+        combo.setBackground(Color.white);
+        combo.setPreferredSize(new Dimension(110, 28));
 
-        comboBox.addMouseListener(new MouseAdapter() {
+        combo.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                comboBox.setBackground(new Color(230, 240, 255));
+                combo.setBackground(new Color(230, 240, 255));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                comboBox.setBackground(Color.white);
+                combo.setBackground(Color.white);
             }
         });
     }
 
-    // ================= TẠO BIỂU ĐỒ TRÒN =================
+    // ================= PIE CHART =================
     private ChartPanel createPieChartPanel(int month, int year) {
+
         DefaultPieDataset dataset = thongkeDAO.getRevenueByCategory(month, year);
+
+        if (dataset == null || dataset.getItemCount() == 0) {
+            DefaultPieDataset empty = new DefaultPieDataset();
+            empty.setValue("Không có dữ liệu", 100);
+            dataset = empty;
+        }
 
         JFreeChart chart = ChartFactory.createPieChart(
                 "Tỷ lệ doanh thu theo loại món (" + month + "/" + year + ")",
-                dataset,
-                true, true, false
-        );
+                dataset, true, true, false);
 
         chart.setBackgroundPaint(Color.white);
-        chart.getTitle().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        chart.getTitle().setFont(customFont.getRobotoFonts().get(1).deriveFont(Font.BOLD, 15));
 
         PiePlot plot = (PiePlot) chart.getPlot();
         plot.setBackgroundPaint(Color.white);
-        plot.setLabelFont(new Font("Segoe UI", Font.PLAIN, 12));
-        plot.setLabelBackgroundPaint(Color.white);
+        plot.setShadowPaint(null);
+        plot.setOutlineVisible(false);
         plot.setCircular(true);
+
+        plot.setLabelFont(customFont.getRobotoFonts().get(0).deriveFont(13f));
+        plot.setLabelBackgroundPaint(new Color(255, 255, 255, 180));
+
+        plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
+                "{0}: {2}",
+                new DecimalFormat("0"),
+                new DecimalFormat("0.00%")
+        ));
+
+        plot.setSimpleLabels(false);
 
         for (Object keyObj : dataset.getKeys()) {
             String key = keyObj.toString();
@@ -218,138 +222,277 @@ public class StatisticPage extends JPanel {
             }
         }
 
-        ChartPanel panel = new ChartPanel(chart);
-        panel.setBackground(Color.white);
-        return panel;
+        return new ChartPanel(chart);
     }
 
-    // ================= BIỂU ĐỒ LINE =================
+    // ================= LINE CHART =================
     private ChartPanel createLineChartPanel(int year) {
+
         DefaultCategoryDataset dataset = thongkeDAO.getRevenueByMonthAndCategory(year);
 
         JFreeChart chart = ChartFactory.createLineChart(
                 "Doanh thu theo loại sản phẩm trong năm " + year,
-                "Tháng", "Doanh thu (VNĐ)", dataset,
-                PlotOrientation.VERTICAL, true, true, false);
+                "Tháng",
+                "Doanh thu (VNĐ)",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false
+        );
 
         chart.setBackgroundPaint(Color.white);
-        chart.setTitle(new TextTitle(chart.getTitle().getText(), new Font("Segoe UI", Font.BOLD, 16)));
+        chart.getTitle().setFont(customFont.getRobotoFonts().get(1).deriveFont(Font.BOLD, 15));
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.setBackgroundPaint(Color.white);
         plot.setRangeGridlinePaint(Color.lightGray);
 
         LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, true);
-        renderer.setDefaultToolTipGenerator((dataset1, row, column) -> {
-            Number value = dataset1.getValue(row, column);
-            String series = dataset1.getRowKey(row).toString();
-            String month = dataset1.getColumnKey(column).toString();
-            return series + " - " + month + ": " + String.format("%,.0f VNĐ", value.doubleValue());
-        });
-
-        Map<String, Paint> colorMap = new HashMap<>();
-        colorMap.put("Bánh ngọt", new Color(255, 99, 132));
-        colorMap.put("Cà phê", new Color(54, 162, 235));
-        colorMap.put("Trà", new Color(75, 192, 192));
-        colorMap.put("Khác", new Color(255, 206, 86));
-        colorMap.put("Tổng doanh thu", new Color(33, 33, 33));
-
-        for (int r = 0; r < dataset.getRowCount(); r++) {
-            String rowName = dataset.getRowKey(r).toString();
-            Paint p = colorMap.getOrDefault(rowName, null);
-            if (p != null) {
-                renderer.setSeriesPaint(r, p);
-            }
-            renderer.setSeriesStroke(r, new BasicStroke(2.0f));
-        }
-
         renderer.setDefaultShapesVisible(true);
         renderer.setDefaultShapesFilled(true);
+
+        renderer.setDefaultToolTipGenerator((ds, row, col) -> {
+            Number v = ds.getValue(row, col);
+            return ds.getRowKey(row) + " - " + ds.getColumnKey(col) +
+                    ": " + String.format("%,.0f VNĐ", v.doubleValue());
+        });
+
+        Map<String, Paint> colors = new HashMap<>();
+        colors.put("Bánh ngọt", new Color(255, 99, 132));
+        colors.put("Cà phê", new Color(54, 162, 235));
+        colors.put("Trà", new Color(75, 192, 192));
+        colors.put("Khác", new Color(255, 206, 86));
+        colors.put("Tổng doanh thu", new Color(33, 33, 33));
+
+        for (int i = 0; i < dataset.getRowCount(); i++) {
+            String key = dataset.getRowKey(i).toString();
+            if (colors.containsKey(key)) {
+                renderer.setSeriesPaint(i, colors.get(key));
+            }
+            renderer.setSeriesStroke(i, new BasicStroke(2.0f));
+        }
+
         plot.setRenderer(renderer);
 
-        CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
-        domainAxis.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 11));
-        domainAxis.setCategoryMargin(0.05);
+        CategoryAxis xAxis = plot.getDomainAxis();
+        xAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+        xAxis.setTickLabelFont(customFont.getRobotoFonts().get(0).deriveFont(12f));
 
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setNumberFormatOverride(NumberFormat.getInstance());
-        rangeAxis.setTickLabelFont(new Font("Segoe UI", Font.PLAIN, 11));
+        NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
+        yAxis.setTickLabelFont(customFont.getRobotoFonts().get(0).deriveFont(12f));
+        yAxis.setNumberFormatOverride(NumberFormat.getInstance());
 
-        ChartPanel panel = new ChartPanel(chart);
-        panel.setBackground(Color.white);
-        return panel;
+        return new ChartPanel(chart);
     }
 
-    // ================= CẬP NHẬT BIỂU ĐỒ =================
+    private void showExcelPreview(int year) {
+
+        DefaultCategoryDataset dataset = thongkeDAO.getRevenueByMonthAndCategory(year);
+
+        // ====== TẠO DỮ LIỆU TABLE ======
+        String[] columns = {
+                "Loại sản phẩm", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4",
+                "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9",
+                "Tháng 10", "Tháng 11", "Tháng 12", "Tổng"
+        };
+
+        Object[][] data = new Object[dataset.getRowCount()][14];
+
+        for (int r = 0; r < dataset.getRowCount(); r++) {
+            String category = dataset.getRowKey(r).toString();
+            data[r][0] = category;
+
+            double total = 0;
+            for (int c = 0; c < 12; c++) {
+                Number val = dataset.getValue(r, c);
+                double num = val != null ? val.doubleValue() : 0;
+                data[r][c + 1] = String.format("%,.0f", num);
+                total += num;
+            }
+            data[r][13] = String.format("%,.0f", total);
+        }
+
+        JTable table = new JTable(data, columns);
+        table.setFont(customFont.getRobotoFonts().get(0).deriveFont(14f));
+        table.setRowHeight(32);
+        table.setShowGrid(true);
+        table.setGridColor(new Color(230,230,230));
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        // Header đẹp hơn
+        JTableHeader th = table.getTableHeader();
+        th.setPreferredSize(new Dimension(0, 40));
+        th.setBackground(new Color(55, 71, 79)); // xám đen sang trọng
+        th.setForeground(Color.white);
+        th.setFont(customFont.getRobotoFonts().get(1).deriveFont(Font.BOLD, 15));
+
+        // Set width cho từng cột
+        int[] width = {160, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 130};
+        for (int i = 0; i < width.length; i++) {
+            table.getColumnModel().getColumn(i).setPreferredWidth(width[i]);
+        }
+
+        // ZEBRA & BORDER
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable tbl, Object val,
+                                                           boolean isSel, boolean hasFocus,
+                                                           int row, int col) {
+
+                Component c = super.getTableCellRendererComponent(tbl, val, isSel, hasFocus, row, col);
+
+                if (isSel) {
+                    c.setBackground(new Color(200, 230, 255));
+                } else {
+                    c.setBackground(row % 2 == 0 ? new Color(250, 250, 250) : Color.white);
+                }
+
+                setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
+                return c;
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(Color.white);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // ====================
+        // PANEL TRUNG TÂM
+        // ====================
+        JPanel center = new JPanel();
+        center.setLayout(new BorderLayout());
+        center.setBackground(Color.white);
+        center.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+
+        // Ngày in
+        JLabel info = new JLabel(
+                "<html><div style='font-size:14px;color:#444;'>Ngày in: <b>" + java.time.LocalDate.now() + "</b></div></html>"
+        );
+        info.setBorder(BorderFactory.createEmptyBorder(0, 5, 12, 0));
+
+        center.add(info, BorderLayout.NORTH);
+        center.add(scrollPane, BorderLayout.CENTER);
+
+
+        // ====== TẠO DIALOG ======
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Báo Cáo Doanh Thu", true);
+        dialog.setSize(1400, 600);
+        dialog.setLocationRelativeTo(null);
+        dialog.setLayout(new BorderLayout());
+        dialog.getContentPane().setBackground(Color.white);
+
+        // HEADER đẹp, có shadow
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(new Color(38, 50, 56));
+        header.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0,0,2,0,new Color(90, 90, 90)),
+                BorderFactory.createEmptyBorder(18, 25, 18, 25)
+        ));
+
+        JLabel lblTitle = new JLabel("BÁO CÁO DOANH THU NĂM " + year);
+        lblTitle.setForeground(Color.white);
+        lblTitle.setFont(customFont.getRobotoFonts().get(1).deriveFont(Font.BOLD, 22));
+
+        header.add(lblTitle, BorderLayout.WEST);
+        dialog.add(header, BorderLayout.NORTH);
+
+        // CENTER
+        dialog.add(center, BorderLayout.CENTER);
+
+        // FOOTER gọn, nút bo tròn
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
+        bottom.setBackground(Color.white);
+        bottom.setBorder(BorderFactory.createEmptyBorder(10, 20, 15, 20));
+
+        JButton btnSave = new JButton("Lưu file Excel");
+        btnSave.setPreferredSize(new Dimension(150, 38));
+        btnSave.setBackground(new Color(0, 137, 123));
+        btnSave.setForeground(Color.white);
+        btnSave.setFocusPainted(false);
+        btnSave.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+
+        JButton btnClose = new JButton("Đóng");
+        btnClose.setPreferredSize(new Dimension(120, 38));
+        btnClose.setBackground(new Color(198, 40, 40));
+        btnClose.setForeground(Color.white);
+        btnClose.setFocusPainted(false);
+        btnClose.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+
+        bottom.add(btnSave);
+        bottom.add(btnClose);
+        dialog.add(bottom, BorderLayout.SOUTH);
+
+        // ACTION
+        btnSave.addActionListener(ev -> {
+            JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(new FileNameExtensionFilter("Excel Files (*.xlsx)", "xlsx"));
+            fc.setSelectedFile(new File("BaoCaoDoanhThu_" + year + ".xlsx"));
+
+            int result = fc.showSaveDialog(dialog);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File f = fc.getSelectedFile();
+                String path = f.getAbsolutePath();
+                if (!path.endsWith(".xlsx")) path += ".xlsx";
+
+                ThongkeDAO.exportRevenueByYearToExcel(year, path);
+                JOptionPane.showMessageDialog(dialog, "Đã lưu file:\n" + path);
+            }
+        });
+
+        btnClose.addActionListener(e -> dialog.dispose());
+
+        dialog.setVisible(true);
+    }
+
+
+
+
+    // ================= UPDATE CHARTS =================
     private void updateCharts(int month, int year) {
+
         DefaultPieDataset pieData = thongkeDAO.getRevenueByCategory(month, year);
         DefaultCategoryDataset lineData = thongkeDAO.getRevenueByMonthAndCategory(year);
 
-        if (pieData.getItemCount() == 0 && lineData.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Không có dữ liệu cho " + month + "/" + year,
-                    "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
+        piePanel.getChart().getTitle().setText(
+                "Tỷ lệ doanh thu theo loại món (" + month + "/" + year + ")"
+        );
+        PiePlot plot = (PiePlot) piePanel.getChart().getPlot();
+        plot.setDataset(pieData);
 
-        // Pie Chart update
-        piePanel.getChart().getTitle().setText("Tỷ lệ doanh thu theo loại món (" + month + "/" + year + ")");
-        PiePlot piePlot = (PiePlot) piePanel.getChart().getPlot();
-        piePlot.setDataset(pieData);
-
-        for (Object keyObj : pieData.getKeys()) {
-            String key = keyObj.toString();
-            switch (key) {
-                case "Cà phê" -> piePlot.setSectionPaint(key, new Color(121, 85, 72));
-                case "Trà" -> piePlot.setSectionPaint(key, new Color(76, 175, 80));
-                case "Bánh ngọt" -> piePlot.setSectionPaint(key, new Color(255, 152, 0));
-                default -> piePlot.setSectionPaint(key, new Color(33, 150, 243));
-            }
-        }
-
-        // Line Chart update
-        linePanel.getChart().getTitle().setText("Doanh thu theo tháng trong năm " + year);
+        linePanel.getChart().getTitle().setText(
+                "Doanh thu theo loại sản phẩm trong năm " + year
+        );
 
         CategoryPlot linePlot = linePanel.getChart().getCategoryPlot();
-        LineAndShapeRenderer renderer = (LineAndShapeRenderer) linePlot.getRenderer();
-
         linePlot.setDataset(lineData);
-
-        Map<String, Paint> colorMap = new HashMap<>();
-        colorMap.put("Bánh ngọt", new Color(255, 99, 132));
-        colorMap.put("Cà phê", new Color(54, 162, 235));
-        colorMap.put("Trà", new Color(75, 192, 192));
-        colorMap.put("Khác", new Color(255, 206, 86));
-        colorMap.put("Tổng doanh thu", new Color(33, 33, 33));
-
-        for (int r = 0; r < lineData.getRowCount(); r++) {
-            String rowName = lineData.getRowKey(r).toString();
-            Paint p = colorMap.getOrDefault(rowName, null);
-            if (p != null) renderer.setSeriesPaint(r, p);
-            renderer.setSeriesStroke(r, new BasicStroke(2.0f));
-        }
     }
 
-    // ================= REFRESH TOÀN TRANG =================
+    // ================= REFRESH PAGE =================
     public void reloadData() {
+        JPanel summary = (JPanel) getComponent(0);
+        summary.removeAll();
 
-        // ====== CẬP NHẬT SUMMARY ======
-        JPanel summaryPanel = (JPanel) getComponent(0);
-        summaryPanel.removeAll();
+        summary.add(createSummaryCard("Doanh thu hôm nay",
+                thongkeDAO.getTodayRevenue(),
+                new Color(121, 85, 72)));
 
-        summaryPanel.add(createSummaryCard("Doanh thu hôm nay", thongkeDAO.getTodayRevenue(), new Color(121, 85, 72)));
-        summaryPanel.add(createSummaryCard("Số đơn hàng", thongkeDAO.getTodayOrderCount(), new Color(33, 150, 243)));
-        summaryPanel.add(createSummaryCard("Khách hàng mới", thongkeDAO.getNewCustomersToday(), new Color(76, 175, 80)));
+        summary.add(createSummaryCard("Số đơn hàng",
+                thongkeDAO.getTodayOrderCount(),
+                new Color(33, 150, 243)));
 
-        summaryPanel.revalidate();
-        summaryPanel.repaint();
+        summary.add(createSummaryCard("Khách hàng mới",
+                thongkeDAO.getNewCustomersToday(),
+                new Color(76, 175, 80)));
 
-        // ====== LẤY THÁNG + NĂM HIỆN TẠI ======
+        summary.revalidate();
+        summary.repaint();
+
         int month = comboMonth.getSelectedIndex() + 1;
         int year = Integer.parseInt(comboYear.getSelectedItem().toString());
-
-        // ====== CẬP NHẬT BIỂU ĐỒ ======
         updateCharts(month, year);
     }
+
+//    public static void main(String[] args) {
+//        StatisticPage statisticPage = new StatisticPage();
+//        statisticPage.setVisible(true);
+//    }
 }

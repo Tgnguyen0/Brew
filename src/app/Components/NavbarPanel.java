@@ -89,7 +89,7 @@ public class NavbarPanel extends JPanel {
         productButton = new NavbarButton("Sản Phẩm", Feather.BOX,
                 24, 200, 35, Font.PLAIN, 12, 10);
         productButton.addActionListener(action);
-        productButton.setEnabled(acc.getRole().equals("Admin") || acc.getRole().equals("QuanLy"));
+        productButton.setEnabled(acc.getRole().equals("Quản trị viên") || acc.getRole().equals("Quản lý"));
 
         this.add(productButton);
 
@@ -102,13 +102,13 @@ public class NavbarPanel extends JPanel {
         statisticsButton = new NavbarButton("Thống Kê", Feather.BAR_CHART,
                 24, 200, 35, Font.PLAIN, 12, 10);
         statisticsButton.addActionListener(action);
-        statisticsButton.setEnabled(acc.getRole().equals("Admin") || acc.getRole().equals("QuanLy"));
+        statisticsButton.setEnabled(acc.getRole().equals("Quản trị viên") || acc.getRole().equals("Quản lý"));
         this.add(statisticsButton);
 
         employeeButton = new NavbarButton("Nhân Viên", Feather.USER,
                 24, 200, 35, Font.PLAIN, 12, 10);
         employeeButton.addActionListener(action);
-        employeeButton.setEnabled(acc.getRole().equals("Admin") || acc.getRole().equals("QuanLy"));
+        employeeButton.setEnabled(acc.getRole().equals("Quản trị viên") || acc.getRole().equals("Quản lý"));
         this.add(employeeButton);
     }
 
