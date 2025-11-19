@@ -3,7 +3,9 @@ package app.GUI;
 import app.Components.NavbarButton;
 import app.Components.NavbarPanel;
 import app.InitFont.CustomFont;
+import app.Listener.ActionListener_BrewGUI;
 import app.Object.Account;
+import com.formdev.flatlaf.FlatLightLaf;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.*;
@@ -41,17 +43,24 @@ public class BrewGUI extends JFrame implements MouseListener {
     public static StatisticPage statisticPage;
     public static EmployeePage employeePage;
     private CustomFont customFont = new CustomFont();
+    private ActionListener action;
     private JButton navbarButton;
     private JPanel slidePanel;
     private NavbarPanel optionBar;
-    private boolean isOptionBarVisible = false;
     private JPanel infoBar;
+    public JButton btnLogout;
     private Animator animator;
-    public static String BREW_HOTLINE = "1234567898";
+    private static BrewGUI instance;
 
     // Function tạo GUI chính
     public BrewGUI(Account acc) {
         this.acc = acc;
+
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         ImageIcon icon = new ImageIcon("asset/icon.png");
         setTitle("Brew");
@@ -62,12 +71,6 @@ public class BrewGUI extends JFrame implements MouseListener {
         setResizable(true);
         layout = new MigLayout("fill", "0[]0[100%, fill]0", "0[fill, top]0");
         setLayout(layout);
-
-        try {
-            UIManager.setLookAndFeel(new FlatDarkLaf());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 
         navbarInit();
         guiUserBarInit();
@@ -127,6 +130,9 @@ public class BrewGUI extends JFrame implements MouseListener {
         // add(layeredPane);
         // updateTime(); // Cập nhật tg
         // startTimer(); // Khởi động bộ đếm thời gian để cập nhật liên tục
+
+        instance = this;
+        action = new ActionListener_BrewGUI(this);
     }
 
     // Tạo down menu GUI cho dev cafe
@@ -217,7 +223,7 @@ public class BrewGUI extends JFrame implements MouseListener {
 
         // --- Nút Đăng xuất (gradient tùy chỉnh) ---
         // Sử dụng thư viện Ikonli để dùng icon với Feather.LOG_OUT, độ lớn 15, màu đen
-        JButton btnLogout = new JButton("Đăng xuất", FontIcon.of(Feather.LOG_OUT, 15, Color.BLACK)) {
+        btnLogout = new JButton("Đăng xuất", FontIcon.of(Feather.LOG_OUT, 15, Color.BLACK)) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g.create();
@@ -263,6 +269,8 @@ public class BrewGUI extends JFrame implements MouseListener {
                 }
             }
         });
+
+        btnLogout.addActionListener(action);
 
         // Thêm nút Logout vào userPanel
         userPanel.add(lblDateTime);
@@ -347,6 +355,8 @@ public class BrewGUI extends JFrame implements MouseListener {
     }
 
     public static void main(String[] args) {
+        FlatDarkLaf.setup();
+
         SwingUtilities.invokeLater(() -> {
             // Mongo.getConnection();
             BrewGUI devCafeGUI = new BrewGUI(new Account());
