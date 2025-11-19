@@ -311,6 +311,13 @@ public class ProductPage extends JPanel {
 
     private void onAdd() {
         try {
+            // Nếu idInput có giá trị, có nghĩa là form đang hiển thị dữ liệu cũ (chưa được Hủy)
+            // và người dùng đang cố gắng Thêm sản phẩm mới.
+            if (!idInput.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không thể thêm sản phẩm sẵn có. Vui lòng bấm 'Hủy' để xoá trắng form và thêm mới.", "Lỗi Thêm", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // ID bỏ qua 
             String name = nameInput.getText().trim();
             if (name.isEmpty()) {

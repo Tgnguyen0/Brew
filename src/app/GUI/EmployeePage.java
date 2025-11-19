@@ -277,35 +277,44 @@ public class EmployeePage extends JPanel {
         table.clearSelection();
     }
 
-    private void onAdd() {
-        try {
-        	String firstName = firstNameInput.getText().trim();
-        	String lastName  = lastNameInput.getText().trim();
-        	String phone     = phoneInput.getText().trim();
-        	String email     = emailInput.getText().trim();
+ // ... (trong class EmployeePage)
 
-        	// ===== Regex =====
-        	if (!firstName.matches("^[\\p{L} ]{1,50}$")) {
-        	    JOptionPane.showMessageDialog(this, "Họ không hợp lệ (chỉ chứa chữ và khoảng trắng).");
-        	    return;
-        	}
-        	if (!lastName.matches("^[\\p{L} ]{1,50}$")) {
-        	    JOptionPane.showMessageDialog(this, "Tên không hợp lệ (chỉ chứa chữ và khoảng trắng).");
-        	    return;
-        	}
-        	if (!phone.matches("^\\d{8,11}$")) {
-        	    JOptionPane.showMessageDialog(this, "Số điện thoại phải gồm 8–11 chữ số.");
-        	    return;
-        	}
-        	if (!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
-        	    JOptionPane.showMessageDialog(this, "Email không hợp lệ.");
-        	    return;
-        	}
+    private void onAdd() {
+        
+        // 1. Kiểm tra xem có dòng nào đang được chọn trên bảng không.
+        if (table.getSelectedRow() != -1) {
+            JOptionPane.showMessageDialog(this, "Không thể thêm nhân viên mới khi form đang hiển thị dữ liệu đã chọn. Vui lòng bấm 'Hủy thay đổi' để xoá trắng form và thêm mới.", "Lỗi Thêm", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        try {
+            String firstName = firstNameInput.getText().trim();
+            String lastName  = lastNameInput.getText().trim();
+            String phone     = phoneInput.getText().trim();
+            String email     = emailInput.getText().trim();
+
+            // ===== Regex =====
+            if (!firstName.matches("^[\\p{L} ]{1,50}$")) {
+                JOptionPane.showMessageDialog(this, "Họ không hợp lệ (chỉ chứa chữ và khoảng trắng).");
+                return;
+            }
+            if (!lastName.matches("^[\\p{L} ]{1,50}$")) {
+                JOptionPane.showMessageDialog(this, "Tên không hợp lệ (chỉ chứa chữ và khoảng trắng).");
+                return;
+            }
+            if (!phone.matches("^\\d{8,11}$")) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại phải gồm 8–11 chữ số.");
+                return;
+            }
+            if (!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+                JOptionPane.showMessageDialog(this, "Email không hợp lệ.");
+                return;
+            }
 
             Employee e = new Employee(
                     null,
-                    firstName,                         // firstName
-                    lastName,                          // lastName
+                    firstName,                       // firstName
+                    lastName,                        // lastName
                     "Nam".equals(sexCombo.getSelectedItem()),
                     phoneInput.getText().trim(),
                     emailInput.getText().trim(),
