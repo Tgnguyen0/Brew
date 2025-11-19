@@ -4,6 +4,7 @@ import app.DAO.DAO_Employee;
 import app.DAO.LoginDAO;
 import app.InitFont.CustomFont;
 import app.Object.Account;
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
@@ -218,6 +219,7 @@ public class BrewLogin extends JFrame {
     }
 
     public static void main(String[] args) {
+        FlatLightLaf.setup();
         SwingUtilities.invokeLater(() -> new BrewLogin().setVisible(true));
     }
 
