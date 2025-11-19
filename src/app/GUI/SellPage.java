@@ -124,7 +124,7 @@ public class SellPage extends JPanel {
         JLabel chooseLabel = new JLabel("Loại:");
         chooseLabel.setFont(customFont.getRobotoFonts().get(0).deriveFont(Font.PLAIN, 12));
         chooseLabel.setForeground(Color.BLACK);
-        chooseLabel.setPreferredSize(new Dimension(65, 25));
+        chooseLabel.setPreferredSize(new Dimension(50, 25));
         northN.add(chooseLabel);
 
         productCategory = new JComboBox<>();
@@ -136,7 +136,7 @@ public class SellPage extends JPanel {
         productCategory.addItem("Trà");
         productCategory.addItem("Bánh ngọt");
         productCategory.addItem("Khác");
-        productCategory.setPreferredSize(new Dimension(90, 25));
+        productCategory.setPreferredSize(new Dimension(110, 25));
         productCategory.addActionListener(action);
         northN.add(productCategory);
 
