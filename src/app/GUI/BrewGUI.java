@@ -270,8 +270,6 @@ public class BrewGUI extends JFrame implements MouseListener {
             }
         });
 
-        btnLogout.addActionListener(action);
-
         // Thêm nút Logout vào userPanel
         userPanel.add(lblDateTime);
         userPanel.add(lblRole);

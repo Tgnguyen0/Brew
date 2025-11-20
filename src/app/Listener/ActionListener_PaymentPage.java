@@ -5,10 +5,12 @@ import app.Components.ImagePanelButton;
 import app.DAO.DAO_Bill;
 import app.DAO.DAO_BillDetail;
 import app.DAO.DAO_Customer;
+import app.DAO.DAO_Table;
 import app.GUI.BrewGUI;
 import app.GUI.PaymentPage;
 import app.Object.Bill;
 import app.Object.Customer;
+import app.Object.Status;
 import app.Object.Table;
 import com.itextpdf.layout.element.Tab;
 
@@ -90,7 +92,8 @@ public class ActionListener_PaymentPage implements ActionListener {
                         Table t = new Table();
                         bill.setTable(t);
                     } else {
-                        bill.setTable(paymentPage.collectionTable.getAllTables().get(paymentPage.collectionTable.getAllTables().size() - 1));
+                        Table t = paymentPage.collectionTable.getAllTables().get(paymentPage.collectionTable.getAllTables().size() - 1);
+                        bill.setTable(t);
                     }
 
                     DAO_Bill.updateBill(bill);
