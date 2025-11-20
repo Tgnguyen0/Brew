@@ -122,6 +122,11 @@ public class ActionListener_SellPage implements ActionListener {
                 return;
             }
 
+            if (sellPage.collectionTable.getAllTables().isEmpty() && !sellPage.takeAwayRadioButton.isSelected()) {
+                JOptionPane.showMessageDialog(sellPage, "Chưa chọn bàn!", "Thanh toán thất bại", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
             new PaymentPage(sellPage.collectionBillDetails, sellPage.collectionTable, BrewGUI.acc.getEmployee()).setVisible(true);
             for (int i = SellPage.productTableModel.getRowCount() - 1; i >= 0; i--) {
                 SellPage.productTableModel.removeRow(i);
