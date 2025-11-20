@@ -11,6 +11,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 import org.jfree.chart.*;
 import org.jfree.chart.axis.CategoryLabelPositions;
@@ -288,27 +290,51 @@ public class StatisticPage extends JPanel {
 
         DefaultCategoryDataset dataset = thongkeDAO.getRevenueByMonthAndCategory(year);
 
-        // ====== TẠO DỮ LIỆU TABLE ======
+        // ====== TẠO DỮ LIỆU TABLE THEO CHUẨN EXCEL ======
         String[] columns = {
-                "Loại sản phẩm", "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4",
-                "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9",
-                "Tháng 10", "Tháng 11", "Tháng 12", "Tổng"
+                "Loại sản phẩm",
+                "T1","T2","T3","Q1",
+                "T4","T5","T6","Q2",
+                "T7","T8","T9","Q3",
+                "T10","T11","T12","Q4",
+                "Tổng năm"
         };
 
-        Object[][] data = new Object[dataset.getRowCount()][14];
+        Object[][] data = new Object[dataset.getRowCount()][18];
 
         for (int r = 0; r < dataset.getRowCount(); r++) {
             String category = dataset.getRowKey(r).toString();
             data[r][0] = category;
 
-            double total = 0;
-            for (int c = 0; c < 12; c++) {
-                Number val = dataset.getValue(r, c);
+            double q1 = 0, q2 = 0, q3 = 0, q4 = 0, total = 0;
+
+            int[] monthCol = {
+                    1,2,3,   // T1 T2 T3
+                    5,6,7,   // T4 T5 T6
+                    9,10,11, // T7 T8 T9
+                    13,14,15 // T10 T11 T12
+            };
+
+            for (int m = 0; m < 12; m++) {
+                Number val = dataset.getValue(r, m);
                 double num = val != null ? val.doubleValue() : 0;
-                data[r][c + 1] = String.format("%,.0f", num);
+
+                data[r][monthCol[m]] = String.format("%,.0f", num);
+
+                if (m < 3) q1 += num;
+                else if (m < 6) q2 += num;
+                else if (m < 9) q3 += num;
+                else q4 += num;
+
                 total += num;
             }
-            data[r][13] = String.format("%,.0f", total);
+
+            data[r][4]  = String.format("%,.0f", q1);  // Q1
+            data[r][8]  = String.format("%,.0f", q2);  // Q2
+            data[r][12] = String.format("%,.0f", q3);  // Q3
+            data[r][16] = String.format("%,.0f", q4);  // Q4
+
+            data[r][17] = String.format("%,.0f", total); // Tổng năm
         }
 
         JTable table = new JTable(data, columns);
@@ -318,20 +344,33 @@ public class StatisticPage extends JPanel {
         table.setGridColor(new Color(230,230,230));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        // Header đẹp hơn
+        // HEADER
         JTableHeader th = table.getTableHeader();
         th.setPreferredSize(new Dimension(0, 40));
-        th.setBackground(new Color(55, 71, 79)); // xám đen sang trọng
+        th.setBackground(new Color(55, 71, 79));
         th.setForeground(Color.white);
         th.setFont(customFont.getRobotoFonts().get(1).deriveFont(Font.BOLD, 15));
 
-        // Set width cho từng cột
-        int[] width = {160, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 130};
-        for (int i = 0; i < width.length; i++) {
-            table.getColumnModel().getColumn(i).setPreferredWidth(width[i]);
-        }
+        // ========= AUTO FIT WIDTH (KHÔNG BAO GIỜ BỊ "...") =========
+        for (int col = 0; col < table.getColumnCount(); col++) {
+            TableColumn column = table.getColumnModel().getColumn(col);
 
-        // ZEBRA & BORDER
+            int maxWidth = 90; // width tối thiểu
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer renderer = table.getCellRenderer(row, col);
+                Component comp = table.prepareRenderer(renderer, row, col);
+
+                int width = comp.getPreferredSize().width + 30; // padding cho đẹp
+                if (width > maxWidth) {
+                    maxWidth = width;
+                }
+            }
+
+            column.setPreferredWidth(maxWidth);
+        }
+        // =============================================================
+
+        // ZEBRA RENDERER
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable tbl, Object val,
@@ -340,11 +379,8 @@ public class StatisticPage extends JPanel {
 
                 Component c = super.getTableCellRendererComponent(tbl, val, isSel, hasFocus, row, col);
 
-                if (isSel) {
-                    c.setBackground(new Color(200, 230, 255));
-                } else {
-                    c.setBackground(row % 2 == 0 ? new Color(250, 250, 250) : Color.white);
-                }
+                if (isSel) c.setBackground(new Color(200, 230, 255));
+                else c.setBackground(row % 2 == 0 ? new Color(250, 250, 250) : Color.white);
 
                 setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
                 return c;
@@ -355,32 +391,27 @@ public class StatisticPage extends JPanel {
         scrollPane.getViewport().setBackground(Color.white);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ====================
-        // PANEL TRUNG TÂM
-        // ====================
-        JPanel center = new JPanel();
-        center.setLayout(new BorderLayout());
+        // ==================== PANEL TRUNG TÂM ====================
+        JPanel center = new JPanel(new BorderLayout());
         center.setBackground(Color.white);
         center.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        // Ngày in
         JLabel info = new JLabel(
-                "<html><div style='font-size:14px;color:#444;'>Ngày in: <b>" + java.time.LocalDate.now() + "</b></div></html>"
+                "<html><div style='font-size:14px;color:#444;'>Ngày in: <b>"
+                        + java.time.LocalDate.now() + "</b></div></html>"
         );
         info.setBorder(BorderFactory.createEmptyBorder(0, 5, 12, 0));
 
         center.add(info, BorderLayout.NORTH);
         center.add(scrollPane, BorderLayout.CENTER);
 
-
-        // ====== TẠO DIALOG ======
+        // ==================== DIALOG ====================
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Báo Cáo Doanh Thu", true);
         dialog.setSize(1400, 600);
         dialog.setLocationRelativeTo(null);
         dialog.setLayout(new BorderLayout());
         dialog.getContentPane().setBackground(Color.white);
 
-        // HEADER đẹp, có shadow
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(new Color(38, 50, 56));
         header.setBorder(BorderFactory.createCompoundBorder(
@@ -395,10 +426,8 @@ public class StatisticPage extends JPanel {
         header.add(lblTitle, BorderLayout.WEST);
         dialog.add(header, BorderLayout.NORTH);
 
-        // CENTER
         dialog.add(center, BorderLayout.CENTER);
 
-        // FOOTER gọn, nút bo tròn
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
         bottom.setBackground(Color.white);
         bottom.setBorder(BorderFactory.createEmptyBorder(10, 20, 15, 20));
@@ -407,21 +436,16 @@ public class StatisticPage extends JPanel {
         btnSave.setPreferredSize(new Dimension(150, 38));
         btnSave.setBackground(new Color(0, 137, 123));
         btnSave.setForeground(Color.white);
-        btnSave.setFocusPainted(false);
-        btnSave.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         JButton btnClose = new JButton("Đóng");
         btnClose.setPreferredSize(new Dimension(120, 38));
         btnClose.setBackground(new Color(198, 40, 40));
         btnClose.setForeground(Color.white);
-        btnClose.setFocusPainted(false);
-        btnClose.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         bottom.add(btnSave);
         bottom.add(btnClose);
         dialog.add(bottom, BorderLayout.SOUTH);
 
-        // ACTION
         btnSave.addActionListener(ev -> {
             JFileChooser fc = new JFileChooser();
             fc.setFileFilter(new FileNameExtensionFilter("Excel Files (*.xlsx)", "xlsx"));
