@@ -99,8 +99,9 @@ public class ActionListener_SellPage implements ActionListener {
                     price = 0f;
 
                 sellPage.collectionBillDetails.updateBDOnOrder(row, amount, price);
-                sellPage.showUpdateSuccessfullyOptionPane();
             }
+
+            sellPage.showUpdateSuccessfullyOptionPane();
         }
 
         if (o == sellPage.deleteButton) {
