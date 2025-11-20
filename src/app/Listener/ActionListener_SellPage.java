@@ -128,9 +128,6 @@ public class ActionListener_SellPage implements ActionListener {
             }
 
             new PaymentPage(sellPage.collectionBillDetails, sellPage.collectionTable, BrewGUI.acc.getEmployee()).setVisible(true);
-            for (int i = SellPage.productTableModel.getRowCount() - 1; i >= 0; i--) {
-                SellPage.productTableModel.removeRow(i);
-            }
         }
     }
 

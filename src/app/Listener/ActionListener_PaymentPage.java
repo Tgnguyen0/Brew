@@ -8,6 +8,7 @@ import app.DAO.DAO_Customer;
 import app.DAO.DAO_Table;
 import app.GUI.BrewGUI;
 import app.GUI.PaymentPage;
+import app.GUI.SellPage;
 import app.Object.Bill;
 import app.Object.Customer;
 import app.Object.Status;
@@ -103,6 +104,9 @@ public class ActionListener_PaymentPage implements ActionListener {
 
                     paymentPage.collectionBillDetails.removeAll();
                     paymentPage.collectionTable.removeAll();
+                    for (int i = SellPage.productTableModel.getRowCount() - 1; i >= 0; i--) {
+                        SellPage.productTableModel.removeRow(i);
+                    }
                 }
             } catch (NumberFormatException ex) {
                 ex.printStackTrace();
